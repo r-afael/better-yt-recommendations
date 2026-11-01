@@ -11,7 +11,6 @@
 
   const TRY_ID = "try"; // The id of the one video a try asks the model to score.
   const TRY_DELAY_MS = 400; // A try waits for typing to pause, like saving does.
-  const MAX_TITLE_LENGTH = 200; // About twice YouTube's 100-character limit on titles.
   const COMMANDS = Object.freeze([COMMAND_TOGGLE_FILTER, COMMAND_TOGGLE_SHORTS]); // In the manifest's order.
   // Extension pages can't link to chrome:// pages, so the button opens it in a new tab.
   const SHORTCUTS_PAGE = "chrome://extensions/shortcuts";
@@ -66,7 +65,7 @@
     onChange: renderTry,
   });
 
-  const typedTitle = () => tryTitle.value.trim().slice(0, MAX_TITLE_LENGTH);
+  const typedTitle = () => settings.clip(tryTitle.value, settings.LIMITS.MAX_TITLE_LENGTH);
 
   const formatScore = (value) => (value === null ? ui.message("tryScoreNone") : ui.formatThreshold(value));
 
@@ -282,7 +281,7 @@
     field.maxLength = settings.LIMITS.MAX_CHANNEL_TEXT_LENGTH;
     field.addEventListener("input", () => showLine(channelsError, channelNote()));
   }
-  tryTitle.maxLength = MAX_TITLE_LENGTH;
+  tryTitle.maxLength = settings.LIMITS.MAX_TITLE_LENGTH;
   threshold.min = settings.LIMITS.MIN_THRESHOLD;
   threshold.max = settings.LIMITS.MAX_THRESHOLD;
   for (const field of [tryTitle, ...topicFields]) field.addEventListener("input", scheduleTry);

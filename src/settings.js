@@ -4,6 +4,7 @@
 
   const LIMITS = Object.freeze({
     MAX_TEXT_LENGTH: 500, // The longest list of topics, as the options page lets the user type it.
+    MAX_TITLE_LENGTH: 200, // Characters of a video title sent to the model, about twice YouTube's 100-character limit.
     MIN_THRESHOLD: 0.1, // The ends of the sensitivity slider, which options.js sets from them.
     MAX_THRESHOLD: 0.4,
     MAX_CHANNELS: 50, // Names per channel list.

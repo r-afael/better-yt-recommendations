@@ -71,7 +71,6 @@
   const WATCHED_ATTRIBUTES = Object.freeze(["class", ...CARD_ATTRIBUTES]);
   const HIDDEN_ATTRIBUTE = "data-better-yt-hidden";
   const REASON_ATTRIBUTE = "data-better-yt-reason";
-  const MAX_TITLE_LENGTH = 200;
 
   // Returns the surface a page shows, such as SURFACES.home for "/", or null for other pages.
   function surfaceFor(pathname) {
@@ -121,7 +120,7 @@
 
   function readTitle(item) {
     const title = firstMatch(item, TITLE_ATTRIBUTE_HOLDERS)?.getAttribute("title");
-    return clip(title || firstMatch(item, TITLE_TEXT)?.textContent, MAX_TITLE_LENGTH);
+    return clip(title || firstMatch(item, TITLE_TEXT)?.textContent, LIMITS.MAX_TITLE_LENGTH);
   }
 
   // Returns the video a card shows, or null when the card isn't a readable video.

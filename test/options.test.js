@@ -389,6 +389,12 @@ test("checks a typed title once typing pauses, with the topics on the page", asy
   assert.deepEqual(requests[1].message.avoidTopics, ["chess"]);
 });
 
+test("tries a title the way the filter reads one on YouTube, with its spacing collapsed", async (t) => {
+  const { requests, tryTitle } = await setupTry(t, { stored: { topics: "chess" } });
+  tryTitle("  chess   openings ");
+  assert.deepEqual(requests.map((request) => request.message.videos[0].title), ["chess openings"]);
+});
+
 test("shows both scores and whether the title would be hidden", async (t) => {
   const { clock, requests, tryTitle, answer, type, avoidField, verdictText, scoresText } = await setupTry(t, {
     stored: { topics: "chess", avoidTopics: "gaming" },
