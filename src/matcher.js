@@ -5,6 +5,7 @@
 
   const DEFAULT_CACHE_SIZE = 2000; // Video vectors kept between requests, enough for a long viewing session.
   const DEFAULT_BATCH_SIZE = 32; // Texts per model call, which bounds the memory of one inference.
+  const TOPIC_LISTS_KEPT = 4; // The wanted and avoided lists, plus the previous pair while they are edited.
 
   // The vectors are L2-normalized, so their dot product is their cosine similarity.
   function dot(a, b) {
@@ -48,7 +49,7 @@
     batchSize = DEFAULT_BATCH_SIZE,
   }) {
     const videoVectors = createLruCache(cacheSize);
-    let topicVectors = { key: null, vectors: [] };
+    const topicVectors = createLruCache(TOPIC_LISTS_KEPT);
 
     // Returns a Map from each distinct text to its vector, embedding batchSize texts at a time.
     async function embedAll(texts) {
@@ -60,14 +61,15 @@
       return vectors;
     }
 
-    // Topics rarely change between requests, so their vectors are kept for the latest list.
+    // Topics rarely change between requests, so the vectors of the latest lists are kept.
     async function vectorsForTopics(topics) {
       const key = JSON.stringify(topics);
-      if (topicVectors.key !== key) {
-        const vectors = await embedAll(topics);
-        topicVectors = { key, vectors: topics.map((topic) => vectors.get(topic)) };
-      }
-      return topicVectors.vectors;
+      const cached = topicVectors.get(key);
+      if (cached) return cached;
+      const vectors = await embedAll(topics);
+      const list = topics.map((topic) => vectors.get(topic));
+      topicVectors.set(key, list);
+      return list;
     }
 
     // Collects the vectors locally so a request larger than the cache still has all of them.

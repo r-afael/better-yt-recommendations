@@ -71,6 +71,13 @@ test("embeds each video text once across requests and topic changes, and each ne
   assert.deepEqual(batches, [["x"], ["a", "b"], ["c"], ["y"]]);
 });
 
+test("alternating two topic lists embeds each list once", async () => {
+  const { embed, batches } = fakeEmbed({ x: X, y: Y });
+  const matcher = createMatcher({ embed });
+  for (const topics of [["x"], ["y"], ["x"], ["y"]]) await matcher.score(topics, [video("a")]);
+  assert.deepEqual(batches, [["x"], ["a"], ["y"]]);
+});
+
 test("embeds repeated texts once and in batches of the configured size", async () => {
   const { embed, batches } = fakeEmbed({ x: X });
   const matcher = createMatcher({ embed, batchSize: 2 });

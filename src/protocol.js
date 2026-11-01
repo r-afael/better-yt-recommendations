@@ -3,9 +3,10 @@
 globalThis.BetterYT ??= {};
 globalThis.BetterYT.protocol = Object.freeze({
   // Content script to background, which forwards it to the offscreen document:
-  // { type, topics: string[], videos: [{ id, title, channel }] }
-  // Answered with { scores: { [id]: number } }, each video's highest similarity to a topic
-  // from -1 to 1, or with { error: string }.
+  // { type, topics: string[], avoidTopics: string[], videos: [{ id, title, channel }] }
+  // Answered with { scores: { [id]: { want, avoid } } }, each video's highest similarity from -1
+  // to 1 to a wanted topic and to a topic to avoid, null when that list is empty,
+  // or with { error: string }.
   MATCH: "better-yt:match",
   // Offscreen document to background: { type, status: { state, progress? } },
   // where state is one of MODEL_STATES and progress runs from 0 to 1 while loading.

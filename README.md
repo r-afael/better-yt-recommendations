@@ -43,10 +43,10 @@ YouTube tabs pick up changes right away.
   the sidebar. A link to a Short opens it as a regular video,
   without the endless feed of Shorts after it.
 - **Filter recommendations by topic** (on by default): hides videos in the sidebar
-  next to the one you're watching that don't match your topics. It does nothing
-  until you type some topics. Turn it off to show every video again and free the
-  model's memory.
-- A summary of your topics; click it to change them.
+  next to the one you're watching that don't match your topics or are closer to a
+  topic to avoid. It does nothing until you type some topics to see or to avoid.
+  Turn it off to show every video again and free the model's memory.
+- A summary of your topics to see and to avoid; click it to change them.
 
 ### On the options page
 
@@ -54,32 +54,37 @@ The **Filter recommendations by topic** switch is on both pages.
 
 - **Topics you want to see**: the topics to keep, separated by commas. The field is
   disabled while the filter is off.
+- **Topics to avoid**: topics whose videos you don't want, separated by commas. A
+  video is hidden when it's closer to one of them than to the closest topic you want.
+  With only topics to avoid, a video is hidden when it's closer to one of them than
+  the filter sensitivity.
 - **Filter sensitivity** (0.25 by default): how close to your topics a video must be
   to stay visible, from 0.10 to 0.40. Move it up to hide more videos, or down if the
-  filter hides videos you'd want. The sidebar updates as you move it.
+  filter hides videos you'd want. The sidebar updates as you move it. With only
+  topics to avoid, it works the other way round: move it up to hide fewer videos.
 
 The filter judges each video by its title and channel, so it makes mistakes: it may
 hide a few videos you'd want, or keep a few you wouldn't. A handful of specific
 topics works better than one broad word. For example, "programming, JavaScript, web
 development" keeps more coding videos than "programming" alone.
 
-While the filter is on and has topics, a line in the popup and on the options page
-shows the model's status: waiting for you to open a video, loading, ready, or
-failed. Videos stay visible while the model loads, and if it fails to load or to
-answer. After a failure, it tries again a little later.
+While the filter is on and has topics to see or to avoid, a line in the popup and on
+the options page shows the model's status: waiting for you to open a video, loading,
+ready, or failed. Videos stay visible while the model loads, and if it fails to load
+or to answer. After a failure, it tries again a little later.
 
 ![The settings popup, with all three toggles on, the topics programming, software engineering and chess, the filter sensitivity at 0.25, and the status The model is ready](docs/settings-popup.png)
 
 ## Performance
 
-The topic filter costs nothing until you type some topics. Then, the first time you
-open a video:
+The topic filter costs nothing until you type some topics to see or to avoid. Then,
+the first time you open a video:
 
 - The model downloads once, about 160 MB. Chrome caches it, so later videos don't
   download it again.
 - While in use, the model takes about 0.5 to 0.7 GB of memory. The extension frees it
   after 5 minutes without new videos to check, or as soon as you turn the filter off
-  or clear your topics.
+  or clear your topics to see and to avoid.
 
 When most videos in the sidebar are off topic, YouTube loads more to fill it, and
 the filter checks those too. On some videos, that means checking more than a
@@ -120,8 +125,8 @@ refresh YouTube.
 ## Privacy
 
 The extension runs only on YouTube. It doesn't track you or collect your data. It
-saves your settings, including your topics, in Chrome, which syncs them across your
-computers if you use Chrome sync.
+saves your settings, including your topics to see and to avoid, in Chrome, which
+syncs them across your computers if you use Chrome sync.
 
 The topic filter's model and its files download once from huggingface.co (Hugging
 Face). After that, the model runs on your computer. The titles and channels of the
@@ -137,7 +142,8 @@ refresh YouTube.
 
 - `src/content.js` selects the tab on YouTube.
 - `src/labels.js` lists the tab's name in each language.
-- `src/settings.js` stores the settings for the content scripts, the popup and the options page.
+- `src/settings.js` stores the settings for the content scripts, the extension's pages
+  and the background.
 - `src/shorts.js` hides Shorts and opens Shorts links as regular videos.
   `src/shorts.css` lists what to hide. Both load as soon as a YouTube page starts, so
   Shorts never flash on screen; the other content scripts load once the page is ready.
@@ -150,6 +156,8 @@ refresh YouTube.
 - `_locales/` has the translations of the popup and the options page.
 - `src/protocol.js` names the messages the extension's parts send each other.
 - `src/topics.js` turns the topics field into a list of topics.
+- `src/verdict.js` decides from a video's scores whether it is hidden, and whether the
+  filter needs the model.
 - `src/cards.js` finds the video cards on the watch page, Home, Subscriptions and
   search results, reads them, and hides or shows them.
 - `src/filter.js` decides which videos to check, asks for verdicts and applies them.

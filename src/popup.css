@@ -236,6 +236,11 @@ progress {
   text-align: start;
 }
 
+/* The topics to see and the topics to avoid each take a line. */
+.summary > span:not([hidden]) {
+  display: block;
+}
+
 footer {
   display: flex;
   gap: 16px;

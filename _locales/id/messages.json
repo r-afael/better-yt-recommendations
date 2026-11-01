@@ -42,7 +42,7 @@
     "message": "Sensitivitas filter"
   },
   "sensitivityHint": {
-    "message": "Lebih tinggi menyembunyikan lebih banyak video; lebih rendah menampilkan lebih banyak."
+    "message": "Seberapa dekat video harus dengan topik yang Anda inginkan. Lebih tinggi menyembunyikan lebih banyak video; lebih rendah menampilkan lebih banyak."
   },
   "modelIdle": {
     "message": "Model dimuat saat Anda membuka video."
@@ -76,5 +76,26 @@
   },
   "noTopicsYet": {
     "message": "Belum ada topik. Tambahkan di Semua setelan."
+  },
+  "avoidTopics": {
+    "message": "Topik yang ingin Anda hindari"
+  },
+  "avoidTopicsPlaceholder": {
+    "message": "game, gosip selebriti"
+  },
+  "avoidTopicsHint": {
+    "message": "Video yang lebih dekat ke salah satu topik ini daripada ke topik mana pun yang Anda inginkan akan disembunyikan. Pisahkan topik dengan koma."
+  },
+  "sensitivityHintAvoid": {
+    "message": "Jika hanya ada topik yang dihindari: seberapa dekat video harus dengan salah satunya agar disembunyikan. Lebih tinggi menyembunyikan lebih sedikit video; lebih rendah menyembunyikan lebih banyak."
+  },
+  "summaryAvoiding": {
+    "message": "Menghindari: $TOPICS$",
+    "placeholders": {
+      "topics": {
+        "content": "$1",
+        "example": "gaming, gossip"
+      }
+    }
   }
 }

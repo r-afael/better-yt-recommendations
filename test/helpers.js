@@ -8,6 +8,10 @@ const root = new URL("../", import.meta.url);
 export const read = (path) => readFileSync(new URL(path, root), "utf8");
 export const readJson = (path) => JSON.parse(read(path));
 
+// A video's similarities to the closest wanted topic and topic to avoid, as the offscreen
+// document answers them, null for an empty list.
+export const score = (want, avoid = null) => ({ want, avoid });
+
 // Every translation the extension ships, such as "en" and "zh_CN".
 export const locales = readdirSync(new URL("_locales/", root));
 

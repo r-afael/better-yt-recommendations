@@ -14,11 +14,12 @@ anywhere.
 
 ## What the extension stores
 
-Your settings, including your topics and the filter sensitivity, are saved in
-Chrome's extension storage. If you use Chrome sync, Chrome syncs them across your
-computers under [Google's privacy policy](https://policies.google.com/privacy). The
-extension also keeps the model's loading status until you close Chrome, so the popup
-and the options page can show it.
+Your settings, including your topics, your topics to avoid and the filter
+sensitivity, are saved in Chrome's extension storage. If you use Chrome sync, Chrome
+syncs them across your computers under
+[Google's privacy policy](https://policies.google.com/privacy). The extension also
+keeps the model's loading status until you close Chrome, so the popup and the options
+page can show it.
 
 Uninstalling the extension deletes everything it stored.
 
@@ -30,7 +31,8 @@ and the model runs on your computer. The download sends nothing about you or wha
 watch, but like any download, Hugging Face sees your IP address. Its handling of that
 is covered by [Hugging Face's privacy policy](https://huggingface.co/privacy).
 
-The extension downloads nothing while the filter is off or has no topics.
+The extension downloads nothing while the filter is off or has no topics to see or to
+avoid.
 
 ## Changes
 

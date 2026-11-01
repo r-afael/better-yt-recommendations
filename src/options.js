@@ -1,24 +1,32 @@
-// Options page with the settings that don't fit in the popup: the topics and the filter sensitivity.
-// Open YouTube tabs pick up changes right away.
+// Options page with the settings that don't fit in the popup: the topics to see and to avoid,
+// and the filter sensitivity. Open YouTube tabs pick up changes right away.
 (() => {
   "use strict";
 
-  const { topics, ui } = globalThis.BetterYT;
+  const { ui, verdict } = globalThis.BetterYT;
   const form = document.getElementById("settings");
-  const { topicFilter, topics: topicsField, threshold } = form.elements;
+  const { topicFilter, topics: topicsField, avoidTopics: avoidField, threshold } = form.elements;
   const thresholdValue = document.getElementById("threshold-value");
-  // Reads the field as typed, so the status appears with the first topic and not once it is saved.
+  const thresholdHint = document.getElementById("threshold-hint");
+  // The fields as typed, so the page follows the first topic and not only once it is saved.
+  const typed = () => ({ topicFilter: topicFilter.checked, topics: topicsField.value, avoidTopics: avoidField.value });
   const status = ui.createModelStatus({
     status: document.getElementById("model-status"),
     progressBar: document.getElementById("model-progress"),
-    isVisible: () => topicFilter.checked && topics.parse(topicsField.value).length > 0,
+    isVisible: () => verdict.needsModel(typed()),
   });
+
+  // With only topics to avoid, the slider works the other way round, so its hint says so.
+  function sensitivityHint() {
+    const { want, avoid } = verdict.lists(typed());
+    return want.length === 0 && avoid.length > 0 ? "sensitivityHintAvoid" : "sensitivityHint";
+  }
 
   // The topics and the sensitivity only apply while filtering.
   function render() {
-    topicsField.disabled = !topicFilter.checked;
-    threshold.disabled = !topicFilter.checked;
+    for (const control of [topicsField, avoidField, threshold]) control.disabled = !topicFilter.checked;
     thresholdValue.value = ui.formatThreshold(threshold.valueAsNumber);
+    thresholdHint.textContent = ui.message(sensitivityHint());
     status.render();
   }
 

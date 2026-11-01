@@ -42,7 +42,7 @@
       <input type="checkbox" class="switch" name="topicFilter" aria-labelledby="topicFilter-title" aria-describedby="topicFilter-hint">
     </label>
     <div class="field summary-field">
-      <button type="button" id="summary" class="summary"><span id="summary-topics"></span></button>
+      <button type="button" id="summary" class="summary"><span id="summary-topics"></span><span id="summary-avoid" hidden></span></button>
       <p class="status" id="model-status" role="status" aria-live="polite" hidden></p>
       <progress id="model-progress" max="100" aria-labelledby="model-status" hidden></progress>
     </div>
@@ -54,6 +54,7 @@
   <script src="settings.js"></script>
   <script src="protocol.js"></script>
   <script src="topics.js"></script>
+  <script src="verdict.js"></script>
   <script src="ui.js"></script>
   <script src="popup.js"></script>
 </body>

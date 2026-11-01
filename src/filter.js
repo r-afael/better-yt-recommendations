@@ -1,9 +1,10 @@
-// Hides the videos in the lists it works on that don't match the user's topics.
+// Hides the videos in the lists it works on that don't match the user's topics, or that are
+// closer to a topic to avoid.
 // The model answers through the background service worker; until it does, videos stay visible.
 (() => {
   "use strict";
 
-  const { cards, createScheduler, protocol, settings, topics: topicList } = globalThis.BetterYT;
+  const { cards, createScheduler, protocol, settings, verdict } = globalThis.BetterYT;
 
   const SCAN_DELAY_MS = 150; // Lets a burst of list mutations settle into one scan.
   const RETRY_MS = 30_000; // After a failure, so a broken model doesn't get a request storm.
@@ -19,8 +20,8 @@
   });
 
   let options = null; // Nothing runs until the settings have loaded.
-  let topics = [];
-  let scores = new Map(); // Video id to its highest similarity to the current topics.
+  let topicLists = { want: [], avoid: [] }; // The parsed topics to see and to avoid.
+  let scores = new Map(); // Video id to its { want, avoid } similarities to the current lists.
   let requesting = false;
   let retryAt = -Infinity;
   let warned = false;
@@ -28,8 +29,9 @@
   let observed = null;
   let surface = cards.surfaceFor(location.pathname);
 
-  const isActive = () => Boolean(options?.topicFilter) && topics.length > 0 && surface?.id === "watch";
+  const isActive = () => options !== null && verdict.needsModel(options) && surface?.id === "watch";
   const sameTopics = (a, b) => a.length === b.length && a.every((topic, index) => topic === b[index]);
+  const sameLists = (a, b) => sameTopics(a.want, b.want) && sameTopics(a.avoid, b.avoid);
 
   // Runs scan() after a delay, keeping whichever pending run comes first.
   const scanLater = createScheduler(scan);
@@ -55,11 +57,17 @@
     cards.unhideAll();
   }
 
-  // Hides an item only for a video scored below the threshold, so unscored videos stay visible.
+  // Why an item's video is hidden, or null. Unscored videos stay visible.
+  function reasonFor(video) {
+    if (!video) return null;
+    return verdict.decide(scores.get(video.id) ?? verdict.NO_SCORE, options.threshold);
+  }
+
   function applyVerdict(item, video) {
-    const hiddenFor = video && scores.get(video.id) < options.threshold ? video.id : null;
-    if (cards.hiddenId(item) === hiddenFor) return;
-    if (hiddenFor) cards.hide(item, hiddenFor, "off-topic");
+    const reason = reasonFor(video);
+    const hiddenFor = reason ? video.id : null;
+    if (cards.hiddenId(item) === hiddenFor && cards.hiddenReason(item) === reason) return;
+    if (reason) cards.hide(item, hiddenFor, reason);
     else cards.unhide(item);
   }
 
@@ -84,7 +92,7 @@
     }
     requesting = true;
     const cache = scores;
-    ask({ type: protocol.MATCH, topics, videos })
+    ask({ type: protocol.MATCH, topics: topicLists.want, avoidTopics: topicLists.avoid, videos })
       .then((answer) => record(cache, videos, answer), fail)
       .finally(() => {
         requesting = false;
@@ -108,8 +116,8 @@
       return;
     }
     warned = false;
-    // A video the answer leaves out counts as on topic, so it isn't requested again.
-    for (const { id } of videos) cache.set(id, answer.scores[id] ?? Infinity);
+    // A video the answer leaves out stays visible, and isn't requested again.
+    for (const { id } of videos) cache.set(id, answer.scores[id] ?? verdict.NO_SCORE);
   }
 
   function fail(error) {
@@ -126,10 +134,10 @@
 
   function applySettings(changes) {
     options = { ...options, ...changes };
-    const next = topicList.parse(options.topics);
-    if (!sameTopics(next, topics)) {
+    const next = verdict.lists(options);
+    if (!sameLists(next, topicLists)) {
       // Answers to requests made for the old topics land in the old map and are dropped with it.
-      topics = next;
+      topicLists = next;
       scores = new Map();
       cards.unhideAll();
     }

@@ -42,7 +42,7 @@
     "message": "過濾靈敏度"
   },
   "sensitivityHint": {
-    "message": "越高隱藏的影片越多，越低保留的越多。"
+    "message": "影片與你想看的主題要多接近。越高隱藏的影片越多，越低保留的越多。"
   },
   "modelIdle": {
     "message": "開啟影片時會載入模型。"
@@ -76,5 +76,26 @@
   },
   "noTopicsYet": {
     "message": "尚未設定主題。請在「所有設定」中新增。"
+  },
+  "avoidTopics": {
+    "message": "你想避開的主題"
+  },
+  "avoidTopicsPlaceholder": {
+    "message": "遊戲，名人八卦"
+  },
+  "avoidTopicsHint": {
+    "message": "與其中某個主題比與你想看的任何主題更接近的影片會被隱藏。請用逗號分隔各個主題。"
+  },
+  "sensitivityHintAvoid": {
+    "message": "僅設定了要避開的主題時：影片與其中某個主題要多接近才會被隱藏。越高隱藏的影片越少，越低隱藏的越多。"
+  },
+  "summaryAvoiding": {
+    "message": "避開：$TOPICS$",
+    "placeholders": {
+      "topics": {
+        "content": "$1",
+        "example": "gaming, gossip"
+      }
+    }
   }
 }

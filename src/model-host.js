@@ -3,7 +3,7 @@
 (() => {
   "use strict";
 
-  const { protocol, topics } = globalThis.BetterYT;
+  const { protocol, settings, verdict } = globalThis.BetterYT;
   const { OFFSCREEN, STATUS_KEY, MODEL_STATES } = protocol;
 
   const OFFSCREEN_PATH = "src/offscreen.html";
@@ -16,11 +16,13 @@
   // or when the document closes before it answers, such as on going idle as a request arrives.
   const MISSING_RECEIVER = /Could not establish connection|Receiving end does not exist|message (?:channel|port) closed/i;
   const NO_ANSWER = "The topic model did not answer.";
+  // The settings that decide whether the filter needs the model.
+  const MODEL_KEYS = ["topicFilter", "topics", "avoidTopics"];
 
   // Opening and closing run one at a time, so concurrent requests share one document
   // and a request never forwards to a document that is still closing.
   let lifecycle = Promise.resolve();
-  // Counts the times the user turned the filter off, so a request that was in flight then
+  // Counts the times the filter stopped needing the model, so a request that was in flight then
   // doesn't reopen the document. Going idle doesn't count: a request arriving then still needs it.
   let turnOffs = 0;
 
@@ -63,7 +65,7 @@
   }
 
   // A document can close between the check and the message, so a missing receiver gets one retry,
-  // unless the user turned the filter off meanwhile.
+  // unless the filter stopped needing the model meanwhile.
   async function match(message) {
     const startedAt = turnOffs;
     try {
@@ -81,15 +83,14 @@
     await storeStatus({ state: MODEL_STATES.IDLE });
   }
 
-  function turnsFilterOff(changes) {
-    if (changes.topicFilter?.newValue === false) return true;
-    return "topics" in changes && topics.parse(changes.topics.newValue).length === 0;
-  }
-
-  function onSettingsChanged(changes) {
-    if (!turnsFilterOff(changes)) return;
+  // Frees the model once a change leaves the filter nothing to match. Only ever releases.
+  // The settings are read from storage, never cached, so a service-worker restart can't judge
+  // a change against stale values, and keys this version doesn't know are ignored.
+  async function onSettingsChanged(changes) {
+    if (!MODEL_KEYS.some((key) => key in changes)) return;
+    if (verdict.needsModel(await settings.load())) return;
     turnOffs += 1;
-    release();
+    await release();
   }
 
   globalThis.BetterYT.modelHost = Object.freeze({ match, storeStatus, release, onSettingsChanged });

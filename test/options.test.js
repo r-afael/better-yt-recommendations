@@ -9,22 +9,24 @@ async function setup(t, options) {
   const { window, document } = page;
   const toggle = (name) => document.querySelector(`input[name="${name}"]`);
   const field = document.querySelector('textarea[name="topics"]');
+  const avoidField = document.querySelector('textarea[name="avoidTopics"]');
   const status = document.querySelector("#model-status");
   const progressBar = document.querySelector("#model-progress");
-  const type = (text) => {
-    field.value = text;
-    field.dispatchEvent(new window.Event("input", { bubbles: true }));
+  const type = (text, into = field) => {
+    into.value = text;
+    into.dispatchEvent(new window.Event("input", { bubbles: true }));
   };
   const commit = () => field.dispatchEvent(new window.Event("change", { bubbles: true }));
   const slider = document.querySelector('input[name="threshold"]');
   const sliderValue = document.querySelector("#threshold-value");
+  const sliderHint = document.querySelector("#threshold-hint");
   // Moves the slider the way a drag or an arrow key does: input, then change.
   const slide = (value) => {
     slider.value = String(value);
     slider.dispatchEvent(new window.Event("input", { bubbles: true }));
     slider.dispatchEvent(new window.Event("change", { bubbles: true }));
   };
-  return { ...page, toggle, field, status, progressBar, type, commit, slider, sliderValue, slide };
+  return { ...page, toggle, field, avoidField, status, progressBar, type, commit, slider, sliderValue, sliderHint, slide };
 }
 
 // What the background stores while the model loads, as chrome.storage.session reports it.
@@ -34,17 +36,15 @@ async function reportStatus(chrome, status) {
 }
 
 test("the topic filter switch on the options page saves and enables the fields", async (t) => {
-  const { chrome, toggle, field, slider } = await setup(t, { stored: { topicFilter: false } });
-  assert.equal(field.disabled, true);
-  assert.equal(slider.disabled, true);
+  const { chrome, toggle, field, avoidField, slider } = await setup(t, { stored: { topicFilter: false } });
+  const disabled = () => [field.disabled, avoidField.disabled, slider.disabled];
+  assert.deepEqual(disabled(), [true, true, true]);
   toggle("topicFilter").click();
   await flush();
   assert.equal(chrome.data.topicFilter, true);
-  assert.equal(field.disabled, false);
-  assert.equal(slider.disabled, false);
+  assert.deepEqual(disabled(), [false, false, false]);
   toggle("topicFilter").click();
-  assert.equal(field.disabled, true);
-  assert.equal(slider.disabled, true);
+  assert.deepEqual(disabled(), [true, true, true]);
 });
 
 test("shows the stored topics", async (t) => {
@@ -60,6 +60,16 @@ test("saves the topics once typing pauses", async (t) => {
   assert.equal(chrome.data.topics, undefined);
   clock.tick(1);
   assert.equal(chrome.data.topics, "chess, cooking");
+});
+
+test("saves the topics to avoid once typing pauses", async (t) => {
+  const { chrome, clock, type, avoidField } = await setup(t, { stored: { avoidTopics: "gaming" } });
+  assert.equal(avoidField.value, "gaming");
+  type("gaming, gossip", avoidField);
+  clock.tick(SAVE_DELAY_MS - 1);
+  assert.equal(chrome.data.avoidTopics, "gaming");
+  clock.tick(1);
+  assert.equal(chrome.data.avoidTopics, "gaming, gossip");
 });
 
 test("saves the topics right away when the field changes", async (t) => {
@@ -129,6 +139,17 @@ test("saves both the topics and the sensitivity when the user moves from one to 
   assert.equal(chrome.data.threshold, 0.2);
 });
 
+test("the sensitivity hint explains the slider when only topics to avoid are set", async (t) => {
+  const { type, avoidField, sliderHint } = await setup(t, { stored: { avoidTopics: "gaming" } });
+  const messages = readJson("_locales/en/messages.json");
+  assert.equal(sliderHint.textContent, messages.sensitivityHintAvoid.message);
+  type("chess");
+  assert.equal(sliderHint.textContent, messages.sensitivityHint.message);
+  type("");
+  type("", avoidField);
+  assert.equal(sliderHint.textContent, messages.sensitivityHint.message);
+});
+
 test("shows the sensitivity in the browser's language", async (t) => {
   const { sliderValue } = await setup(t, { locale: "ar", stored: { threshold: 0.3 } });
   assert.equal(sliderValue.value, (0.3).toLocaleString("ar", { minimumFractionDigits: 2 }));
@@ -180,6 +201,12 @@ test("hides the model status until there are topics to match", async (t) => {
   type(" , ");
   assert.equal(status.hidden, true);
   type("chess");
+  assert.equal(status.hidden, false);
+});
+
+test("shows the model status with only topics to avoid", async (t) => {
+  const { status, type, avoidField } = await setup(t);
+  type("gaming", avoidField);
   assert.equal(status.hidden, false);
 });
 

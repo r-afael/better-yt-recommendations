@@ -8,6 +8,8 @@ const MISSING_RECEIVER = "Could not establish connection. Receiving end does not
 const CHANNEL_CLOSED = "A listener indicated an asynchronous response by returning true, " +
   "but the message channel closed before a response was received";
 const VIDEOS = [{ id: "abc123def45", title: "Rust ownership explained", channel: "Code Talks" }];
+const MATCHED = { want: 1, avoid: null };
+const MATCH_ANSWER = { scores: { abc123def45: MATCHED } };
 
 // Objects made inside the vm have their own prototypes, so compare their data only.
 const plain = (value) => JSON.parse(JSON.stringify(value));
@@ -34,9 +36,9 @@ function fakeOffscreen(chrome) {
   return state;
 }
 
-// The offscreen document's usual answer: every video matches perfectly.
+// The offscreen document's usual answer: every video matches a wanted topic perfectly.
 function answerMatches(message) {
-  return { scores: Object.fromEntries(message.videos.map((video) => [video.id, 1])) };
+  return { scores: Object.fromEntries(message.videos.map((video) => [video.id, MATCHED])) };
 }
 
 function setup({ stored = { topics: "programming" }, answer = answerMatches } = {}) {
@@ -61,7 +63,7 @@ function setup({ stored = { topics: "programming" }, answer = answerMatches } = 
     });
   }
 
-  const match = () => send({ type: protocol.MATCH, topics: ["programming"], videos: VIDEOS });
+  const match = () => send({ type: protocol.MATCH, topics: ["programming"], avoidTopics: [], videos: VIDEOS });
   const status = () => plain(chrome.storage.session.data[protocol.STATUS_KEY]);
   return { chrome, offscreen, protocol, send, match, status };
 }
@@ -71,9 +73,9 @@ test("forwards matching requests to the offscreen document and relays its answer
 
   const answer = await match();
 
-  assert.deepEqual(answer, { scores: { abc123def45: 1 } });
+  assert.deepEqual(answer, MATCH_ANSWER);
   assert.deepEqual(offscreen.forwarded, [
-    { type: protocol.MATCH, topics: ["programming"], videos: VIDEOS, target: protocol.OFFSCREEN },
+    { type: protocol.MATCH, topics: ["programming"], avoidTopics: [], videos: VIDEOS, target: protocol.OFFSCREEN },
   ]);
   assert.deepEqual(plain(offscreen.created), [{
     url: "src/offscreen.html",
@@ -106,7 +108,7 @@ for (const [moment, error] of [["before the request arrived", MISSING_RECEIVER],
 
     const answer = await match();
 
-    assert.deepEqual(answer, { scores: { abc123def45: 1 } });
+    assert.deepEqual(answer, MATCH_ANSWER);
     assert.equal(offscreen.created.length, 2);
   });
 }
@@ -132,7 +134,7 @@ test("a request answered as the model goes idle reopens the document", async () 
   await flush();
   pending.closeChannel();
 
-  assert.deepEqual(await answer, { scores: { abc123def45: 1 } });
+  assert.deepEqual(await answer, MATCH_ANSWER);
   assert.equal(offscreen.open, true);
   assert.equal(offscreen.created.length, 2);
 });
@@ -239,6 +241,37 @@ test("clearing the topics frees the model", async () => {
   assert.equal(offscreen.open, false);
 });
 
+test("clearing the topics keeps the model while topics to avoid remain", async () => {
+  const { chrome, offscreen, match } = setup({ stored: { topics: "programming", avoidTopics: "gaming" } });
+  await match();
+
+  await chrome.storage.sync.set({ topics: "" });
+  await flush();
+
+  assert.equal(offscreen.open, true);
+});
+
+test("clearing both lists frees the model", async () => {
+  const { chrome, offscreen, match, status } = setup({ stored: { topics: "programming", avoidTopics: "gaming" } });
+  await match();
+
+  await chrome.storage.sync.set({ topics: "", avoidTopics: " , " });
+  await flush();
+
+  assert.equal(offscreen.open, false);
+  assert.deepEqual(status(), { state: "idle" });
+});
+
+test("a change that also carries a setting this version doesn't know still frees the model", async () => {
+  const { chrome, offscreen, match } = setup();
+  await match();
+
+  await chrome.storage.sync.set({ topics: "", somethingNewer: 1 });
+  await flush();
+
+  assert.equal(offscreen.open, false);
+});
+
 test("changing to other topics keeps the model loaded", async () => {
   const { chrome, offscreen, match } = setup();
   await match();
@@ -252,7 +285,7 @@ test("changing to other topics keeps the model loaded", async () => {
 test("ignores messages meant for the offscreen document", async () => {
   const { offscreen, protocol, send } = setup();
 
-  const answer = await send({ type: protocol.MATCH, topics: ["chess"], videos: VIDEOS, target: protocol.OFFSCREEN });
+  const answer = await send({ type: protocol.MATCH, topics: ["chess"], avoidTopics: [], videos: VIDEOS, target: protocol.OFFSCREEN });
 
   assert.equal(answer, undefined);
   assert.deepEqual(offscreen.forwarded, []);

@@ -4,6 +4,12 @@ import { STATUS_KEY, flush, locales, openPage, readJson, untranslated } from "./
 
 const alphabetically = (a, b) => a.localeCompare(b);
 
+// The $NAME$ tokens a message uses and the placeholders it defines, so a translation fills the same values.
+const placeholderNames = ({ message, placeholders = {} }) => ({
+  used: [...message.matchAll(/\$(\w+)\$/g)].map(([, name]) => name.toLowerCase()).toSorted(alphabetically),
+  defined: Object.entries(placeholders).map(([name, { content }]) => `${name}=${content}`).toSorted(alphabetically),
+});
+
 async function setup(t, options) {
   const page = await openPage(t, "src/popup.html", options);
   const { document } = page;
@@ -70,9 +76,15 @@ test("a switch the user just clicked still shows a change made elsewhere", async
   assert.equal(toggle("enforce").disabled, false);
 });
 
-test("shows the model status for the stored topics while the topic filter is on", async (t) => {
+test("shows the model status for the stored topics to see or to avoid while the topic filter is on", async (t) => {
   const none = await setup(t, { stored: { topics: " , " } });
   assert.equal(none.status.hidden, true);
+
+  const avoiding = await setup(t, {
+    stored: { topics: "", avoidTopics: "gaming" },
+    session: { [STATUS_KEY]: { state: "loading", progress: 0.5 } },
+  });
+  assert.equal(avoiding.status.hidden, false, "shown with only topics to avoid");
 
   const { status, toggle } = await setup(t, {
     stored: { topics: "chess" },
@@ -98,6 +110,24 @@ test("the summary says when there are no topics yet", async (t) => {
   await chrome.storage.sync.set({ topics: "chess" });
   await flush();
   assert.equal(summary.textContent, "Topics: chess");
+});
+
+test("the summary lists the topics to avoid", async (t) => {
+  const { document, chrome } = await setup(t, { stored: { avoidTopics: "gaming, gossip" } });
+  const topicsLine = document.querySelector("#summary-topics");
+  const avoidLine = document.querySelector("#summary-avoid");
+  assert.equal(topicsLine.hidden, true, "no \"no topics yet\" while there are topics to avoid");
+  assert.equal(avoidLine.hidden, false);
+  assert.equal(avoidLine.textContent, "Avoiding: gaming, gossip");
+
+  await chrome.storage.sync.set({ topics: "chess" });
+  await flush();
+  assert.equal(topicsLine.hidden, false);
+  assert.equal(topicsLine.textContent, "Topics: chess");
+
+  await chrome.storage.sync.set({ avoidTopics: "" });
+  await flush();
+  assert.equal(avoidLine.hidden, true);
 });
 
 test("All settings and the gear open the options page", async (t) => {
@@ -137,11 +167,15 @@ test("links to the source code in a new tab", async (t) => {
 
 test("translations cover the ten most spoken languages with the same messages as English", () => {
   assert.deepEqual(locales.toSorted(alphabetically), ["ar", "bn", "en", "es", "fr", "hi", "id", "pt", "ru", "zh_CN", "zh_TW"]);
-  const keys = Object.keys(readJson("_locales/en/messages.json")).toSorted(alphabetically);
+  const english = readJson("_locales/en/messages.json");
+  const keys = Object.keys(english).toSorted(alphabetically);
   for (const locale of locales) {
     const messages = readJson(`_locales/${locale}/messages.json`);
     assert.deepEqual(Object.keys(messages).toSorted(alphabetically), keys, locale);
     assert.equal(messages.lang.message.replace("-", "_"), locale, locale);
+    for (const key of keys) {
+      assert.deepEqual(placeholderNames(messages[key]), placeholderNames(english[key]), `${locale} ${key}`);
+    }
   }
 });
 

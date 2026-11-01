@@ -42,7 +42,7 @@
     "message": "过滤灵敏度"
   },
   "sensitivityHint": {
-    "message": "越高隐藏的视频越多，越低保留的越多。"
+    "message": "视频与你想看的主题要多接近。越高隐藏的视频越多，越低保留的越多。"
   },
   "modelIdle": {
     "message": "打开视频时会加载模型。"
@@ -76,5 +76,26 @@
   },
   "noTopicsYet": {
     "message": "还没有主题。请在“所有设置”中添加。"
+  },
+  "avoidTopics": {
+    "message": "你想避开的主题"
+  },
+  "avoidTopicsPlaceholder": {
+    "message": "游戏，明星八卦"
+  },
+  "avoidTopicsHint": {
+    "message": "与其中某个主题比与你想看的任何主题更接近的视频会被隐藏。用逗号分隔各个主题。"
+  },
+  "sensitivityHintAvoid": {
+    "message": "仅设置了要避开的主题时：视频与其中某个主题要多接近才会被隐藏。越高隐藏的视频越少，越低隐藏的越多。"
+  },
+  "summaryAvoiding": {
+    "message": "避开：$TOPICS$",
+    "placeholders": {
+      "topics": {
+        "content": "$1",
+        "example": "gaming, gossip"
+      }
+    }
   }
 }

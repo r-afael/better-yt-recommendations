@@ -46,6 +46,7 @@
         "src/content.js",
         "src/protocol.js",
         "src/topics.js",
+        "src/verdict.js",
         "src/cards.js",
         "src/filter.js"
       ],

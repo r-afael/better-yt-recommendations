@@ -53,11 +53,11 @@
   },
   "sensitivity": {
     "message": "Filter sensitivity",
-    "description": "Label of the slider that sets how close to a topic a video must be to stay visible."
+    "description": "Label of the slider that sets how close a video must be to a topic to stay visible, or, with only topics to avoid, to be hidden."
   },
   "sensitivityHint": {
-    "message": "Higher hides more videos; lower keeps more.",
-    "description": "Explains which way to move the sensitivity slider."
+    "message": "How close a video must be to a topic you want. Higher hides more videos; lower keeps more.",
+    "description": "Explains the sensitivity slider."
   },
   "modelIdle": {
     "message": "The model loads when you open a video.",
@@ -100,5 +100,31 @@
   "noTopicsYet": {
     "message": "No topics yet. Add some in All settings.",
     "description": "Popup line shown when no topics are set. \"All settings\" is the name of the link below it."
+  },
+  "avoidTopics": {
+    "message": "Topics to avoid",
+    "description": "Label of the field where the user types topics whose videos should be hidden."
+  },
+  "avoidTopicsPlaceholder": {
+    "message": "gaming, celebrity gossip",
+    "description": "Example topics to avoid in the empty field. Use topics that make sense in this language, separated by commas."
+  },
+  "avoidTopicsHint": {
+    "message": "Videos closer to one of these than to any topic you want are hidden. Separate topics with commas.",
+    "description": "Explains the topics-to-avoid field."
+  },
+  "sensitivityHintAvoid": {
+    "message": "With only topics to avoid: how close a video must be to one of them to be hidden. Higher hides fewer videos; lower hides more.",
+    "description": "Replaces the sensitivity hint when only topics to avoid are set, because the slider then works the other way round."
+  },
+  "summaryAvoiding": {
+    "message": "Avoiding: $TOPICS$",
+    "description": "Popup line listing the topics to avoid.",
+    "placeholders": {
+      "topics": {
+        "content": "$1",
+        "example": "gaming, gossip"
+      }
+    }
   }
 }

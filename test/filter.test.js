@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import FakeTimers from "@sinonjs/fake-timers";
 import { JSDOM } from "jsdom";
-import { fakeChrome, flush, read, readJson, runScripts } from "./helpers.js";
+import { fakeChrome, flush, read, readJson, runScripts, score } from "./helpers.js";
 
 // Loads what the browser loads, in the manifest's order, so a misordered or missing script fails here.
 const contentScripts = readJson("manifest.json").content_scripts;
@@ -59,7 +59,7 @@ async function setup(t, { path = "/watch?v=W6NZfCO5SIk", stored = { topics: "pro
   const requestedIds = (request = requests.at(-1)) => request.message.videos.map((video) => video.id);
   // Answers the latest request, scoring the listed ids 0 and the others 1.
   const answer = async (offTopic = [], request = requests.at(-1)) => {
-    request.resolve({ scores: Object.fromEntries(requestedIds(request).map((id) => [id, Number(!offTopic.includes(id))])) });
+    request.resolve({ scores: Object.fromEntries(requestedIds(request).map((id) => [id, score(Number(!offTopic.includes(id)))])) });
     await clock.tickAsync(SCAN_MS);
   };
   const changeSettings = async (changes) => {
@@ -98,7 +98,7 @@ test("hides off-topic videos once the model answers", async (t) => {
 
 test("keeps videos the answer leaves out visible without asking again", async (t) => {
   const { requests, visibleIds, clock } = await setup(t);
-  requests[0].resolve({ scores: { C4dGVTl6ry8: 0 } });
+  requests[0].resolve({ scores: { C4dGVTl6ry8: score(0) } });
   await clock.tickAsync(RETRY_MS);
   assert.deepEqual(visibleIds(), FIXTURE_IDS.slice(0, 3));
   assert.equal(requests.length, 1);
@@ -106,7 +106,7 @@ test("keeps videos the answer leaves out visible without asking again", async (t
 
 test("hides videos scored below the sensitivity, and re-filters without asking when it changes", async (t) => {
   const { requests, visibleIds, clock, changeSettings } = await setup(t);
-  requests[0].resolve({ scores: { PFmuCDHHpwk: 0.4, PkZNo7MFNFg: 0.25, RphIVv0uWrM: 0.2, C4dGVTl6ry8: 0.1 } });
+  requests[0].resolve({ scores: { PFmuCDHHpwk: score(0.4), PkZNo7MFNFg: score(0.25), RphIVv0uWrM: score(0.2), C4dGVTl6ry8: score(0.1) } });
   await clock.tickAsync(SCAN_MS);
   assert.deepEqual(visibleIds(), ["PFmuCDHHpwk", "PkZNo7MFNFg"], "the default keeps scores of 0.25 and up");
 
@@ -119,9 +119,56 @@ test("hides videos scored below the sensitivity, and re-filters without asking w
 
 test("uses the stored sensitivity", async (t) => {
   const { requests, visibleIds, clock } = await setup(t, { stored: { topics: "programming", threshold: 0.15 } });
-  requests[0].resolve({ scores: { PFmuCDHHpwk: 0.4, PkZNo7MFNFg: 0.25, RphIVv0uWrM: 0.2, C4dGVTl6ry8: 0.1 } });
+  requests[0].resolve({ scores: { PFmuCDHHpwk: score(0.4), PkZNo7MFNFg: score(0.25), RphIVv0uWrM: score(0.2), C4dGVTl6ry8: score(0.1) } });
   await clock.tickAsync(SCAN_MS);
   assert.deepEqual(visibleIds(), ["PFmuCDHHpwk", "PkZNo7MFNFg", "RphIVv0uWrM"]);
+});
+
+test("sends both topic lists", async (t) => {
+  const { requests } = await setup(t, { stored: { topics: "programming", avoidTopics: "gaming, gossip" } });
+  assert.deepEqual(requests[0].message.topics, ["programming"]);
+  assert.deepEqual(requests[0].message.avoidTopics, ["gaming", "gossip"]);
+});
+
+test("hides a video closer to a topic to avoid than to any wanted topic", async (t) => {
+  const { requests, visibleIds, clock } = await setup(t, { stored: { topics: "programming", avoidTopics: "gaming" } });
+  requests[0].resolve({ scores: {
+    PFmuCDHHpwk: score(0.4, 0.2),
+    PkZNo7MFNFg: score(0.31, 0.35),
+    RphIVv0uWrM: score(0.31, 0.2),
+    C4dGVTl6ry8: score(0.4, 0.4),
+  } });
+  await clock.tickAsync(SCAN_MS);
+  assert.deepEqual(visibleIds(), ["PFmuCDHHpwk", "RphIVv0uWrM", "C4dGVTl6ry8"]);
+});
+
+test("with only topics to avoid, hides videos closer to them than the sensitivity, and decides again when it moves without asking", async (t) => {
+  const { requests, visibleIds, clock, changeSettings } = await setup(t, { stored: { topics: "", avoidTopics: "gaming" } });
+  assert.deepEqual(requests[0].message.topics, []);
+  requests[0].resolve({ scores: {
+    PFmuCDHHpwk: score(null, 0.4),
+    PkZNo7MFNFg: score(null, 0.3),
+    RphIVv0uWrM: score(null, 0.2),
+    C4dGVTl6ry8: score(null, 0.1),
+  } });
+  await clock.tickAsync(SCAN_MS);
+  assert.deepEqual(visibleIds(), ["RphIVv0uWrM", "C4dGVTl6ry8"]);
+
+  await changeSettings({ threshold: 0.35 });
+  assert.deepEqual(visibleIds(), ["PkZNo7MFNFg", "RphIVv0uWrM", "C4dGVTl6ry8"], "a higher sensitivity hides fewer");
+  assert.equal(requests.length, 1);
+});
+
+test("changing the topics to avoid clears the verdicts", async (t) => {
+  const { requests, visibleIds, requestedIds, answer, changeSettings } = await setup(t, { stored: { topics: "programming", avoidTopics: "gaming" } });
+  await answer(["RphIVv0uWrM"]);
+  assert.deepEqual(visibleIds(), ["PFmuCDHHpwk", "PkZNo7MFNFg", "C4dGVTl6ry8"]);
+
+  await changeSettings({ avoidTopics: "gossip" });
+  assert.deepEqual(visibleIds(), FIXTURE_IDS);
+  assert.equal(requests.length, 2);
+  assert.deepEqual(requests[1].message.avoidTopics, ["gossip"]);
+  assert.deepEqual(requestedIds(), FIXTURE_IDS);
 });
 
 const failures = {

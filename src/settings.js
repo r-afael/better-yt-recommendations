@@ -1,4 +1,4 @@
-// Settings shared by the content scripts, the popup and the options page.
+// Settings shared by the content scripts, the extension's pages and the background.
 (() => {
   "use strict";
 
@@ -8,6 +8,7 @@
     hideShorts: false, // Hide Shorts and open Shorts links as regular videos.
     topicFilter: true, // Hide recommendations that don't match the topics. Does nothing until topics are set.
     topics: "", // Topics the user wants to see, as typed on the options page.
+    avoidTopics: "", // Topics the user wants hidden, as typed on the options page.
     // How close to a topic a video must be to stay visible. 0.25 kept 95% of on-topic
     // and hid 98% of off-topic sidebar videos in testing.
     threshold: 0.25,

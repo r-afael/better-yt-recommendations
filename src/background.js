@@ -1,6 +1,6 @@
 // Wires the service worker's events to the modules that handle them.
 // Every listener is registered here, so this file shows what runs on each event.
-importScripts("protocol.js", "topics.js", "model-host.js");
+importScripts("protocol.js", "settings.js", "topics.js", "verdict.js", "model-host.js");
 
 (() => {
   "use strict";

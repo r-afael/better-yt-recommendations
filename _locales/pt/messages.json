@@ -42,7 +42,7 @@
     "message": "Sensibilidade do filtro"
   },
   "sensitivityHint": {
-    "message": "Mais alta oculta mais vídeos; mais baixa mantém mais."
+    "message": "Quão perto de um assunto que você quer ver um vídeo precisa estar. Mais alta oculta mais vídeos; mais baixa mantém mais."
   },
   "modelIdle": {
     "message": "O modelo é carregado quando você abre um vídeo."
@@ -76,5 +76,26 @@
   },
   "noTopicsYet": {
     "message": "Nenhum assunto ainda. Adicione alguns em Todas as configurações."
+  },
+  "avoidTopics": {
+    "message": "Assuntos que você quer evitar"
+  },
+  "avoidTopicsPlaceholder": {
+    "message": "games, fofoca de celebridades"
+  },
+  "avoidTopicsHint": {
+    "message": "Vídeos mais próximos de um destes assuntos do que de qualquer assunto que você quer ver ficam ocultos. Separe os assuntos com vírgulas."
+  },
+  "sensitivityHintAvoid": {
+    "message": "Só com assuntos a evitar: quão perto de um deles um vídeo precisa estar para ficar oculto. Mais alta oculta menos vídeos; mais baixa oculta mais."
+  },
+  "summaryAvoiding": {
+    "message": "Evitando: $TOPICS$",
+    "placeholders": {
+      "topics": {
+        "content": "$1",
+        "example": "gaming, gossip"
+      }
+    }
   }
 }

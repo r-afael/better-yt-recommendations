@@ -1,5 +1,6 @@
-// Runs in the offscreen document: answers MATCH requests with the topic model's scores,
-// reports the model's status, and says when it has been idle long enough to close.
+// Runs in the offscreen document: answers MATCH requests with the topic model's scores for the
+// wanted topics and the topics to avoid, reports the model's status, and says when it has been
+// idle long enough to close.
 (() => {
   "use strict";
 
@@ -8,6 +9,7 @@
   const IDLE_MS = 5 * 60_000; // Closing the document frees about 600 MB once matching stops.
 
   const isString = (value) => typeof value === "string";
+  const isStringArray = (value) => Array.isArray(value) && value.every(isString);
   const isVideo = (video) => typeof video === "object" && video !== null &&
     isString(video.id) && isString(video.title) && isString(video.channel);
   const errorMessage = (error) => String(error?.message ?? error);
@@ -15,13 +17,20 @@
   // Returns why message is not a valid MATCH request, or null when it is.
   function validate(message) {
     if (message?.type !== MATCH) return "Unsupported message type.";
-    if (!Array.isArray(message.topics) || !message.topics.every(isString)) {
-      return "topics must be an array of strings.";
-    }
+    if (!isStringArray(message.topics)) return "topics must be an array of strings.";
+    if (!isStringArray(message.avoidTopics)) return "avoidTopics must be an array of strings.";
     if (!Array.isArray(message.videos) || !message.videos.every(isVideo)) {
       return "videos must be an array of { id, title, channel } strings.";
     }
     return null;
+  }
+
+  // Resolves to { [id]: { want, avoid } }: each video's highest similarity to a wanted topic and
+  // to a topic to avoid. An empty list isn't scored, and gives null.
+  async function scoreLists(matcher, { topics, avoidTopics, videos }) {
+    const want = topics.length > 0 ? await matcher.score(topics, videos) : null;
+    const avoid = avoidTopics.length > 0 ? await matcher.score(avoidTopics, videos) : null;
+    return Object.fromEntries(videos.map(({ id }) => [id, { want: want?.[id] ?? null, avoid: avoid?.[id] ?? null }]));
   }
 
   function createService({ loadModel, createMatcher, report, onIdle, idleMs = IDLE_MS }) {
@@ -82,13 +91,13 @@
       if (problem) return { error: problem };
       try {
         const matcher = await getMatcher();
-        return { scores: await matcher.score(message.topics, message.videos) };
+        return { scores: await scoreLists(matcher, message) };
       } catch (error) {
         return { error: errorMessage(error) };
       }
     }
 
-    // Resolves to { scores } or { error }; never rejects.
+    // Resolves to { scores: { [id]: { want, avoid } } } or { error }; never rejects.
     async function handle(message) {
       requestStarted();
       try {
