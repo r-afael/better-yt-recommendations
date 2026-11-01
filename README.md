@@ -14,11 +14,12 @@ Home stays on your feed.
 **Keep the sidebar on topic.** Watching a coding tutorial? Tell the extension you
 want "programming, JavaScript, web development". It hides the gaming clips,
 talk-show segments and get-rich-quick videos next to it, so only recommendations
-worth your time remain. It can filter Home, your Subscriptions and search results too.
+worth your time remain. It filters Home too, and can filter your Subscriptions and search
+results.
 
 **Private by design.** A small, lightweight embedding model runs right on your
-computer. The AI doesn't chat or write: it turns each video's title and
-your topics into numbers that capture their meaning, then keeps the videos whose
+computer. The AI doesn't chat or write: it turns each video's title and channel, and
+your topics, into numbers that capture their meaning, then keeps the videos whose
 meaning is close to your topics. The extension never sends what you watch anywhere.
 
 *The Home feature needs **Your custom feed** to be available on your YouTube account
@@ -41,59 +42,83 @@ YouTube tabs pick up changes right away.
 - **Hide Shorts** (off by default): hides the Shorts entry in the side menu, Shorts
   shelves on Home, Subscriptions and channel pages, and Shorts in search results and
   the sidebar. A link to a Short opens it as a regular video, without the endless feed of
-  Shorts after it. Opening a Short's address directly (typed, bookmarked or reloaded) loads the
-  regular player right away.
+  Shorts after it. Opening a Short's address directly (typed, bookmarked, reloaded or
+  clicked on another site) loads the regular player right away.
 - **Filter recommendations** (on by default): hides videos that don't match your
   topics on the pages you pick under Where to filter, that are closer to a topic to
   avoid, or that come from a channel you always hide. It does nothing until you type
   some topics to see or to avoid, or a channel to hide. Turn it off to show every
   video again, including blocked channels, and free the model's memory.
-- The **Profile** switch, once you have a profile.
-- A summary of your topics to see and to avoid; click it to change them.
+- **Profile**, once you have saved a profile: switches to another profile's topics.
+- A summary of your topics to see and to avoid. Click it to change them on the options page.
+- While the filter is on and has topics to see or to avoid, the model's status: waiting
+  to be needed, loading, ready, or failed. While it's waiting or after a failure, **Load
+  now** next to the status loads it right away. Videos stay visible while the model
+  loads, and if it fails to load or to answer. After a failure, it tries again a little
+  later.
+
+![The settings popup with all four switches on, the profile Work selected, the summary Topics: programming, software engineering, chess and Avoiding: gaming, and the status The model is ready](docs/settings-popup.png)
 
 ### On the options page
 
-The **Filter recommendations** switch is on both pages.
+Everything on the options page except the **Filter recommendations** switch and the
+keyboard shortcuts is disabled while the filter is off, and the model's status is hidden.
 
-- **Topics you want to see**: the topics to keep, separated by commas. The field is
-  disabled while the filter is off.
-- **Topics to avoid**: topics whose videos you don't want, separated by commas. A
-  video is hidden when it's closer to one of them than to the closest topic you want.
-  With only topics to avoid, a video is hidden when it's closer to one of them than
-  the filter sensitivity.
-- **Filter sensitivity** (0.25 by default): how close to your topics a video must be
-  to stay visible, from 0.10 to 0.40. Move it up to hide more videos, or down if the
-  filter hides videos you'd want. YouTube pages update as you move it. With only
-  topics to avoid, it works the other way round: move it up to hide fewer videos.
-- **Try a title**: type a video title to see how close it is to your topics and
-  whether the filter would show or hide it. Move the sensitivity to see the verdict
-  change. The first try loads the model if it isn't loaded yet.
+- **Topics**:
+  - **Filter recommendations**: the same switch as in the popup.
+  - **Topics you want to see**: the topics to keep, separated by commas.
+  - **Topics to avoid**: topics whose videos you don't want, separated by commas. A
+    video is hidden when it's closer to one of them than to the closest topic you want.
+    With only topics to avoid, a video is hidden when it's closer to one of them than
+    the filter sensitivity.
+  - **Filter sensitivity** (0.25 by default): how close to your topics a video must be
+    to stay visible, from 0.10 to 0.40. Move it up to hide more videos, or down if the
+    filter hides videos you'd want. YouTube pages update as you move it. With only
+    topics to avoid, it works the other way round: move it up to hide fewer videos.
+  - **Try a title**: type a video title to see how close it is to your topics and
+    whether the filter would show or hide it. Move the sensitivity to see the verdict
+    change. The first try loads the model if it isn't loaded yet.
+  - The model's status and **Load now**, as in the popup. The status appears as soon as
+    you type your first topic.
 - **Profiles**: save your topics and topics to avoid under a name, like 'Work' or 'Evening',
-  and switch between them from the popup's **Profile** menu. While a profile is selected,
-  editing the topics updates it. Switching from No profile to a profile replaces your topics,
-  so save them as a profile first if you want to keep them. Deleting a profile keeps the
-  topics you have now. Up to 8 profiles fit, fewer if their topics are long; if a profile's
-  topics grow too long to save, they still apply, and the page says so.
+  and switch between them here or from the popup's **Profile** menu. While a profile is
+  selected, editing the topics updates it. Switching from No profile to a profile replaces
+  your topics, so save them as a profile first if you want to keep them. **Rename** and
+  **Delete** work on the selected profile; deleting a profile keeps the topics you have now.
+  Up to 8 profiles fit, fewer if their topics are long; if a profile's topics grow too long
+  to save, they still apply, the profile keeps its earlier topics, and the page says there's
+  no room for them.
 - **Where to filter**: Next to the video you're watching (on by default), Home (on by
   default, including Your custom feed), Subscriptions (off by default) and Search
   results (off by default). Subscriptions and search results show what you asked for,
   so filtering them is up to you. Subscriptions is filtered in its grid layout only. In
   search results, the shelves YouTube mixes in, such as "People also watched", are
   filtered like the results. Playlists and mixes on Home and in search results are
-  judged by their title, like videos. The page checkboxes are disabled while the filter is off.
-- **Never hide these channels** and **Always hide these channels**: one channel name per
-  line, as YouTube shows it, up to 50 per list. Videos from a channel you never hide stay
-  visible whatever their topic; videos from a channel you always hide are hidden on every
-  page you filter, without the model. Names match ignoring case and spacing, so two
-  channels with the same name both match, and a channel that changes its name needs adding
-  again. Typing a name into one list removes it from the other. The lists are disabled
-  while the filter is off. You can also right-click a video's thumbnail or title on
-  YouTube (or its channel name on Home and in search results) and pick **Never hide this
-  channel** or **Always hide this channel**. A message at the bottom of the page confirms it.
-  Ads and the shelves the filter leaves alone, such as Home's, stay as they are when you pick
-  a channel from them; the channel is listed for every page the filter works on.
+  judged like videos, by their title and channel.
+- **Channels**: **Never hide these channels** and **Always hide these channels** take one
+  channel name per line, as YouTube shows it, up to 50 per list. Videos from a channel you
+  never hide stay visible whatever their topic; videos from a channel you always hide are
+  hidden on every page you filter, without the model. Names match ignoring case and
+  spacing, so two channels with the same name both match, and a channel that changes its
+  name needs adding again. Typing a name into one list removes it from the other. You can
+  also right-click a video's thumbnail or title on YouTube (or its channel name on Home and
+  in search results) and pick **Never hide this channel** or **Always hide this channel**.
+  A message at the bottom of the page confirms it. Ads and the shelves the filter leaves
+  alone, such as Home's, stay as they are when you pick a channel from them; the channel is
+  listed for every page the filter works on.
+- **Keyboard shortcuts**: **Alt+Shift+F** turns Filter recommendations on or off, and
+  **Alt+Shift+S** turns Hide Shorts on or off. On a Mac they are **Control+Shift+F** and
+  **Control+Shift+S**, and on ChromeOS **Alt+Shift+F** and **Alt+Shift+H**. On YouTube, a
+  message confirms the change. The section lists the keys Chrome assigned. If another
+  extension already uses a combination, Chrome leaves it unset and the list says **Not
+  set**; **Change shortcuts** opens `chrome://extensions/shortcuts`, where you can pick
+  your own.
+
+![The Topics section of the options page, with the topics programming, software engineering and chess, the topic to avoid gaming, the filter sensitivity at 0.25, the title The best chess opening for beginners tried and shown, and the status The model is ready](docs/options-page.png)
 
 Settings synced from another computer are kept within the limits the options page allows.
+
+### On YouTube
 
 When the filter hides videos, the list starts with a row such as "12 videos hidden".
 **Show them** shows them, dimmed and outlined, until you go to another page. The
@@ -103,22 +128,6 @@ The filter judges each video by its title and channel, so it makes mistakes: it 
 hide a few videos you'd want, or keep a few you wouldn't. A handful of specific
 topics works better than one broad word. For example, "programming, JavaScript, web
 development" keeps more coding videos than "programming" alone.
-
-While the filter is on and has topics to see or to avoid, a line in the popup and on
-the options page shows the model's status: waiting to be needed, loading, ready, or
-failed. While it's waiting or after a failure, **Load now** next to the status loads it
-right away. Videos stay visible while the model loads, and if it fails to load or to
-answer. After a failure, it tries again a little later.
-
-![The settings popup, with all three toggles on, the topics programming, software engineering and chess, the filter sensitivity at 0.25, and the status The model is ready](docs/settings-popup.png)
-
-### Keyboard shortcuts
-
-**Alt+Shift+F** turns Filter recommendations on or off, and **Alt+Shift+S** turns Hide
-Shorts on or off. On a Mac they are **Control+Shift+F** and **Control+Shift+S**, and on
-ChromeOS **Alt+Shift+F** and **Alt+Shift+H**. On YouTube, a message confirms the change. If
-another extension already uses a combination, Chrome leaves it unset; **Change shortcuts**
-on the options page opens `chrome://extensions/shortcuts`, where you can pick your own.
 
 ## Performance
 
@@ -237,10 +246,15 @@ refresh YouTube.
   asks to load it early, passes messages to it, and closes it to free memory.
 - `src/offscreen.html` and `src/offscreen.js` are that hidden page. They load the
   model when needed and close it after 5 idle minutes.
-- `src/matcher.js` compares video titles with your topics.
+- `src/matcher.js` compares each video's title and channel with your topics.
 - `src/model.js` loads the model with Transformers.js.
 - `src/vendor/transformers/` holds Transformers.js and ONNX Runtime Web, copied from
   `node_modules` by `scripts/vendor.js`. Don't edit these files.
+- `src/icons/` holds the extension's icons.
+- `test/` holds the tests, and `test/helpers.js` the fake Chrome APIs and page setup they
+  share. `test/fixtures/watch-sidebar.html`, `test/fixtures/home-grid.html` and
+  `test/fixtures/search-results.html` are YouTube's markup for the lists the filter reads;
+  [CONTRIBUTING.md](CONTRIBUTING.md) says where each comes from and when to replace it.
 
 To run the checks, install Node.js 24 or later and pnpm 11, then run:
 

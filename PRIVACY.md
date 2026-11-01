@@ -33,11 +33,12 @@ Uninstalling the extension deletes everything it stored.
 ## Hugging Face
 
 The topic filter's model downloads once from huggingface.co (Hugging Face), the first
-time it's needed on a computer: when you save your first topics there, when you click
-Load now, or when you open a page the filter works on. Chrome then caches it, and the
-model runs on your computer. The download sends nothing about you or what you
-watch, but like any download, Hugging Face sees your IP address. Its handling of that
-is covered by [Hugging Face's privacy policy](https://huggingface.co/privacy).
+time it's needed on a computer: when you save your first topics there or turn the filter
+back on with topics set, when you click Load now or try a title on the options page, or
+when you open a page the filter works on. Chrome then caches it, and the model runs on
+your computer. The download sends nothing about you or what you watch, but like any
+download, Hugging Face sees your IP address. Its handling of that is covered by
+[Hugging Face's privacy policy](https://huggingface.co/privacy).
 
 The extension downloads nothing while the filter is off or has no topics to see or to
 avoid.
