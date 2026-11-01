@@ -53,14 +53,6 @@ test("compares the title with the channel, or the title alone without one", asyn
   assert.deepEqual(batches, [["x"], ["Lecture | MIT", "Lecture"]]);
 });
 
-test("scores every video as a perfect match without embedding anything when there are no topics", async () => {
-  const { embed, batches } = fakeEmbed({});
-  const matcher = createMatcher({ embed });
-  const scores = await matcher.score([], [video("a"), video("b")]);
-  assert.deepEqual(plain(scores), { a: 1, b: 1 });
-  assert.deepEqual(batches, []);
-});
-
 test("embeds each video text once across requests and topic changes, and each new topic list once", async () => {
   const { embed, batches } = fakeEmbed({ x: X, y: Y, a: X });
   const matcher = createMatcher({ embed });

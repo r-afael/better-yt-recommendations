@@ -88,9 +88,8 @@
     }
 
     // Resolves to { [id]: score }, the video's highest similarity to any topic, from -1 to 1.
-    // Without topics, every video counts as a perfect match.
+    // topics must not be empty: offscreen.js scoreLists skips an empty list and gives null.
     async function score(topics, videos) {
-      if (topics.length === 0) return Object.fromEntries(videos.map(({ id }) => [id, 1]));
       const topicList = await vectorsForTopics(topics);
       const texts = videos.map((video) => videoText(video));
       const vectors = await vectorsForTexts(texts);
