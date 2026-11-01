@@ -61,6 +61,10 @@
     ".yt-content-metadata-view-model__metadata-text",
     "ytd-channel-name #text",
   ];
+  // Attribute changes that can mean a card shows another video.
+  const CARD_ATTRIBUTES = new Set(["href", "title"]);
+  // Attributes YouTube changes when it reuses an item for another video, for a list's observer.
+  const WATCHED_ATTRIBUTES = Object.freeze(["class", ...CARD_ATTRIBUTES]);
   const HIDDEN_ATTRIBUTE = "data-better-yt-hidden";
   const REASON_ATTRIBUTE = "data-better-yt-reason";
   const MAX_TITLE_LENGTH = 200;
@@ -82,6 +86,14 @@
     if (!list) return [];
     // closest() checks the item itself too, so an ad grid cell is left out.
     return [...list.querySelectorAll(surface.items)].filter((item) => !item.closest(EXCLUDED));
+  }
+
+  // Whether a mutation record can change what a list's cards show, so the list needs a rescan.
+  function isRelevant({ type, attributeName, target }) {
+    if (type !== "attributes" || CARD_ATTRIBUTES.has(attributeName)) return true;
+    // YouTube writes a recycled card's id into the lockup host's class; other class changes are
+    // hovering, image loads and overlays.
+    return attributeName === "class" && target.matches(ID_HOST);
   }
 
   function firstMatch(item, selectors) {
@@ -152,9 +164,11 @@
   globalThis.BetterYT.cards = Object.freeze({
     SURFACES,
     EXCLUDED,
+    WATCHED_ATTRIBUTES,
     surfaceFor,
     container,
     findItems,
+    isRelevant,
     readVideo,
     hide,
     unhide,

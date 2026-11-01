@@ -1,5 +1,5 @@
-// Hides the videos in the lists it works on that don't match the user's topics, or that are
-// closer to a topic to avoid.
+// Hides the videos that don't match the user's topics, or that are closer to a topic to avoid,
+// in the lists checked under Where to filter: next to the video, Home, Subscriptions and search.
 // The model answers through the background service worker; until it does, videos stay visible.
 // A row above the list counts the hidden videos and shows them on request, and the toolbar
 // icon's badge shows the same count.
@@ -13,13 +13,12 @@
   const MAX_BATCH = 30; // Videos per request, so the first verdicts arrive quickly.
   const REQUEST_TIMEOUT_MS = 60_000; // A request that never settles counts as a failure, so filtering resumes.
   const REVEAL_ATTRIBUTE = "data-better-yt-reveal"; // On the root while the hidden videos are shown.
-  // Attributes YouTube changes when it reuses an item for another video.
   const WATCHED = Object.freeze({
     childList: true,
     subtree: true,
     characterData: true,
     attributes: true,
-    attributeFilter: ["class", "href", "title"],
+    attributeFilter: cards.WATCHED_ATTRIBUTES,
   });
 
   let options = null; // Nothing runs until the settings have loaded.
@@ -35,7 +34,10 @@
   let lastReported = 0; // The count last sent for the badge.
   const row = createHiddenRow({ onToggle: toggleReveal });
 
-  const isActive = () => options !== null && verdict.needsModel(options) && surface?.id === "watch";
+  // Whether anything can hide a video.
+  const hasRules = () => verdict.hasTopics(topicLists);
+  // Whether the filter works on the page shown.
+  const isActive = () => Boolean(options?.topicFilter) && Boolean(surface && options[surface.setting]) && hasRules();
   const sameTopics = (a, b) => a.length === b.length && a.every((topic, index) => topic === b[index]);
   const sameLists = (a, b) => sameTopics(a.want, b.want) && sameTopics(a.avoid, b.avoid);
 
@@ -49,21 +51,29 @@
   function watch() {
     const target = cards.container(surface) ?? document.documentElement;
     if (observed === target) return;
-    observer ??= new MutationObserver(() => scheduleScan());
+    observer ??= new MutationObserver((records) => {
+      if (records.some(cards.isRelevant)) scheduleScan();
+    });
     observer.disconnect();
     observer.observe(target, WATCHED);
     observed = target;
   }
 
-  function stop() {
+  // Stops watching the page shown and clears the row and the badge. The marks on the cards stay.
+  function pause() {
     observer?.disconnect();
     observer = null;
     observed = null;
     scanLater.cancel();
-    cards.unhideAll();
     row.unmount();
     setRevealed(false);
     report(0);
+  }
+
+  // Stops filtering and shows every hidden video in the document.
+  function stop() {
+    pause();
+    cards.unhideAll();
   }
 
   function setRevealed(value) {
@@ -163,9 +173,24 @@
     console.warn("Better YT Recommendations: topic filtering failed; will retry shortly.", error);
   }
 
+  // After a settings change: filters the page shown, or shows every hidden video again.
   function update() {
     if (isActive()) scheduleScan(0);
     else stop();
+  }
+
+  // After the page shown changed. YouTube keeps earlier pages in the document, hidden, and their
+  // marks stay even when this page isn't filtered, so going back to one doesn't flash its hidden
+  // videos. A list whose page was unchecked while another page was shown still has its marks, so
+  // arriving at it shows its videos.
+  function updatePage() {
+    if (isActive()) {
+      scheduleScan(0);
+      return;
+    }
+    pause();
+    const list = surface && cards.container(surface);
+    if (list) cards.unhideAll(list);
   }
 
   function applySettings(changes) {
@@ -180,19 +205,29 @@
     update();
   }
 
-  // Every new page starts with its hidden videos collapsed.
-  document.addEventListener("yt-navigate-finish", () => {
-    surface = cards.surfaceFor(location.pathname);
+  // A new kind of page takes the row away and re-targets the observer, and its count is always
+  // sent for the badge. The next scan mounts the row on the list shown, and every new page starts
+  // with its hidden videos collapsed.
+  function onNavigate() {
+    const next = cards.surfaceFor(location.pathname);
+    if (next !== surface) {
+      row.unmount();
+      lastReported = null;
+      observed = null;
+      surface = next;
+    }
     setRevealed(false);
-    update();
-  });
+    updatePage();
+  }
+
+  document.addEventListener("yt-navigate-finish", onNavigate);
 
   addEventListener("pagehide", () => report(0));
   // Chrome clears the badge of a page kept in the back/forward cache, and no navigation or
   // mutation follows its return. pagehide has already reported 0, which is what the restored
   // page's badge shows, so a rescan sends any other count again.
   addEventListener("pageshow", (event) => {
-    if (event.persisted) update();
+    if (event.persisted) updatePage();
   });
 
   settings.load().then((loaded) => {

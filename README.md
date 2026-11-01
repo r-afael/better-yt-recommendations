@@ -14,7 +14,7 @@ Home stays on your feed.
 **Keep the sidebar on topic.** Watching a coding tutorial? Tell the extension you
 want "programming, JavaScript, web development". It hides the gaming clips,
 talk-show segments and get-rich-quick videos next to it, so only recommendations
-worth your time remain.
+worth your time remain. It can filter Home, your Subscriptions and search results too.
 
 **Private by design.** A small, lightweight embedding model runs right on your
 computer. The AI doesn't chat or write: it turns each video's title and
@@ -42,8 +42,8 @@ YouTube tabs pick up changes right away.
   shelves on Home, Subscriptions and channel pages, and Shorts in search results and
   the sidebar. A link to a Short opens it as a regular video,
   without the endless feed of Shorts after it.
-- **Filter recommendations by topic** (on by default): hides videos in the sidebar
-  next to the one you're watching that don't match your topics or are closer to a
+- **Filter recommendations by topic** (on by default): hides videos that don't match
+  your topics on the pages you pick under Where to filter, or that are closer to a
   topic to avoid. It does nothing until you type some topics to see or to avoid.
   Turn it off to show every video again and free the model's memory.
 - A summary of your topics to see and to avoid; click it to change them.
@@ -60,11 +60,18 @@ The **Filter recommendations by topic** switch is on both pages.
   the filter sensitivity.
 - **Filter sensitivity** (0.25 by default): how close to your topics a video must be
   to stay visible, from 0.10 to 0.40. Move it up to hide more videos, or down if the
-  filter hides videos you'd want. The sidebar updates as you move it. With only
+  filter hides videos you'd want. YouTube pages update as you move it. With only
   topics to avoid, it works the other way round: move it up to hide fewer videos.
 - **Try a title**: type a video title to see how close it is to your topics and
   whether the filter would show or hide it. Move the sensitivity to see the verdict
   change. The first try loads the model if it isn't loaded yet.
+- **Where to filter**: Next to the video you're watching (on by default), Home (on by
+  default, including Your custom feed), Subscriptions (off by default) and Search
+  results (off by default). Subscriptions and search results show what you asked for,
+  so filtering them is up to you. Subscriptions is filtered in its grid layout only. In
+  search results, the shelves YouTube mixes in, such as "People also watched", are
+  filtered like the results. Playlists and mixes on Home and in search results are
+  judged by their title, like videos. The page checkboxes are disabled while the filter is off.
 
 When the filter hides videos, the list starts with a row such as "12 videos hidden".
 **Show them** shows them, dimmed and outlined, until you go to another page. The
@@ -87,8 +94,9 @@ answer. After a failure, it tries again a little later.
 
 The topic filter costs nothing until you type some topics to see or to avoid. The
 model then starts loading as soon as you save your first topics, or turn the filter
-back on with topics set, so it's usually ready when you open YouTube. Only the computer
-where you made the change loads it; your other computers load it when they need it:
+back on with topics set, so it's usually ready when you open YouTube. With Home
+filtered, the model loads as soon as you open YouTube with topics set. Only the computer
+where you made the change loads it early; your other computers load it when they need it:
 
 - The model downloads once, about 160 MB. Chrome caches it, so later videos don't
   download it again.
@@ -96,9 +104,9 @@ where you made the change loads it; your other computers load it when they need 
   after 5 minutes without new videos to check, even if it was loaded early and never
   used, or as soon as you turn the filter off or clear your topics to see and to avoid.
 
-When most videos in the sidebar are off topic, YouTube loads more to fill it, and
-the filter checks those too. On some videos, that means checking more than a
-hundred videos before the sidebar settles.
+When most videos on a page are off topic, YouTube loads more to fill it (the sidebar
+and Home both do this), and the filter checks those too. On some pages, that means
+checking more than a hundred videos before the list settles.
 
 On a low-end computer, checking videos may feel slow. If it does, turn off **Filter
 recommendations by topic**.

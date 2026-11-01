@@ -1,6 +1,6 @@
 {
   "extDescription": {
-    "message": "Ouvre votre flux personnalisé sur l'accueil YouTube et masque les vidéos hors sujet à côté de celle que vous regardez."
+    "message": "Ouvre votre flux personnalisé sur l'accueil YouTube et masque les recommandations qui ne correspondent pas à vos sujets."
   },
   "lang": {
     "message": "fr"
@@ -27,7 +27,7 @@
     "message": "Filtrer les recommandations par sujet"
   },
   "topicFilterHint": {
-    "message": "Masque les vidéos à côté de celle que vous regardez qui ne correspondent pas à vos sujets. Utilise un modèle d'IA sur votre ordinateur."
+    "message": "Masque les vidéos qui ne correspondent pas à vos sujets, sur les pages cochées dans Où filtrer, dans Tous les paramètres. Utilise un modèle d'IA sur votre ordinateur."
   },
   "topics": {
     "message": "Sujets que vous voulez voir"
@@ -155,5 +155,23 @@
   },
   "hideHidden": {
     "message": "Les masquer à nouveau"
+  },
+  "filterPages": {
+    "message": "Où filtrer"
+  },
+  "filterPagesHint": {
+    "message": "Chaque liste filtrée commence par une ligne qui indique combien de vidéos sont masquées et permet de les afficher."
+  },
+  "filterWatch": {
+    "message": "À côté de la vidéo que vous regardez"
+  },
+  "filterHome": {
+    "message": "Accueil"
+  },
+  "filterSubscriptions": {
+    "message": "Abonnements"
+  },
+  "filterSearch": {
+    "message": "Résultats de recherche"
   }
 }

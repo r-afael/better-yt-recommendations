@@ -46,3 +46,9 @@ footer {
 .verdict {
   font-weight: 600;
 }
+
+/* A hint for a whole section, after its rows. */
+section > .hint {
+  margin: 0;
+  padding: 0 16px 12px;
+}

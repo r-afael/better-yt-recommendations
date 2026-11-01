@@ -1,6 +1,6 @@
 // Options page with the settings that don't fit in the popup: the topics to see and to avoid,
-// the filter sensitivity, and a box to try a title against them. Open YouTube tabs pick up
-// changes right away.
+// the filter sensitivity, a box to try a title against them, and the pages to filter. Open
+// YouTube tabs pick up changes right away.
 (() => {
   "use strict";
 
@@ -19,6 +19,8 @@
   const tryTitle = document.getElementById("try-title");
   const tryVerdict = document.getElementById("try-verdict");
   const tryScores = document.getElementById("try-scores");
+  const pageSwitches = [...document.querySelectorAll('section[aria-labelledby="pages-section"] input')];
+  const filterControls = [topicsField, avoidField, threshold, tryTitle, ...pageSwitches];
 
   let tryTimer = null;
   let trySequence = 0; // Only the answer to the latest try is shown.
@@ -109,10 +111,10 @@
     return want.length === 0 && avoid.length > 0 ? "sensitivityHintAvoid" : "sensitivityHint";
   }
 
-  // The topics, the sensitivity and the try box only apply while filtering. Moving the slider
-  // judges the tried title again.
+  // The topics, the sensitivity, the try box and the pages only apply while filtering. Moving the
+  // slider judges the tried title again.
   function render() {
-    for (const control of [topicsField, avoidField, threshold, tryTitle]) control.disabled = !topicFilter.checked;
+    for (const control of filterControls) control.disabled = !topicFilter.checked;
     thresholdValue.value = ui.formatThreshold(threshold.valueAsNumber);
     thresholdHint.textContent = ui.message(sensitivityHint());
     status.render();

@@ -8,8 +8,9 @@ Its developer never receives anything from the extension.
 ## What the extension reads
 
 The extension runs only on YouTube. To filter recommendations, it reads the titles
-and channel names of the videos in the sidebar next to the one you're watching. It
-compares them with your topics on your computer and doesn't store them or send them
+and channel names of the videos in the lists it filters: next to the video you're
+watching, on Home, and, if you turn them on, in your Subscriptions and search results.
+It compares them with your topics on your computer and doesn't store them or send them
 anywhere.
 
 ## What the extension stores

@@ -1,6 +1,6 @@
 {
   "extDescription": {
-    "message": "Abre tu feed personalizado en la página principal de YouTube y oculta los videos fuera de tema junto al que estás viendo."
+    "message": "Abre tu feed personalizado en la página principal de YouTube y oculta las recomendaciones que no coinciden con tus temas."
   },
   "lang": {
     "message": "es"
@@ -27,7 +27,7 @@
     "message": "Filtrar recomendaciones por tema"
   },
   "topicFilterHint": {
-    "message": "Oculta los videos junto al que estás viendo que no coinciden con tus temas. Usa un modelo de IA en tu equipo."
+    "message": "Oculta los videos que no coinciden con tus temas en las páginas marcadas en Dónde filtrar, en Todos los ajustes. Usa un modelo de IA en tu equipo."
   },
   "topics": {
     "message": "Temas que quieres ver"
@@ -155,5 +155,23 @@
   },
   "hideHidden": {
     "message": "Volver a ocultarlos"
+  },
+  "filterPages": {
+    "message": "Dónde filtrar"
+  },
+  "filterPagesHint": {
+    "message": "Cada lista filtrada empieza con una fila que indica cuántos videos están ocultos y permite mostrarlos."
+  },
+  "filterWatch": {
+    "message": "Junto al video que estás viendo"
+  },
+  "filterHome": {
+    "message": "Página principal"
+  },
+  "filterSubscriptions": {
+    "message": "Suscripciones"
+  },
+  "filterSearch": {
+    "message": "Resultados de búsqueda"
   }
 }

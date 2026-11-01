@@ -1,6 +1,6 @@
 {
   "extDescription": {
-    "message": "在 YouTube 首页打开你的自定义信息流，并隐藏正在观看的视频旁与主题无关的视频。"
+    "message": "在 YouTube 首页打开你的自定义信息流，并隐藏与你的主题不符的推荐。"
   },
   "lang": {
     "message": "zh-CN"
@@ -27,7 +27,7 @@
     "message": "按主题筛选推荐"
   },
   "topicFilterHint": {
-    "message": "隐藏正在观看的视频旁与你的主题不符的视频。使用你电脑上的 AI 模型。"
+    "message": "在“所有设置”的“筛选范围”中勾选的页面上，隐藏与你的主题不符的视频。使用你电脑上的 AI 模型。"
   },
   "topics": {
     "message": "你想看的主题"
@@ -155,5 +155,23 @@
   },
   "hideHidden": {
     "message": "重新隐藏"
+  },
+  "filterPages": {
+    "message": "筛选范围"
+  },
+  "filterPagesHint": {
+    "message": "每个经过筛选的列表顶部都有一行，显示隐藏了多少个视频，并可将其显示出来。"
+  },
+  "filterWatch": {
+    "message": "正在观看的视频旁"
+  },
+  "filterHome": {
+    "message": "首页"
+  },
+  "filterSubscriptions": {
+    "message": "订阅内容"
+  },
+  "filterSearch": {
+    "message": "搜索结果"
   }
 }

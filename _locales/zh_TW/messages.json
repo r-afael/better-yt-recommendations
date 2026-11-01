@@ -1,6 +1,6 @@
 {
   "extDescription": {
-    "message": "在 YouTube 首頁開啟你的自訂動態消息，並隱藏正在觀看的影片旁與主題無關的影片。"
+    "message": "在 YouTube 首頁開啟你的自訂動態消息，並隱藏與你的主題不符的推薦內容。"
   },
   "lang": {
     "message": "zh-TW"
@@ -27,7 +27,7 @@
     "message": "依主題篩選推薦內容"
   },
   "topicFilterHint": {
-    "message": "隱藏正在觀看的影片旁與你的主題不符的影片。使用你電腦上的 AI 模型。"
+    "message": "在「所有設定」的「篩選範圍」中勾選的頁面上，隱藏與你的主題不符的影片。使用你電腦上的 AI 模型。"
   },
   "topics": {
     "message": "你想看的主題"
@@ -155,5 +155,23 @@
   },
   "hideHidden": {
     "message": "再次隱藏"
+  },
+  "filterPages": {
+    "message": "篩選範圍"
+  },
+  "filterPagesHint": {
+    "message": "每個經過篩選的清單頂端都有一列，顯示隱藏了多少部影片，並可將影片顯示出來。"
+  },
+  "filterWatch": {
+    "message": "正在觀看的影片旁"
+  },
+  "filterHome": {
+    "message": "首頁"
+  },
+  "filterSubscriptions": {
+    "message": "訂閱內容"
+  },
+  "filterSearch": {
+    "message": "搜尋結果"
   }
 }

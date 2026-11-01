@@ -1,6 +1,6 @@
 {
   "extDescription": {
-    "message": "Abre o seu feed personalizado na página inicial do YouTube e oculta vídeos fora do assunto ao lado do que você está assistindo."
+    "message": "Abre o seu feed personalizado na página inicial do YouTube e oculta recomendações que não correspondem aos seus assuntos."
   },
   "lang": {
     "message": "pt"
@@ -27,7 +27,7 @@
     "message": "Filtrar recomendações por assunto"
   },
   "topicFilterHint": {
-    "message": "Oculta os vídeos ao lado do que você está assistindo que não correspondem aos seus assuntos. Usa um modelo de IA no seu computador."
+    "message": "Oculta os vídeos que não correspondem aos seus assuntos nas páginas marcadas em Onde filtrar, em Todas as configurações. Usa um modelo de IA no seu computador."
   },
   "topics": {
     "message": "Assuntos que você quer ver"
@@ -155,5 +155,23 @@
   },
   "hideHidden": {
     "message": "Ocultá-los novamente"
+  },
+  "filterPages": {
+    "message": "Onde filtrar"
+  },
+  "filterPagesHint": {
+    "message": "Cada lista filtrada começa com uma linha que diz quantos vídeos estão ocultos e permite mostrá-los."
+  },
+  "filterWatch": {
+    "message": "Ao lado do vídeo que você está assistindo"
+  },
+  "filterHome": {
+    "message": "Início"
+  },
+  "filterSubscriptions": {
+    "message": "Inscrições"
+  },
+  "filterSearch": {
+    "message": "Resultados da pesquisa"
   }
 }

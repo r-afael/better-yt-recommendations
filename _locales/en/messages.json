@@ -1,6 +1,6 @@
 {
   "extDescription": {
-    "message": "Open YouTube Home on your custom feed and hide off-topic videos next to the one you're watching.",
+    "message": "Open YouTube Home on your custom feed and hide recommendations that don't match your topics.",
     "description": "Extension description shown in the Chrome Web Store and on chrome://extensions."
   },
   "lang": {
@@ -36,8 +36,8 @@
     "description": "Toggle, in the popup and on the options page, that hides recommended videos that don't match the user's topics."
   },
   "topicFilterHint": {
-    "message": "Hides videos next to the one you're watching that don't match your topics. Uses an AI model on your computer.",
-    "description": "Explains the topicFilter toggle."
+    "message": "Hides videos that don't match your topics, on the pages checked under Where to filter in All settings. Uses an AI model on your computer.",
+    "description": "Explains the topic filter switch, in the popup and on the options page. \"Where to filter\" is the options section's heading (filterPages) and \"All settings\" the link to the options page (allSettings); use the same words."
   },
   "topics": {
     "message": "Topics you want to see",
@@ -198,5 +198,29 @@
   "hideHidden": {
     "message": "Hide them again",
     "description": "Button that hides the revealed videos again."
+  },
+  "filterPages": {
+    "message": "Where to filter",
+    "description": "Heading of the options section with the pages the filter works on."
+  },
+  "filterPagesHint": {
+    "message": "Each filtered list starts with a row that says how many videos are hidden and can show them.",
+    "description": "Explains the Where to filter section."
+  },
+  "filterWatch": {
+    "message": "Next to the video you're watching",
+    "description": "Checkbox: filter the recommendations beside or below the video being watched."
+  },
+  "filterHome": {
+    "message": "Home",
+    "description": "Checkbox: filter the YouTube Home page."
+  },
+  "filterSubscriptions": {
+    "message": "Subscriptions",
+    "description": "Checkbox: filter the Subscriptions feed."
+  },
+  "filterSearch": {
+    "message": "Search results",
+    "description": "Checkbox: filter search results."
   }
 }

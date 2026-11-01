@@ -1,6 +1,6 @@
 {
   "extDescription": {
-    "message": "Membuka feed kustom Anda di Beranda YouTube dan menyembunyikan video yang tidak sesuai topik di samping video yang Anda tonton."
+    "message": "Membuka feed kustom Anda di Beranda YouTube dan menyembunyikan rekomendasi yang tidak cocok dengan topik Anda."
   },
   "lang": {
     "message": "id"
@@ -27,7 +27,7 @@
     "message": "Filter rekomendasi berdasarkan topik"
   },
   "topicFilterHint": {
-    "message": "Menyembunyikan video di samping video yang Anda tonton yang tidak cocok dengan topik Anda. Menggunakan model AI di komputer Anda."
+    "message": "Menyembunyikan video yang tidak cocok dengan topik Anda di halaman yang dicentang pada Tempat memfilter di Semua setelan. Menggunakan model AI di komputer Anda."
   },
   "topics": {
     "message": "Topik yang ingin Anda lihat"
@@ -155,5 +155,23 @@
   },
   "hideHidden": {
     "message": "Sembunyikan lagi"
+  },
+  "filterPages": {
+    "message": "Tempat memfilter"
+  },
+  "filterPagesHint": {
+    "message": "Setiap daftar yang difilter diawali baris yang menyebutkan jumlah video yang disembunyikan dan dapat menampilkannya."
+  },
+  "filterWatch": {
+    "message": "Di samping video yang Anda tonton"
+  },
+  "filterHome": {
+    "message": "Beranda"
+  },
+  "filterSubscriptions": {
+    "message": "Subscription"
+  },
+  "filterSearch": {
+    "message": "Hasil penelusuran"
   }
 }

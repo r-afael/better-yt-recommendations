@@ -37,17 +37,21 @@ async function reportStatus(chrome, status) {
   await flush();
 }
 
-test("the topic filter switch on the options page saves and enables the fields", async (t) => {
+const PAGE_SETTINGS = ["filterWatch", "filterHome", "filterSubscriptions", "filterSearch"];
+
+test("the topic filter switch on the options page saves and enables the fields and page checkboxes", async (t) => {
   const { document, chrome, toggle, field, avoidField, slider } = await setup(t, { stored: { topicFilter: false } });
   const titleBox = document.querySelector("#try-title");
-  const disabled = () => [field.disabled, avoidField.disabled, slider.disabled, titleBox.disabled];
-  assert.deepEqual(disabled(), [true, true, true, true]);
+  const controls = [field, avoidField, slider, titleBox, ...PAGE_SETTINGS.map(toggle)];
+  const disabled = () => controls.map((control) => control.disabled);
+  const every = (value) => controls.map(() => value);
+  assert.deepEqual(disabled(), every(true));
   toggle("topicFilter").click();
   await flush();
   assert.equal(chrome.data.topicFilter, true);
-  assert.deepEqual(disabled(), [false, false, false, false]);
+  assert.deepEqual(disabled(), every(false));
   toggle("topicFilter").click();
-  assert.deepEqual(disabled(), [true, true, true, true]);
+  assert.deepEqual(disabled(), every(true));
 });
 
 test("shows the stored topics", async (t) => {
@@ -464,6 +468,17 @@ test("turning the filter off stops trying titles and clears the verdict", async 
   await answer({ scores: { try: score(0.31) } });
   assert.equal(verdictText(), "", "a late answer is ignored");
   assert.equal(scoresText(), "");
+});
+
+test("the page checkboxes show their defaults and save as they change", async (t) => {
+  const { chrome, toggle } = await setup(t);
+  assert.deepEqual(PAGE_SETTINGS.map((name) => toggle(name).checked), [true, true, false, false]);
+
+  toggle("filterSearch").click();
+  toggle("filterHome").click();
+  await flush();
+  assert.equal(chrome.data.filterSearch, true);
+  assert.equal(chrome.data.filterHome, false);
 });
 
 test("submitting the options form, as Enter in the title box does, keeps the page open", async (t) => {

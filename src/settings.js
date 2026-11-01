@@ -12,6 +12,10 @@
     // How close to a topic a video must be to stay visible. 0.25 kept 95% of on-topic
     // and hid 98% of off-topic sidebar videos in testing.
     threshold: 0.25,
+    filterWatch: true, // Filter the recommendations next to or under the video being watched.
+    filterHome: true, // Filter Home, which is all recommendations.
+    filterSubscriptions: false, // Filter the Subscriptions grid. Off: it shows what the user subscribed to.
+    filterSearch: false, // Filter search results. Off: they show what the user asked for.
   });
 
   async function load() {

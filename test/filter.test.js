@@ -8,10 +8,21 @@ import { HIDDEN_COUNT, MATCH, fakeChrome, flush, holdMessages, read, readJson, r
 const contentScripts = readJson("manifest.json").content_scripts;
 const scripts = contentScripts.flatMap((entry) => entry.js);
 const css = contentScripts.flatMap((entry) => entry.css);
-const fixture = read("test/fixtures/watch-sidebar.html");
+const watchFixture = read("test/fixtures/watch-sidebar.html");
+const homeFixture = read("test/fixtures/home-grid.html");
+// The Subscriptions grid has the same markup as Home's.
+const subscriptionsFixture = homeFixture.replaceAll('page-subtype="home"', 'page-subtype="subscriptions"');
+const searchFixture = read("test/fixtures/search-results.html");
 const styles = css.map(read).join("\n");
 const FIXTURE_IDS = ["PFmuCDHHpwk", "PkZNo7MFNFg", "RphIVv0uWrM", "C4dGVTl6ry8"];
 const ON_TOPIC_IDS = FIXTURE_IDS.filter((id) => id !== "RphIVv0uWrM"); // Once RphIVv0uWrM is hidden.
+const HOME_IDS = ["rfscVS0vtbw", "W6NZfCO5SIk", "dQw4w9WgXcQ", "jNQXAC9IVRw"];
+const HOME_OFF_TOPIC = ["dQw4w9WgXcQ", "jNQXAC9IVRw"];
+const HOME_ON_TOPIC = HOME_IDS.filter((id) => !HOME_OFF_TOPIC.includes(id));
+const SEARCH_IDS = ["soTfFFIQQ8U", "C842vFY5kRo", "PLWKjhJtqVAbnqBxcdjVGgT3uVR10bzTEB"];
+const HOME_PATH = "/";
+const WATCH_PATH = "/watch?v=W6NZfCO5SIk";
+const SEARCH_PATH = "/results?search_query=freecodecamp";
 const COLLAPSED = { text: "Show them", expanded: "false" };
 const REVEALED = { text: "Hide them again", expanded: "true" };
 const SCAN_MS = 150;
@@ -26,7 +37,7 @@ function showVideo(item, id, title = `Video ${id}`) {
   item.querySelector("h3").setAttribute("title", title);
 }
 
-async function setup(t, { path = "/watch?v=W6NZfCO5SIk", stored = { topics: "programming" } } = {}) {
+async function setup(t, { fixture = watchFixture, path = WATCH_PATH, stored = { topics: "programming" } } = {}) {
   const dom = new JSDOM(`<style>${styles}</style>${fixture}`, {
     url: `https://www.youtube.com${path}`,
     runScripts: "outside-only",
@@ -56,9 +67,18 @@ async function setup(t, { path = "/watch?v=W6NZfCO5SIk", stored = { topics: "pro
   await clock.tickAsync(SCAN_MS);
 
   const items = () => [...document.querySelectorAll("yt-lockup-view-model")];
-  const visibleIds = () => items()
-    .filter((item) => window.getComputedStyle(item).display !== "none")
-    .map((item) => /content-id-(\S+)/u.exec(item.querySelector(".ytLockupViewModelHost").className)[1]);
+  // Hiding a grid cell hides the card inside it, so every ancestor counts.
+  const isShown = (element) => {
+    for (let node = element; node; node = node.parentElement) {
+      if (window.getComputedStyle(node).display === "none") return false;
+    }
+    return true;
+  };
+  const idHosts = (root) => [...root.querySelectorAll('.ytLockupViewModelHost[class*="content-id-"]')];
+  // The ids of the cards shown in the page, or in a part of it such as Home's grid.
+  const visibleIds = (root = document) => idHosts(root)
+    .filter(isShown)
+    .map((host) => /content-id-(\S+)/u.exec(host.className)[1]);
   const hiddenRow = () => document.querySelector(".better-yt-hidden-row");
   const rowShown = () => {
     const row = hiddenRow();
@@ -74,6 +94,11 @@ async function setup(t, { path = "/watch?v=W6NZfCO5SIk", stored = { topics: "pro
     request.resolve({ scores: Object.fromEntries(requestedIds(request).map((id) => [id, score(Number(!offTopic.includes(id)))])) });
     await clock.tickAsync(SCAN_MS);
   };
+  // Goes to another page in the same document, the way YouTube navigates.
+  const navigate = (url) => {
+    window.history.pushState({}, "", url);
+    document.dispatchEvent(new window.Event("yt-navigate-finish"));
+  };
   const changeSettings = async (changes) => {
     await chrome.storage.sync.set(changes);
     await flush();
@@ -88,8 +113,8 @@ async function setup(t, { path = "/watch?v=W6NZfCO5SIk", stored = { topics: "pro
   };
 
   return {
-    window, document, clock, requests, reports, warnings, items, visibleIds, requestedIds, answer, changeSettings, addVideo,
-    hiddenRow, rowShown, rowText, toggle, toggleState, list,
+    window, document, clock, requests, reports, warnings, items, isShown, visibleIds, requestedIds, answer, navigate,
+    changeSettings, addVideo, hiddenRow, rowShown, rowText, toggle, toggleState, list,
   };
 }
 
@@ -248,6 +273,7 @@ test("sends nothing while the toggle is off", async (t) => {
 for (const [name, changes] of Object.entries({
   "turning the toggle off": { topicFilter: false },
   "clearing the topics": { topics: "" },
+  "unchecking Next to the video you're watching": { filterWatch: false },
 })) {
   test(`${name} shows every video and stops filtering`, async (t) => {
     const { requests, visibleIds, answer, changeSettings, addVideo, clock } = await setup(t);
@@ -353,30 +379,52 @@ test("sends at most 30 distinct videos per request, one request at a time", asyn
   assert.equal(requests.length, 3);
 });
 
-test("leaves pages other than watch pages alone", async (t) => {
-  const { requests, clock, addVideo } = await setup(t, { path: "/results?search_query=chess" });
+test("leaves pages that aren't lists of recommendations alone", async (t) => {
+  const { requests, clock, addVideo } = await setup(t, { path: "/feed/history" });
   await addVideo("added00001A");
   await clock.tickAsync(RETRY_MS);
   assert.equal(requests.length, 0);
 });
 
-test("shows every video after navigating away from the watch page", async (t) => {
-  const { window, document, requests, visibleIds, answer, addVideo } = await setup(t);
-  await answer(["RphIVv0uWrM"]);
-  window.history.pushState({}, "", "/feed/subscriptions");
-  document.dispatchEvent(new window.Event("yt-navigate-finish"));
-  assert.deepEqual(visibleIds(), FIXTURE_IDS);
+test("returning from a page that isn't filtered keeps the hidden videos hidden", async (t) => {
+  const { document, clock, requests, visibleIds, reports, answer, navigate } = await setup(t, {
+    fixture: homeFixture + searchFixture,
+    path: HOME_PATH,
+  });
+  const home = document.querySelector("ytd-browse");
+  await answer(HOME_OFF_TOPIC);
 
-  await addVideo("added00001A");
-  assert.equal(requests.length, 1);
+  navigate(SEARCH_PATH);
+  await clock.tickAsync(SCAN_MS);
+  assert.equal(requests.length, 1, "search results aren't filtered by default");
+  assert.deepEqual(reports, [2, 0]);
+
+  navigate(HOME_PATH);
+  assert.deepEqual(visibleIds(home), HOME_ON_TOPIC, "Home's hidden videos don't flash back");
+  await clock.tickAsync(SCAN_MS);
+  assert.deepEqual(reports, [2, 0, 2]);
+});
+
+test("unchecking a page while another one is shown shows its videos when you return", async (t) => {
+  const { document, clock, visibleIds, answer, navigate, changeSettings } = await setup(t, {
+    fixture: homeFixture + watchFixture,
+    path: HOME_PATH,
+  });
+  const home = document.querySelector("ytd-browse");
+  await answer(HOME_OFF_TOPIC);
+  navigate(WATCH_PATH);
+  await clock.tickAsync(SCAN_MS);
+  await changeSettings({ filterHome: false });
+
+  navigate(HOME_PATH);
+  assert.deepEqual(visibleIds(home), HOME_IDS);
 });
 
 test("waits for the sidebar when a watch page renders it late", async (t) => {
-  const { window, document, requests, clock } = await setup(t, { path: "/feed/subscriptions" });
+  const { document, requests, clock, navigate } = await setup(t, { path: "/feed/history" });
   const sidebar = document.querySelector("ytd-watch-flexy");
   sidebar.remove();
-  window.history.pushState({}, "", "/watch?v=W6NZfCO5SIk");
-  document.dispatchEvent(new window.Event("yt-navigate-finish"));
+  navigate(WATCH_PATH);
   await clock.tickAsync(SCAN_MS);
   assert.equal(requests.length, 0);
 
@@ -416,12 +464,11 @@ test("Show them shows the hidden videos until Hide them again", async (t) => {
 });
 
 test("every new page starts with the hidden videos collapsed", async (t) => {
-  const { window, document, clock, visibleIds, toggle, toggleState, answer } = await setup(t);
+  const { clock, visibleIds, toggle, toggleState, answer, navigate } = await setup(t);
   await answer(["RphIVv0uWrM"]);
   toggle().click();
 
-  window.history.pushState({}, "", "/watch?v=PFmuCDHHpwk");
-  document.dispatchEvent(new window.Event("yt-navigate-finish"));
+  navigate("/watch?v=PFmuCDHHpwk");
   await clock.tickAsync(SCAN_MS);
   assert.deepEqual(visibleIds(), ON_TOPIC_IDS);
   assert.deepEqual(toggleState(), COLLAPSED);
@@ -493,4 +540,101 @@ test("a rescan with the same count leaves the row untouched", async (t) => {
   assert.equal(rowText(), "1 video hidden");
   assert.deepEqual([...records, ...observer.takeRecords()], []);
   observer.disconnect();
+});
+
+test("filters Home by default", async (t) => {
+  const { document, requestedIds, visibleIds, rowText, hiddenRow, reports, answer } = await setup(t, { fixture: homeFixture, path: HOME_PATH });
+  assert.deepEqual(requestedIds(), HOME_IDS);
+
+  await answer(HOME_OFF_TOPIC);
+  assert.deepEqual(visibleIds(), HOME_ON_TOPIC);
+  assert.equal(rowText(), "2 videos hidden");
+  assert.equal(hiddenRow().nextElementSibling, document.querySelector("ytd-rich-grid-renderer > #contents"));
+  assert.deepEqual(reports, [2]);
+});
+
+test("leaves Home alone when its setting is off", async (t) => {
+  const { requests, clock } = await setup(t, { fixture: homeFixture, path: HOME_PATH, stored: { topics: "programming", filterHome: false } });
+  await clock.tickAsync(RETRY_MS);
+  assert.equal(requests.length, 0);
+});
+
+test("leaves search results alone until their setting is on, then filters them", async (t) => {
+  const { document, requests, requestedIds, isShown, rowText, answer, changeSettings } = await setup(t, {
+    fixture: searchFixture,
+    path: SEARCH_PATH,
+  });
+  assert.equal(requests.length, 0);
+
+  await changeSettings({ filterSearch: true });
+  assert.deepEqual(requestedIds(), SEARCH_IDS);
+  await answer(["C842vFY5kRo"]);
+  const resultLink = (id) => document.querySelector(`ytd-video-renderer a[href*="${id}"]`);
+  assert.equal(isShown(resultLink("C842vFY5kRo")), false);
+  assert.equal(isShown(resultLink("soTfFFIQQ8U")), true);
+  assert.equal(rowText(), "1 video hidden");
+});
+
+test("filters the Subscriptions grid once its setting is on", async (t) => {
+  const { requests, requestedIds, visibleIds, answer, changeSettings } = await setup(t, {
+    fixture: subscriptionsFixture,
+    path: "/feed/subscriptions",
+  });
+  assert.equal(requests.length, 0);
+
+  await changeSettings({ filterSubscriptions: true });
+  assert.deepEqual(requestedIds(), HOME_IDS);
+  await answer(["jNQXAC9IVRw"]);
+  assert.deepEqual(visibleIds(), HOME_IDS.filter((id) => id !== "jNQXAC9IVRw"));
+});
+
+test("returning to Home keeps its hidden videos hidden, and the badge counts only the page shown", async (t) => {
+  const { document, clock, requestedIds, visibleIds, rowText, hiddenRow, reports, answer, navigate } = await setup(t, {
+    fixture: homeFixture + watchFixture,
+    path: HOME_PATH,
+  });
+  const home = document.querySelector("ytd-browse");
+  const homeList = document.querySelector("ytd-rich-grid-renderer > #contents");
+  const watchList = document.querySelector("ytd-watch-next-secondary-results-renderer");
+  await answer(HOME_OFF_TOPIC);
+  assert.deepEqual(reports, [2]);
+
+  navigate(WATCH_PATH);
+  assert.deepEqual(visibleIds(home), HOME_ON_TOPIC);
+  await clock.tickAsync(SCAN_MS);
+  assert.deepEqual(requestedIds(), FIXTURE_IDS);
+  await answer(["RphIVv0uWrM"]);
+  assert.equal(rowText(), "1 video hidden");
+  assert.equal(hiddenRow().nextElementSibling, watchList);
+  assert.deepEqual(visibleIds(home), HOME_ON_TOPIC);
+
+  navigate(HOME_PATH);
+  assert.deepEqual(visibleIds(home), HOME_ON_TOPIC, "Home's hidden videos don't flash back");
+  await clock.tickAsync(SCAN_MS);
+  assert.equal(rowText(), "2 videos hidden");
+  assert.equal(hiddenRow().nextElementSibling, homeList);
+  assert.deepEqual(reports, [2, 0, 1, 2]);
+});
+
+test("unchecking the page being viewed shows its hidden videos again", async (t) => {
+  const { visibleIds, rowShown, reports, answer, changeSettings } = await setup(t, { fixture: homeFixture, path: HOME_PATH });
+  await answer(HOME_OFF_TOPIC);
+  await changeSettings({ filterHome: false });
+  assert.deepEqual(visibleIds(), HOME_IDS);
+  assert.equal(rowShown(), false);
+  assert.deepEqual(reports, [2, 0]);
+});
+
+test("ignores hover and thumbnail class changes on Home, but rescans a recycled card", async (t) => {
+  const { document, clock, requestedIds, answer } = await setup(t, { fixture: homeFixture, path: HOME_PATH });
+  await answer(HOME_OFF_TOPIC);
+  const timers = clock.countTimers();
+  document.querySelector("yt-thumbnail-view-model").classList.add("ytThumbnailViewModelHovered");
+  await flush();
+  assert.equal(clock.countTimers(), timers, "no scan is scheduled");
+
+  const host = document.querySelector(".ytLockupViewModelHost");
+  host.className = host.className.replace(/content-id-\S+/u, "content-id-recycled01A");
+  await clock.tickAsync(SCAN_MS);
+  assert.deepEqual(requestedIds(), ["recycled01A"]);
 });
