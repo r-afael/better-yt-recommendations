@@ -23,9 +23,9 @@
   }
 
   // The channel of the video a link belongs to, or "" when it belongs to no readable video.
-  function channelFor(linkUrl, surface) {
+  function channelFor(linkUrl) {
     const item = cards.itemForLink(linkUrl, last);
-    const video = item && cards.readVideo(item, surface);
+    const video = item && cards.readVideo(item);
     return video?.channel || "";
   }
 
@@ -58,7 +58,7 @@
 
   async function listChannel(list, linkUrl) {
     const surface = cards.surfaceFor(location.pathname);
-    const channel = channelFor(linkUrl, surface);
+    const channel = channelFor(linkUrl);
     toast.show(channel ? await save(list, channel, surface) : message("noChannelPicked"));
   }
 

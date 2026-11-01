@@ -18,7 +18,7 @@ function load(t, markup = fixture, url = "https://www.youtube.com/watch?v=W6NZfC
 }
 
 // Copies the page's objects into this realm, so deepEqual compares only their values.
-const readAll = (cards, surface) => structuredClone(cards.findItems(surface).map((item) => cards.readVideo(item, surface)));
+const readAll = (cards, surface) => structuredClone(cards.findItems(surface).map((item) => cards.readVideo(item)));
 const readVideos = (cards, surface) => readAll(cards, surface).filter(Boolean);
 // Whether any card found is inside, or holds, one of the elements a selector names.
 const foundAny = (document, items, selector) =>
@@ -139,7 +139,7 @@ test("leaves Shorts, Shorts shelves and ads out of the Home grid", (t) => {
   assert.ok(!foundAny(document, items, "ytd-ad-slot-renderer, ytd-rich-section-renderer"));
   // The grid's own Short card is found but isn't read as a video, so shorts.css decides whether it shows.
   const short = items.find((item) => item.querySelector('a[href^="/shorts/"]'));
-  assert.equal(cards.readVideo(short, home), null);
+  assert.equal(cards.readVideo(short), null);
 });
 
 test("finds the Subscriptions grid", (t) => {

@@ -133,7 +133,7 @@
     const asking = asksModel();
     const unknown = new Map();
     for (const item of cards.findItems(surface)) {
-      const video = cards.readVideo(item, surface);
+      const video = cards.readVideo(item);
       const ruling = video ? channelIndex.lookup(video.channel) : null;
       applyVerdict(item, video, ruling);
       if (asking && needsScore(video, ruling)) unknown.set(video.id, video);

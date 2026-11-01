@@ -59,8 +59,7 @@
   const TITLE_ATTRIBUTE_HOLDERS = ["a#video-title-link[title]", "#video-title[title]", "h3[title]"];
   // Current, older BEM and legacy markup.
   const TITLE_TEXT = ["a.ytLockupMetadataViewModelTitle", ".yt-lockup-metadata-view-model__title", "#video-title"];
-  // textContent reads through the channel link inside #text. This order reads the watch sidebar
-  // correctly, so a surface that needs another gives itself a `channel` list instead.
+  // textContent reads through the channel link inside #text. This order reads the watch sidebar correctly.
   const CHANNEL_TEXT = [
     ".ytContentMetadataViewModelMetadataText",
     ".yt-content-metadata-view-model__metadata-text",
@@ -123,12 +122,11 @@
   }
 
   // Returns the video a card shows, or null when the card isn't a readable video.
-  // A surface with its own channel list reads the channel with it; without a surface, CHANNEL_TEXT does.
-  function readVideo(item, surface) {
+  function readVideo(item) {
     const id = readId(item);
     const title = readTitle(item);
     if (!id || !title) return null;
-    const channel = clip(firstMatch(item, surface?.channel ?? CHANNEL_TEXT)?.textContent, LIMITS.MAX_CHANNEL_LENGTH);
+    const channel = clip(firstMatch(item, CHANNEL_TEXT)?.textContent, LIMITS.MAX_CHANNEL_LENGTH);
     return { id, title, channel };
   }
 
