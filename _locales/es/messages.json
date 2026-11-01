@@ -45,7 +45,7 @@
     "message": "Qué tan cerca debe estar un video de un tema que quieres ver. Más alta oculta más videos; más baja muestra más."
   },
   "modelIdle": {
-    "message": "El modelo se carga cuando abres un video."
+    "message": "El modelo se carga cuando una página lo necesita o cuando haces clic en Cargar ahora."
   },
   "modelLoading": {
     "message": "Cargando el modelo…"
@@ -97,5 +97,8 @@
         "example": "gaming, gossip"
       }
     }
+  },
+  "loadNow": {
+    "message": "Cargar ahora"
   }
 }

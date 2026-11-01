@@ -6,7 +6,7 @@ importScripts("protocol.js", "settings.js", "topics.js", "verdict.js", "model-ho
   "use strict";
 
   const { protocol, modelHost } = globalThis.BetterYT;
-  const { MATCH, STATUS, IDLE, OFFSCREEN } = protocol;
+  const { MATCH, PRELOAD, STATUS, IDLE, OFFSCREEN } = protocol;
 
   function onMessage(message, _sender, sendResponse) {
     if (message?.target === OFFSCREEN) return false;
@@ -14,8 +14,11 @@ importScripts("protocol.js", "settings.js", "topics.js", "verdict.js", "model-ho
       case MATCH:
         modelHost.match(message).then(sendResponse);
         return true;
+      case PRELOAD:
+        modelHost.preload().then(sendResponse);
+        return true;
       case STATUS:
-        modelHost.storeStatus(message.status);
+        modelHost.onStatus(message.status);
         return false;
       case IDLE:
         modelHost.release();

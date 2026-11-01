@@ -3,8 +3,8 @@
 (() => {
   "use strict";
 
-  const { protocol, settings } = globalThis.BetterYT;
-  const { MODEL_STATES, STATUS_KEY } = protocol;
+  const { protocol, settings, verdict } = globalThis.BetterYT;
+  const { MODEL_STATES, STATUS_KEY, PRELOAD } = protocol;
 
   const SAVE_DELAY_MS = 400; // chrome.storage.sync allows about 120 writes a minute.
   const STATUS_MESSAGES = Object.freeze({
@@ -13,6 +13,8 @@
     [MODEL_STATES.READY]: "modelReady",
     [MODEL_STATES.ERROR]: "modelError",
   });
+  // The states in which Load now can start loading the model.
+  const LOADABLE_STATES = new Set([MODEL_STATES.IDLE, MODEL_STATES.ERROR]);
 
   // Each attribute names the message that fills one part of its element.
   const I18N_TARGETS = Object.freeze([
@@ -25,6 +27,8 @@
   const noop = () => {};
   const reportSaveError = (error) => console.error("Better YT Recommendations: saving a setting failed.", error);
   const message = (key, substitutions) => chrome.i18n.getMessage(key, substitutions);
+  // Asks the background to load the model now. Progress arrives as stored model statuses.
+  const preload = () => chrome.runtime.sendMessage({ type: PRELOAD });
 
   function translatePage() {
     document.documentElement.lang = message("lang");
@@ -132,7 +136,11 @@
   function startPage({ form, render, changesFor = controlChanges, display = (values) => values, onSaved, onError }) {
     const values = {};
 
+    // A save that makes the filter need the model starts loading it, so it is likely ready by
+    // the time the user opens YouTube. Only this computer loads it: the background never loads
+    // the model for a change synced in from another one.
     async function save(changes) {
+      const neededModel = verdict.needsModel(values);
       const previous = Object.fromEntries(Object.keys(changes).map((key) => [key, values[key]]));
       Object.assign(values, changes);
       try {
@@ -141,6 +149,7 @@
         Object.assign(values, previous);
         throw error;
       }
+      if (!neededModel && verdict.needsModel(values)) preload().catch(noop);
     }
 
     translatePage();
@@ -163,7 +172,7 @@
 
   // The live region only names the state, so screen readers announce changes of state and not
   // every percent of the download. The progress bar, which isn't live, shows the percent.
-  function createModelStatus({ status, progressBar, isVisible }) {
+  function createModelStatus({ status, progressBar, loadButton, isVisible }) {
     let modelStatus = { state: MODEL_STATES.IDLE };
 
     function render() {
@@ -173,12 +182,24 @@
       if (status.textContent !== text) status.textContent = text;
       progressBar.hidden = status.hidden || modelStatus.state !== MODEL_STATES.LOADING;
       progressBar.value = Math.round((modelStatus.progress ?? 0) * 100);
+      loadButton.hidden = status.hidden || !LOADABLE_STATES.has(modelStatus.state);
     }
 
+    // A new status means the background acted on the last click, so Load now works again.
     function showModelStatus(value) {
       modelStatus = value ?? { state: MODEL_STATES.IDLE };
+      loadButton.disabled = false;
       render();
     }
+
+    // A failure brings no new status, so any answer but { ok: true }, or none at all from a send
+    // that failed, enables Load now at once.
+    loadButton.addEventListener("click", () => {
+      loadButton.disabled = true;
+      preload().catch(noop).then((answer) => {
+        if (!answer?.ok) loadButton.disabled = false;
+      });
+    });
 
     chrome.storage.onChanged.addListener((changes, area) => {
       if (area === "session" && STATUS_KEY in changes) showModelStatus(changes[STATUS_KEY].newValue);

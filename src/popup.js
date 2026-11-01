@@ -13,6 +13,7 @@
   const status = ui.createModelStatus({
     status: document.getElementById("model-status"),
     progressBar: document.getElementById("model-progress"),
+    loadButton: document.getElementById("load-now"),
     isVisible: () => verdict.needsModel(page.values),
   });
 

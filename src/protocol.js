@@ -8,8 +8,14 @@ globalThis.BetterYT.protocol = Object.freeze({
   // to 1 to a wanted topic and to a topic to avoid, null when that list is empty,
   // or with { error: string }.
   MATCH: "better-yt:match",
+  // The popup or the options page to background, which forwards it to the offscreen document:
+  // { type }, to load the model right away. Answered with { ok: true } as soon as loading has
+  // started or the model is already loaded, or with { error: string } when the document can't
+  // be reached. Progress keeps arriving through STATUS.
+  PRELOAD: "better-yt:preload",
   // Offscreen document to background: { type, status: { state, progress? } },
   // where state is one of MODEL_STATES and progress runs from 0 to 1 while loading.
+  // The background stores it only while the document is open.
   STATUS: "better-yt:status",
   // Offscreen document to background: nothing has been matched for a while,
   // so the document can close and free the model's memory.

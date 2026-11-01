@@ -69,22 +69,25 @@ topics works better than one broad word. For example, "programming, JavaScript, 
 development" keeps more coding videos than "programming" alone.
 
 While the filter is on and has topics to see or to avoid, a line in the popup and on
-the options page shows the model's status: waiting for you to open a video, loading,
-ready, or failed. Videos stay visible while the model loads, and if it fails to load
-or to answer. After a failure, it tries again a little later.
+the options page shows the model's status: waiting to be needed, loading, ready, or
+failed. While it's waiting or after a failure, **Load now** next to the status loads it
+right away. Videos stay visible while the model loads, and if it fails to load or to
+answer. After a failure, it tries again a little later.
 
 ![The settings popup, with all three toggles on, the topics programming, software engineering and chess, the filter sensitivity at 0.25, and the status The model is ready](docs/settings-popup.png)
 
 ## Performance
 
-The topic filter costs nothing until you type some topics to see or to avoid. Then,
-the first time you open a video:
+The topic filter costs nothing until you type some topics to see or to avoid. The
+model then starts loading as soon as you save your first topics, or turn the filter
+back on with topics set, so it's usually ready when you open YouTube. Only the computer
+where you made the change loads it; your other computers load it when they need it:
 
 - The model downloads once, about 160 MB. Chrome caches it, so later videos don't
   download it again.
 - While in use, the model takes about 0.5 to 0.7 GB of memory. The extension frees it
-  after 5 minutes without new videos to check, or as soon as you turn the filter off
-  or clear your topics to see and to avoid.
+  after 5 minutes without new videos to check, even if it was loaded early and never
+  used, or as soon as you turn the filter off or clear your topics to see and to avoid.
 
 When most videos in the sidebar are off topic, YouTube loads more to fill it, and
 the filter checks those too. On some videos, that means checking more than a
@@ -164,8 +167,8 @@ refresh YouTube.
   `src/filter.css` hides the filtered videos.
 - `src/background.js` receives the extension's messages and events in the background
   and hands each one to the module that handles it.
-- `src/model-host.js` opens the hidden page that runs the model, passes messages to it,
-  and closes it to free memory.
+- `src/model-host.js` opens the hidden page that runs the model when a page needs it or
+  asks to load it early, passes messages to it, and closes it to free memory.
 - `src/offscreen.html` and `src/offscreen.js` are that hidden page. They load the
   model when needed and close it after 5 idle minutes.
 - `src/matcher.js` compares video titles with your topics.

@@ -45,7 +45,7 @@
     "message": "视频与你想看的主题要多接近。越高隐藏的视频越多，越低保留的越多。"
   },
   "modelIdle": {
-    "message": "打开视频时会加载模型。"
+    "message": "页面需要时会加载模型，你也可以点击“立即加载”。"
   },
   "modelLoading": {
     "message": "正在加载模型…"
@@ -97,5 +97,8 @@
         "example": "gaming, gossip"
       }
     }
+  },
+  "loadNow": {
+    "message": "立即加载"
   }
 }

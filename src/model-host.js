@@ -1,10 +1,11 @@
 // Runs the offscreen document that holds the topic model: opens it when a tab asks for
-// matches, relays the answers and the model status, and closes it to free the memory.
+// matches or a page asks to load the model, relays the answers and the model status, and
+// closes it to free the memory.
 (() => {
   "use strict";
 
   const { protocol, settings, verdict } = globalThis.BetterYT;
-  const { OFFSCREEN, STATUS_KEY, MODEL_STATES } = protocol;
+  const { PRELOAD, OFFSCREEN, STATUS_KEY, MODEL_STATES } = protocol;
 
   const OFFSCREEN_PATH = "src/offscreen.html";
   const OFFSCREEN_DOCUMENT = {
@@ -66,7 +67,7 @@
 
   // A document can close between the check and the message, so a missing receiver gets one retry,
   // unless the filter stopped needing the model meanwhile.
-  async function match(message) {
+  async function request(message) {
     const startedAt = turnOffs;
     try {
       return await forward(message);
@@ -74,6 +75,18 @@
       if (turnOffs !== startedAt || !MISSING_RECEIVER.test(error?.message)) return errorAnswer(error);
       return forward(message).catch(errorAnswer);
     }
+  }
+
+  const preload = () => request({ type: PRELOAD });
+
+  // Progress can still be on its way when release() closes the document. Checked and stored one
+  // at a time with the close, a status either lands before the idle one or finds no document and
+  // is dropped, so the status never says loading after idle. A status that can't be stored is
+  // dropped too: the next one replaces it.
+  function onStatus(status) {
+    return serialize(async () => {
+      if (await hasOffscreen()) await storeStatus(status);
+    }).catch(() => {});
   }
 
   // Freeing the model also resets the status the popup and the options page show.
@@ -93,5 +106,5 @@
     await release();
   }
 
-  globalThis.BetterYT.modelHost = Object.freeze({ match, storeStatus, release, onSettingsChanged });
+  globalThis.BetterYT.modelHost = Object.freeze({ match: request, preload, onStatus, release, onSettingsChanged });
 })();

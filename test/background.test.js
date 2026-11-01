@@ -190,13 +190,76 @@ test("answers with an error when the offscreen document sends no answer", async 
   assert.equal(typeof answer.error, "string");
 });
 
-test("stores the model status for the popup", async () => {
-  const { protocol, send, status } = setup();
+test("stores the model status for the popup while the model's document is open", async () => {
+  const { protocol, send, match, status } = setup();
+  await match();
 
   const answer = await send({ type: protocol.STATUS, status: { state: protocol.MODEL_STATES.LOADING, progress: 0.4 } });
+  await flush();
 
   assert.equal(answer, undefined);
   assert.deepEqual(status(), { state: "loading", progress: 0.4 });
+});
+
+test("a status that arrives after the model was freed leaves it idle", async () => {
+  const { protocol, send, match, status } = setup();
+  await match();
+  await send({ type: protocol.IDLE });
+  await flush();
+
+  await send({ type: protocol.STATUS, status: { state: protocol.MODEL_STATES.LOADING, progress: 0.4 } });
+  await flush();
+
+  assert.deepEqual(status(), { state: "idle" });
+});
+
+// Holds the next context check, which still sees the document as it was when asked, until the
+// returned function lets it answer.
+function holdNextCheck(chrome) {
+  const { getContexts } = chrome.runtime;
+  const held = Promise.withResolvers();
+  chrome.runtime.getContexts = async (filter) => {
+    chrome.runtime.getContexts = getContexts;
+    const contexts = await getContexts(filter);
+    await held.promise;
+    return contexts;
+  };
+  return held.resolve;
+}
+
+test("a status still being checked as the model is freed leaves it idle", async () => {
+  const { chrome, protocol, send, match, status } = setup();
+  await match();
+  const answerCheck = holdNextCheck(chrome);
+
+  send({ type: protocol.STATUS, status: { state: protocol.MODEL_STATES.LOADING, progress: 0.4 } });
+  send({ type: protocol.IDLE });
+  await flush();
+  answerCheck();
+  await flush();
+
+  assert.deepEqual(status(), { state: "idle" });
+});
+
+test("Load now opens the document and forwards the preload", async () => {
+  const { offscreen, protocol, send } = setup({ answer: () => ({ ok: true }) });
+
+  const answer = await send({ type: protocol.PRELOAD });
+
+  assert.deepEqual(answer, { ok: true });
+  assert.equal(offscreen.created.length, 1);
+  assert.deepEqual(offscreen.forwarded, [{ type: protocol.PRELOAD, target: protocol.OFFSCREEN }]);
+});
+
+// chrome.storage.onChanged also reports changes synced in from the user's other computers.
+test("a settings change alone never loads the model", async () => {
+  const { chrome, offscreen } = setup({ stored: { topics: "" } });
+
+  await chrome.storage.sync.set({ topics: "chess" });
+  await flush();
+
+  assert.equal(offscreen.created.length, 0);
+  assert.deepEqual(offscreen.forwarded, []);
 });
 
 test("closes the offscreen document when the model goes idle", async () => {

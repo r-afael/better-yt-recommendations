@@ -1,10 +1,10 @@
 // Runs in the offscreen document: answers MATCH requests with the topic model's scores for the
-// wanted topics and the topics to avoid, reports the model's status, and says when it has been
-// idle long enough to close.
+// wanted topics and the topics to avoid, loads the model early on PRELOAD, reports the model's
+// status, and says when it has been idle long enough to close.
 (() => {
   "use strict";
 
-  const { MATCH, STATUS, IDLE, OFFSCREEN, MODEL_STATES } = globalThis.BetterYT.protocol;
+  const { MATCH, PRELOAD, STATUS, IDLE, OFFSCREEN, MODEL_STATES } = globalThis.BetterYT.protocol;
 
   const IDLE_MS = 5 * 60_000; // Closing the document frees about 600 MB once matching stops.
 
@@ -97,8 +97,18 @@
       }
     }
 
-    // Resolves to { scores: { [id]: { want, avoid } } } or { error }; never rejects.
+    // Answered at once, since the page that asked may close. The load counts as a running
+    // request, so a model that is never used goes idle only once its load has settled.
+    function preload() {
+      requestStarted();
+      getMatcher().catch(() => {}).finally(requestFinished);
+      return { ok: true };
+    }
+
+    // Resolves to { ok: true } for PRELOAD, otherwise to { scores: { [id]: { want, avoid } } }
+    // or { error }; never rejects.
     async function handle(message) {
+      if (message?.type === PRELOAD) return preload();
       requestStarted();
       try {
         return await answer(message);

@@ -18,6 +18,9 @@ export const locales = readdirSync(new URL("_locales/", root));
 // Where the background reports the model's status in chrome.storage.session, as the pages read it.
 export const STATUS_KEY = "modelStatus";
 
+// The message type a page sends the background to load the model right away.
+export const PRELOAD = "better-yt:preload";
+
 // Lets pending promises, storage events and mutation observers run.
 export const flush = () => new Promise((resolve) => setImmediate(resolve));
 
@@ -138,6 +141,17 @@ export function fakeChrome({ stored = {}, session = {}, locale = "en" } = {}) {
     },
   };
   return chrome;
+}
+
+// Answers each message a page sends the background with answer(message), and returns the
+// messages' types in the order they were sent.
+export function recordMessages(chrome, answer = async () => ({ ok: true })) {
+  const sent = [];
+  chrome.runtime.sendMessage = (message) => {
+    sent.push(message.type);
+    return answer(message);
+  };
+  return sent;
 }
 
 // Opens one of the extension's pages, such as src/popup.html, and runs its own scripts in order

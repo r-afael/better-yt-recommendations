@@ -60,8 +60,8 @@
     "description": "Explains the sensitivity slider."
   },
   "modelIdle": {
-    "message": "The model loads when you open a video.",
-    "description": "Status of the topic model before it has loaded."
+    "message": "The model loads when a page needs it, or when you click Load now.",
+    "description": "Status of the topic model before it has loaded. \"Load now\" is the button next to it."
   },
   "modelLoading": {
     "message": "Loading the model…",
@@ -126,5 +126,9 @@
         "example": "gaming, gossip"
       }
     }
+  },
+  "loadNow": {
+    "message": "Load now",
+    "description": "Button next to the model status that starts loading the topic model right away."
   }
 }

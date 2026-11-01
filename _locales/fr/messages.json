@@ -45,7 +45,7 @@
     "message": "À quel point une vidéo doit être proche d'un sujet que vous voulez voir. Plus elle est haute, plus de vidéos sont masquées ; plus elle est basse, plus il en reste."
   },
   "modelIdle": {
-    "message": "Le modèle se charge quand vous ouvrez une vidéo."
+    "message": "Le modèle se charge quand une page en a besoin, ou quand vous cliquez sur Charger maintenant."
   },
   "modelLoading": {
     "message": "Chargement du modèle…"
@@ -97,5 +97,8 @@
         "example": "gaming, gossip"
       }
     }
+  },
+  "loadNow": {
+    "message": "Charger maintenant"
   }
 }

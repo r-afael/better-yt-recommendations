@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { STATUS_KEY, flush, locales, openPage, readJson, untranslated } from "./helpers.js";
+import { PRELOAD, STATUS_KEY, flush, locales, openPage, readJson, recordMessages, untranslated } from "./helpers.js";
 
 const alphabetically = (a, b) => a.localeCompare(b);
 
@@ -95,6 +95,14 @@ test("shows the model status for the stored topics to see or to avoid while the 
   toggle("topicFilter").click();
   await flush();
   assert.equal(status.hidden, true, "hidden while the topic filter is off");
+});
+
+test("Load now in the popup asks the background to load the model", async (t) => {
+  const { document, chrome } = await setup(t, { stored: { topics: "chess" } });
+  const sent = recordMessages(chrome);
+  document.querySelector("#load-now").click();
+  await flush();
+  assert.deepEqual(sent, [PRELOAD]);
 });
 
 test("the summary lists the topics, and clicking it opens the options page", async (t) => {

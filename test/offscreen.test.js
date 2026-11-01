@@ -3,7 +3,7 @@ import test from "node:test";
 import vm from "node:vm";
 import FakeTimers from "@sinonjs/fake-timers";
 import { JSDOM } from "jsdom";
-import { fakeChrome, flush, read, runScripts, score } from "./helpers.js";
+import { PRELOAD, fakeChrome, flush, read, runScripts, score } from "./helpers.js";
 
 const MATCH = "better-yt:match";
 const IDLE_MS = 1_000;
@@ -182,6 +182,47 @@ test("never says it is idle while a request is still running", async () => {
   await slow;
   clock.tick(IDLE_MS);
   assert.equal(state.idles, 1);
+});
+
+test("a preload answers at once and loads the model in the background", async () => {
+  const { state, handle } = setup();
+
+  assert.deepEqual(await handle({ type: PRELOAD }), { ok: true });
+  assert.equal(state.loads, 1);
+  assert.deepEqual(state.statuses, [LOADING(0)]);
+});
+
+test("a match after a preload shares its load", async () => {
+  const { state, handle, finishLoading } = setup();
+  await handle({ type: PRELOAD });
+  const answer = handle(request());
+  await finishLoading();
+
+  assert.deepEqual(await answer, { scores: { a: score(1) } });
+  assert.equal(state.loads, 1);
+});
+
+test("a preloaded model that is never used goes idle only after the load finishes", async () => {
+  const { clock, state, handle, finishLoading } = setup();
+  await handle({ type: PRELOAD });
+  clock.tick(IDLE_MS * 10);
+  assert.equal(state.idles, 0);
+
+  await finishLoading();
+  clock.tick(IDLE_MS);
+  assert.equal(state.idles, 1);
+});
+
+test("a preload that fails still goes idle, and the next one tries again", async () => {
+  const { clock, state, handle, failLoading } = setup();
+  await handle({ type: PRELOAD });
+  await failLoading(new Error("offline"));
+  assert.deepEqual(state.statuses, [LOADING(0), ERROR]);
+
+  clock.tick(IDLE_MS);
+  assert.equal(state.idles, 1);
+  await handle({ type: PRELOAD });
+  assert.equal(state.loads, 2);
 });
 
 // Runs the offscreen document's scripts with a model that embeds every text as the same vector.

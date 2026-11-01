@@ -1,8 +1,9 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { STATUS_KEY, flush, locales, openPage, readJson, untranslated } from "./helpers.js";
+import { PRELOAD, STATUS_KEY, flush, locales, openPage, readJson, recordMessages, untranslated } from "./helpers.js";
 
 const SAVE_DELAY_MS = 400;
+const IDLE_TEXT = "The model loads when a page needs it, or when you click Load now.";
 
 async function setup(t, options) {
   const page = await openPage(t, "src/options.html", options);
@@ -12,6 +13,7 @@ async function setup(t, options) {
   const avoidField = document.querySelector('textarea[name="avoidTopics"]');
   const status = document.querySelector("#model-status");
   const progressBar = document.querySelector("#model-progress");
+  const loadButton = document.querySelector("#load-now");
   const type = (text, into = field) => {
     into.value = text;
     into.dispatchEvent(new window.Event("input", { bubbles: true }));
@@ -26,7 +28,7 @@ async function setup(t, options) {
     slider.dispatchEvent(new window.Event("input", { bubbles: true }));
     slider.dispatchEvent(new window.Event("change", { bubbles: true }));
   };
-  return { ...page, toggle, field, avoidField, status, progressBar, type, commit, slider, sliderValue, sliderHint, slide };
+  return { ...page, toggle, field, avoidField, status, progressBar, loadButton, type, commit, slider, sliderValue, sliderHint, slide };
 }
 
 // What the background stores while the model loads, as chrome.storage.session reports it.
@@ -158,7 +160,7 @@ test("shows the sensitivity in the browser's language", async (t) => {
 test("describes each model state", async (t) => {
   const { chrome, status, progressBar } = await setup(t, { stored: { topics: "chess" } });
   assert.equal(status.hidden, false);
-  assert.equal(status.textContent, "The model loads when you open a video.");
+  assert.equal(status.textContent, IDLE_TEXT);
   assert.equal(status.getAttribute("role"), "status");
   assert.equal(progressBar.hidden, true);
 
@@ -173,7 +175,7 @@ test("describes each model state", async (t) => {
   assert.equal(status.textContent, "Couldn't load the model. It will try again shortly.");
   await chrome.storage.session.remove(STATUS_KEY);
   await flush();
-  assert.equal(status.textContent, "The model loads when you open a video.");
+  assert.equal(status.textContent, IDLE_TEXT);
 });
 
 test("announces loading once while the progress bar follows the download", async (t) => {
@@ -196,8 +198,9 @@ test("shows the model status stored before the page opened", async (t) => {
 });
 
 test("hides the model status until there are topics to match", async (t) => {
-  const { status, type } = await setup(t);
+  const { status, loadButton, type } = await setup(t);
   assert.equal(status.hidden, true);
+  assert.equal(loadButton.hidden, true);
   type(" , ");
   assert.equal(status.hidden, true);
   type("chess");
@@ -222,12 +225,87 @@ test("hides the model status while the topic filter is off", async (t) => {
   assert.equal(progressBar.hidden, false);
 });
 
+test("Load now shows while the model is idle or failed, and asks the background to load it", async (t) => {
+  const { chrome, loadButton } = await setup(t, { stored: { topics: "chess" } });
+  const sent = recordMessages(chrome);
+  assert.equal(loadButton.hidden, false);
+  assert.equal(loadButton.textContent, "Load now");
+
+  loadButton.click();
+  await flush();
+  assert.deepEqual(sent, [PRELOAD]);
+  assert.equal(loadButton.disabled, true, "until the next status arrives");
+
+  await reportStatus(chrome, { state: "error" });
+  assert.equal(loadButton.hidden, false);
+  assert.equal(loadButton.disabled, false);
+});
+
+test("Load now comes back when the background couldn't reach the model", async (t) => {
+  const { chrome, loadButton } = await setup(t, { stored: { topics: "chess" } });
+  recordMessages(chrome, async () => ({ error: "The topic model did not answer." }));
+  loadButton.click();
+  assert.equal(loadButton.disabled, true);
+  await flush();
+  assert.equal(loadButton.disabled, false);
+
+  recordMessages(chrome, async () => {
+    throw new Error("Extension context invalidated.");
+  });
+  loadButton.click();
+  await flush();
+  assert.equal(loadButton.disabled, false, "also when the message couldn't be sent");
+});
+
+test("Load now hides while the model loads or is ready", async (t) => {
+  const { chrome, loadButton } = await setup(t, { stored: { topics: "chess" } });
+  await reportStatus(chrome, { state: "loading", progress: 0.1 });
+  assert.equal(loadButton.hidden, true);
+  await reportStatus(chrome, { state: "ready" });
+  assert.equal(loadButton.hidden, true);
+});
+
+test("saving the first topics asks the background to load the model", async (t) => {
+  const { chrome, clock, type } = await setup(t);
+  const sent = recordMessages(chrome);
+  const saved = Promise.withResolvers();
+  const set = chrome.storage.sync.set;
+  chrome.storage.sync.set = (changes) => saved.promise.then(() => set(changes));
+
+  type("chess");
+  clock.tick(SAVE_DELAY_MS);
+  await flush();
+  assert.deepEqual(sent, [], "not before the save resolved");
+  saved.resolve();
+  await flush();
+  assert.equal(chrome.data.topics, "chess");
+  assert.deepEqual(sent, [PRELOAD]);
+});
+
+test("turning the filter back on with topics asks the background to load the model", async (t) => {
+  const { chrome, toggle } = await setup(t, { stored: { topics: "chess", topicFilter: false } });
+  const sent = recordMessages(chrome);
+  toggle("topicFilter").click();
+  await flush();
+  assert.deepEqual(sent, [PRELOAD]);
+});
+
+test("changing topics that were already set doesn't ask again", async (t) => {
+  const { chrome, type, commit } = await setup(t, { stored: { topics: "chess" } });
+  const sent = recordMessages(chrome);
+  type("chess, cooking");
+  commit();
+  await flush();
+  assert.equal(chrome.data.topics, "chess, cooking");
+  assert.deepEqual(sent, []);
+});
+
 test("ignores storage changes that aren't the model status", async (t) => {
   const { chrome, status } = await setup(t, { stored: { topics: "chess" } });
   await chrome.storage.session.set({ other: { state: "ready" } });
   await chrome.storage.sync.set({ [STATUS_KEY]: { state: "ready" } });
   await flush();
-  assert.equal(status.textContent, "The model loads when you open a video.");
+  assert.equal(status.textContent, IDLE_TEXT);
 });
 
 test("translates the topics placeholder and the model's status", async (t) => {

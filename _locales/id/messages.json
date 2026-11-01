@@ -45,7 +45,7 @@
     "message": "Seberapa dekat video harus dengan topik yang Anda inginkan. Lebih tinggi menyembunyikan lebih banyak video; lebih rendah menampilkan lebih banyak."
   },
   "modelIdle": {
-    "message": "Model dimuat saat Anda membuka video."
+    "message": "Model dimuat saat halaman membutuhkannya, atau saat Anda mengklik Muat sekarang."
   },
   "modelLoading": {
     "message": "Memuat model…"
@@ -97,5 +97,8 @@
         "example": "gaming, gossip"
       }
     }
+  },
+  "loadNow": {
+    "message": "Muat sekarang"
   }
 }

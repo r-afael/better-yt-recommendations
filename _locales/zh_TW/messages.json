@@ -45,7 +45,7 @@
     "message": "影片與你想看的主題要多接近。越高隱藏的影片越多，越低保留的越多。"
   },
   "modelIdle": {
-    "message": "開啟影片時會載入模型。"
+    "message": "頁面需要時會載入模型，你也可以點選「立即載入」。"
   },
   "modelLoading": {
     "message": "正在載入模型…"
@@ -97,5 +97,8 @@
         "example": "gaming, gossip"
       }
     }
+  },
+  "loadNow": {
+    "message": "立即載入"
   }
 }
