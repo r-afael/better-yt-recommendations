@@ -129,5 +129,5 @@
   }
 
   globalThis.BetterYT ??= {};
-  globalThis.BetterYT.settings = { DEFAULTS, LIMITS, QUOTA_ERROR, load, save, subscribe, sanitize, fits, nameKey, sameName, clip };
+  globalThis.BetterYT.settings = { DEFAULTS, LIMITS, QUOTA_ERROR, load, save, subscribe, nameKey, sameName, clip };
 })();

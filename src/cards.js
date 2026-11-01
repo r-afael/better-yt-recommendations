@@ -200,7 +200,6 @@
   globalThis.BetterYT ??= {};
   globalThis.BetterYT.cards = Object.freeze({
     SURFACES,
-    EXCLUDED,
     WATCHED_ATTRIBUTES,
     surfaceFor,
     filtersOn,

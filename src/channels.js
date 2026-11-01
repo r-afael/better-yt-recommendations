@@ -66,5 +66,5 @@
     return Object.freeze({ lookup, hasBlocked: blocked.size > 0 });
   }
 
-  globalThis.BetterYT.channels = Object.freeze({ clean, key, parse, countNames, add, reconcile, createIndex });
+  globalThis.BetterYT.channels = Object.freeze({ parse, countNames, add, reconcile, createIndex });
 })();
