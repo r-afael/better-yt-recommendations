@@ -17,6 +17,12 @@
   "enforceHint": {
     "message": "होम पर कोई दूसरा टैब चुनने पर भी आप अपनी कस्टम फ़ीड पर ही रहेंगे।"
   },
+  "hideShorts": {
+    "message": "Shorts छिपाएं"
+  },
+  "hideShortsHint": {
+    "message": "फ़ीड, खोज और साइडबार से Shorts हटाता है, और Shorts के लिंक सामान्य वीडियो की तरह खोलता है।"
+  },
   "topicFilter": {
     "message": "विषय के अनुसार सुझाव फ़िल्टर करें"
   },

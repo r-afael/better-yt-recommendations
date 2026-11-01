@@ -23,6 +23,14 @@
     "message": "Stay on your custom feed, even if you pick another Home tab.",
     "description": "Explains enforcement mode: other Home tabs can't take over from the custom feed."
   },
+  "hideShorts": {
+    "message": "Hide Shorts",
+    "description": "Popup toggle that hides YouTube Shorts."
+  },
+  "hideShortsHint": {
+    "message": "Removes Shorts from feeds, search and the sidebar, and opens Shorts links as regular videos.",
+    "description": "Explains the hideShorts toggle: Shorts disappear and Shorts links open in the regular video player."
+  },
   "topicFilter": {
     "message": "Filter recommendations by topic",
     "description": "Popup toggle that hides recommended videos that don't match the user's topics."

@@ -17,6 +17,12 @@
   "enforceHint": {
     "message": "即使選取首頁上的其他分頁，也會停留在你的自訂動態消息。"
   },
+  "hideShorts": {
+    "message": "隱藏 Shorts"
+  },
+  "hideShortsHint": {
+    "message": "從動態消息、搜尋結果和側邊欄移除 Shorts，並以一般影片的形式開啟 Shorts 連結。"
+  },
   "topicFilter": {
     "message": "依主題篩選推薦內容"
   },

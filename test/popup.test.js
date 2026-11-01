@@ -83,6 +83,14 @@ test("saves the topic filter toggle as it changes", async (t) => {
   assert.equal(chrome.data.topicFilter, false);
 });
 
+test("Hide Shorts starts off and saves as it changes", async (t) => {
+  const { chrome, toggle } = await setup(t);
+  assert.equal(toggle("hideShorts").checked, false);
+  toggle("hideShorts").click();
+  await flush();
+  assert.equal(chrome.data.hideShorts, true);
+});
+
 test("shows the stored topics", async (t) => {
   const { field } = await setup(t, { stored: { topics: "chess, cooking" } });
   assert.equal(field.value, "chess, cooking");

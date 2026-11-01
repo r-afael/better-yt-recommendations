@@ -1,0 +1,20 @@
+/* YouTube Shorts, hidden while the Hide Shorts setting is on. See src/shorts.js.
+   All of YouTube's Shorts markup lives here, so a redesign is a one-line change. */
+[data-better-yt-hide-shorts] :is(
+  /* Shorts shelves on Home, Subscriptions and channel pages. */
+  ytd-rich-section-renderer:has(ytd-rich-shelf-renderer[is-shorts], ytm-shorts-lockup-view-model-v2),
+  /* Shorts shelves in search results, current and older layout, and next to the video being watched. */
+  grid-shelf-view-model:has(ytm-shorts-lockup-view-model-v2),
+  ytd-reel-shelf-renderer,
+  /* Single Shorts mixed in with regular videos. */
+  ytd-rich-item-renderer:has(a[href^="/shorts/"]),
+  ytd-video-renderer:has(a[href^="/shorts/"]),
+  ytd-compact-video-renderer:has(a[href^="/shorts/"]),
+  yt-lockup-view-model:has(a[href^="/shorts/"]),
+  /* The Shorts entry of the side menu. The full menu's link has no address, only the title,
+     which YouTube doesn't translate. */
+  ytd-guide-entry-renderer:has(a[title="Shorts"]),
+  ytd-mini-guide-entry-renderer:has(a[href="/shorts/"])
+) {
+  display: none !important;
+}

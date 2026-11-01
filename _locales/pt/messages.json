@@ -17,6 +17,12 @@
   "enforceHint": {
     "message": "Continue no seu feed personalizado, mesmo se escolher outra guia do Início."
   },
+  "hideShorts": {
+    "message": "Ocultar Shorts"
+  },
+  "hideShortsHint": {
+    "message": "Remove os Shorts dos feeds, da pesquisa e da barra lateral, e abre links de Shorts como vídeos normais."
+  },
   "topicFilter": {
     "message": "Filtrar recomendações por assunto"
   },

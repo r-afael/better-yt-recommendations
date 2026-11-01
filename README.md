@@ -35,6 +35,10 @@ pick up changes right away.
 - **Enforcement mode** (off by default): keeps you on Your custom feed. Clicking
   another Home tab, like Podcasts or All, does nothing, and if YouTube switches tabs
   on its own, the extension switches back.
+- **Hide Shorts** (off by default): hides the Shorts entry in the side menu, Shorts
+  shelves on Home, Subscriptions and channel pages, and Shorts in search results and
+  the sidebar. A link to a Short opens it as a regular video,
+  without the endless feed of Shorts after it.
 - **Filter recommendations by topic** (on by default): hides videos in the sidebar
   next to the one you're watching that don't match your topics. It does nothing
   until you type some topics. Turn it off to show every video again and free the
@@ -120,6 +124,9 @@ refresh YouTube.
 - `src/content.js` selects the tab on YouTube.
 - `src/labels.js` lists the tab's name in each language.
 - `src/settings.js` stores the settings for the content script and the popup.
+- `src/shorts.js` hides Shorts and opens Shorts links as regular videos.
+  `src/shorts.css` lists what to hide. Both load as soon as a YouTube page starts, so
+  Shorts never flash on screen; the other content scripts load once the page is ready.
 - `src/scheduler.js` debounces the content scripts' work after page changes.
 - `src/popup.html`, `src/popup.css` and `src/popup.js` are the settings popup.
 - `_locales/` has the popup's translations.

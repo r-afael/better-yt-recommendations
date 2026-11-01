@@ -17,6 +17,12 @@
   "enforceHint": {
     "message": "Permanece en tu feed personalizado aunque elijas otra pestaña de Inicio."
   },
+  "hideShorts": {
+    "message": "Ocultar Shorts"
+  },
+  "hideShortsHint": {
+    "message": "Quita los Shorts de los feeds, la búsqueda y la barra lateral, y abre los enlaces de Shorts como videos normales."
+  },
   "topicFilter": {
     "message": "Filtrar recomendaciones por tema"
   },

@@ -17,6 +17,12 @@
   "enforceHint": {
     "message": "即使选择首页上的其他标签，也会停留在你的自定义信息流。"
   },
+  "hideShorts": {
+    "message": "隐藏 Shorts"
+  },
+  "hideShortsHint": {
+    "message": "从信息流、搜索结果和侧边栏中移除 Shorts，并以普通视频的形式打开 Shorts 链接。"
+  },
   "topicFilter": {
     "message": "按主题筛选推荐"
   },

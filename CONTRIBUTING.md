@@ -38,9 +38,10 @@ Start it with `feat:`, `fix:`, `docs:`, `chore:`, `refactor:`, `test:`, `ci:` or
 ## Common changes
 
 **YouTube changed its layout.** The selectors live at the top of `src/content.js`
-(the custom feed tab) and `src/sidebar.js` (the recommended videos). Update them, and
-update the matching markup in the tests. `test/fixtures/watch-sidebar.html` is a
-copy of real YouTube markup; replace it with a fresh copy when the sidebar changes.
+(the custom feed tab), `src/sidebar.js` (the recommended videos) and `src/shorts.css`
+(Shorts). Update them, and update the matching markup in the tests.
+`test/fixtures/watch-sidebar.html` is a copy of real YouTube markup; replace it with a
+fresh copy when the sidebar changes.
 
 **A new language.** Add `_locales/<code>/messages.json` with every key from
 `_locales/en/messages.json`. If YouTube names the custom feed tab differently in that

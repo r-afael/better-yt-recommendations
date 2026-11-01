@@ -5,7 +5,9 @@ import { JSDOM } from "jsdom";
 import { fakeChrome, flush, read, readJson, runScripts } from "./helpers.js";
 
 // Loads what the browser loads, in the manifest's order, so a misordered or missing script fails here.
-const [{ js: scripts, css }] = readJson("manifest.json").content_scripts;
+const contentScripts = readJson("manifest.json").content_scripts;
+const scripts = contentScripts.flatMap((entry) => entry.js);
+const css = contentScripts.flatMap((entry) => entry.css);
 const fixture = read("test/fixtures/watch-sidebar.html");
 const styles = css.map(read).join("\n");
 const FIXTURE_IDS = ["PFmuCDHHpwk", "PkZNo7MFNFg", "RphIVv0uWrM", "C4dGVTl6ry8"];

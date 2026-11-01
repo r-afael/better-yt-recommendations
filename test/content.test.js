@@ -511,15 +511,18 @@ test("turning enforcement off lets other tabs be chosen again", async (t) => {
 
 test("the manifest ships only local scripts, asks for no host access, and stays on desktop YouTube", () => {
   const manifest = JSON.parse(read("manifest.json"));
-  const [contentScripts] = manifest.content_scripts;
+  const contentScripts = manifest.content_scripts;
+  const js = contentScripts.flatMap((entry) => entry.js);
   assert.equal(manifest.manifest_version, 3);
   assert.deepEqual(manifest.permissions, ["storage", "offscreen"]);
   assert.equal(manifest.host_permissions, undefined);
-  assert.equal(manifest.content_scripts.length, 1);
-  assert.deepEqual(contentScripts.matches, ["https://www.youtube.com/*", "https://youtube.com/*"]);
-  assert.deepEqual(contentScripts.js.slice(0, scripts.length), scripts);
+  for (const entry of contentScripts) {
+    assert.deepEqual(entry.matches, ["https://www.youtube.com/*", "https://youtube.com/*"]);
+  }
+  // Content scripts share one global scope, so each one loads after the scripts it uses.
+  assert.deepEqual(js.filter((path) => scripts.includes(path)), scripts);
   // Extension pages may run WebAssembly but no remote or inline scripts.
   assert.equal(manifest.content_security_policy.extension_pages, "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'");
-  const files = [...contentScripts.js, ...contentScripts.css, manifest.background.service_worker, manifest.action.default_popup];
+  const files = [...js, ...contentScripts.flatMap((entry) => entry.css), manifest.background.service_worker, manifest.action.default_popup];
   for (const path of files) assert.ok(read(path));
 });

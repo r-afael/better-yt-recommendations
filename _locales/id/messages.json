@@ -17,6 +17,12 @@
   "enforceHint": {
     "message": "Tetap di feed kustom Anda, meskipun Anda memilih tab Beranda lainnya."
   },
+  "hideShorts": {
+    "message": "Sembunyikan Shorts"
+  },
+  "hideShortsHint": {
+    "message": "Menghapus Shorts dari feed, penelusuran, dan sidebar, serta membuka link Shorts sebagai video biasa."
+  },
   "topicFilter": {
     "message": "Filter rekomendasi berdasarkan topik"
   },

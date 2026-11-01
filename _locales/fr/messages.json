@@ -17,6 +17,12 @@
   "enforceHint": {
     "message": "Restez sur votre flux personnalisé, même si vous choisissez un autre onglet de l'accueil."
   },
+  "hideShorts": {
+    "message": "Masquer les Shorts"
+  },
+  "hideShortsHint": {
+    "message": "Retire les Shorts des flux, de la recherche et de la barre latérale, et ouvre les liens de Shorts comme des vidéos classiques."
+  },
   "topicFilter": {
     "message": "Filtrer les recommandations par sujet"
   },
