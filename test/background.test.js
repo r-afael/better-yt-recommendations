@@ -573,3 +573,37 @@ test("ignores unknown commands", async () => {
   assert.equal("hideShorts" in chrome.data, false);
   assert.deepEqual(chrome.tabMessages, []);
 });
+
+// What the background asked Chrome to do with the Shorts redirect rule, outside the vm's realm.
+const rulesetCalls = (chrome) => plain(chrome.rulesetCalls);
+
+test("turning Hide Shorts on enables the redirect, and turning it off disables it", async () => {
+  const { chrome, protocol } = setup();
+
+  await chrome.storage.sync.set({ hideShorts: true });
+  await flush();
+  await chrome.storage.sync.set({ hideShorts: false });
+  await flush();
+
+  assert.deepEqual(rulesetCalls(chrome), [
+    { enableRulesetIds: [protocol.SHORTS_RULESET] },
+    { disableRulesetIds: [protocol.SHORTS_RULESET] },
+  ]);
+});
+
+// Chrome turns the rule off on every update, and Hide Shorts may have changed on another
+// computer while Chrome was closed.
+test("matches the redirect to the stored setting when the extension updates and when Chrome starts", async () => {
+  const { chrome, protocol } = setup({ stored: { hideShorts: true } });
+
+  chrome.runtime.onInstalled.dispatch({ reason: "update" });
+  await flush();
+  chrome.data.hideShorts = false;
+  chrome.runtime.onStartup.dispatch();
+  await flush();
+
+  assert.deepEqual(rulesetCalls(chrome), [
+    { enableRulesetIds: [protocol.SHORTS_RULESET] },
+    { disableRulesetIds: [protocol.SHORTS_RULESET] },
+  ]);
+});

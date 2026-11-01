@@ -1,4 +1,7 @@
-// Hides YouTube Shorts and opens Shorts links as regular videos.
+// Hides YouTube Shorts and opens Shorts links as regular videos. Full page loads of a Short are
+// redirected by the declarativeNetRequest rule in src/rules/shorts-redirect.json before the page
+// exists; this script covers navigation inside YouTube, which that rule never sees, and a Short
+// already open when the setting turns on.
 // src/shorts.css lists what to hide; it applies while the page carries HIDE_ATTRIBUTE.
 // Runs at document_start, so Shorts don't flash on screen before the settings load.
 (() => {

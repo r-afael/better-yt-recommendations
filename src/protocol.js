@@ -42,6 +42,8 @@ globalThis.BetterYT.protocol = Object.freeze({
   // manifest's commands name them.
   COMMAND_TOGGLE_FILTER: "toggle-topic-filter",
   COMMAND_TOGGLE_SHORTS: "toggle-hide-shorts",
+  // The manifest's declarative_net_request ruleset that sends Shorts to the regular player.
+  SHORTS_RULESET: "shorts_redirect",
   // The target of messages that only the offscreen document handles.
   OFFSCREEN: "offscreen",
   // Where the background keeps the latest model status, in chrome.storage.session.

@@ -15,6 +15,10 @@ anywhere.
 When you right-click a video and pick one of the extension's menu entries, it reads that
 video's channel name and saves it to your list.
 
+With Hide Shorts on, Chrome rewrites youtube.com/shorts/ addresses into youtube.com/watch
+addresses before loading them, using a rule the extension ships. This happens inside Chrome,
+and nothing is sent anywhere.
+
 ## What the extension stores
 
 Your settings, including your topics, your topics to avoid, the filter sensitivity

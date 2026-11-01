@@ -40,8 +40,9 @@ YouTube tabs pick up changes right away.
   on its own, the extension switches back.
 - **Hide Shorts** (off by default): hides the Shorts entry in the side menu, Shorts
   shelves on Home, Subscriptions and channel pages, and Shorts in search results and
-  the sidebar. A link to a Short opens it as a regular video,
-  without the endless feed of Shorts after it.
+  the sidebar. A link to a Short opens it as a regular video, without the endless feed of
+  Shorts after it. Opening a Short's address directly (typed, bookmarked or reloaded) loads the
+  regular player right away.
 - **Filter recommendations** (on by default): hides videos that don't match your
   topics on the pages you pick under Where to filter, that are closer to a topic to
   avoid, or that come from a channel you always hide. It does nothing until you type
@@ -176,7 +177,9 @@ Face). After that, the model runs on your computer. The titles and channels of t
 videos you see are never sent anywhere. The extension asks for the "offscreen"
 permission to run the model in a hidden page of its own. It asks for the "contextMenus"
 permission to add Never hide this channel and Always hide this channel to the right-click
-menu on YouTube.
+menu on YouTube. It asks for "declarativeNetRequestWithHostAccess" and access to
+youtube.com so Chrome can rewrite Shorts addresses to regular video addresses before loading
+them. The rewrite happens inside Chrome.
 
 Read the full [privacy policy](PRIVACY.md).
 
@@ -192,6 +195,8 @@ refresh YouTube.
 - `src/shorts.js` hides Shorts and opens Shorts links as regular videos.
   `src/shorts.css` lists what to hide. Both load as soon as a YouTube page starts, so
   Shorts never flash on screen; the other content scripts load once the page is ready.
+- `src/shorts-redirect.js` turns the Shorts redirect rule in
+  `src/rules/shorts-redirect.json` on and off with Hide Shorts.
 - `src/scheduler.js` debounces the content scripts' work after page changes.
 - `src/popup.html`, `src/popup.css` and `src/popup.js` are the settings popup.
 - `src/options.html`, `src/options.css` and `src/options.js` are the options page.

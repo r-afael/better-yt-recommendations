@@ -181,6 +181,7 @@ export function fakeChrome({ stored = {}, session = {}, locale = "en", commandLi
     menus: new Map(),
     uncheckedErrors: [],
     tabMessages: [],
+    rulesetCalls: [],
     storage: {
       sync,
       session: fakeStorageArea("session", session, onChanged),
@@ -190,6 +191,7 @@ export function fakeChrome({ stored = {}, session = {}, locale = "en", commandLi
       lastError: undefined,
       onMessage: fakeEvent(),
       onInstalled: fakeEvent(),
+      onStartup: fakeEvent(),
       async sendMessage() {
         return undefined;
       },
@@ -210,6 +212,11 @@ export function fakeChrome({ stored = {}, session = {}, locale = "en", commandLi
       onCommand: fakeEvent(),
       async getAll() {
         return chrome.commandList;
+      },
+    },
+    declarativeNetRequest: {
+      async updateEnabledRulesets(options) {
+        chrome.rulesetCalls.push(options);
       },
     },
     action: {

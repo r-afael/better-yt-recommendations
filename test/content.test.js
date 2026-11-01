@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import FakeTimers from "@sinonjs/fake-timers";
 import { JSDOM } from "jsdom";
-import { fakeChrome, flush, loadLabels, read, runScripts } from "./helpers.js";
+import { fakeChrome, flush, loadLabels, read, readJson, runScripts } from "./helpers.js";
 
 const scripts = ["src/settings.js", "src/scheduler.js", "src/labels.js", "src/content.js"];
 const HOME_PAGE = "ytd-browse";
@@ -509,20 +509,28 @@ test("turning enforcement off lets other tabs be chosen again", async (t) => {
   assert.equal(clock.countTimers(), 0);
 });
 
-test("the manifest ships only local scripts, asks for no host access, and stays on desktop YouTube", () => {
-  const manifest = JSON.parse(read("manifest.json"));
+test("the manifest ships only local scripts, asks for host access only on YouTube, and stays on desktop YouTube", () => {
+  const manifest = readJson("manifest.json");
   const contentScripts = manifest.content_scripts;
   const js = contentScripts.flatMap((entry) => entry.js);
   assert.equal(manifest.manifest_version, 3);
-  assert.deepEqual(manifest.permissions, ["storage", "offscreen", "contextMenus"]);
-  assert.equal(manifest.host_permissions, undefined);
+  assert.deepEqual(manifest.permissions, ["storage", "offscreen", "contextMenus", "declarativeNetRequestWithHostAccess"]);
   for (const entry of contentScripts) {
     assert.deepEqual(entry.matches, ["https://www.youtube.com/*", "https://youtube.com/*"]);
   }
+  // Asking for no more than the content scripts already run on adds no install warning.
+  assert.deepEqual(manifest.host_permissions, contentScripts[0].matches);
   // Content scripts share one global scope, so each one loads after the scripts it uses.
   assert.deepEqual(js.filter((path) => scripts.includes(path)), scripts);
   // Extension pages may run WebAssembly but no remote or inline scripts.
   assert.equal(manifest.content_security_policy.extension_pages, "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'");
-  const files = [...js, ...contentScripts.flatMap((entry) => entry.css), manifest.background.service_worker, manifest.action.default_popup, manifest.options_ui.page];
+  const files = [
+    ...js,
+    ...contentScripts.flatMap((entry) => entry.css),
+    manifest.background.service_worker,
+    manifest.action.default_popup,
+    manifest.options_ui.page,
+    ...manifest.declarative_net_request.rule_resources.map((ruleset) => ruleset.path),
+  ];
   for (const path of files) assert.ok(read(path));
 });
