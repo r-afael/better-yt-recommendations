@@ -15,8 +15,8 @@ anywhere.
 
 ## What the extension stores
 
-Your settings, including your topics, your topics to avoid and the filter
-sensitivity, are saved in Chrome's extension storage. If you use Chrome sync, Chrome
+Your settings, including your topics, your topics to avoid, the filter sensitivity
+and your channel lists, are saved in Chrome's extension storage. If you use Chrome sync, Chrome
 syncs them across your computers under
 [Google's privacy policy](https://policies.google.com/privacy). The extension also
 keeps the model's loading status until you close Chrome, so the popup and the options

@@ -24,10 +24,10 @@
     "message": "Retire les Shorts des flux, de la recherche et de la barre latérale, et ouvre les liens de Shorts comme des vidéos classiques."
   },
   "topicFilter": {
-    "message": "Filtrer les recommandations par sujet"
+    "message": "Filtrer les recommandations"
   },
   "topicFilterHint": {
-    "message": "Masque les vidéos qui ne correspondent pas à vos sujets, sur les pages cochées dans Où filtrer, dans Tous les paramètres. Utilise un modèle d'IA sur votre ordinateur."
+    "message": "Masque les vidéos qui ne correspondent pas à vos sujets ou à vos listes de chaînes, sur les pages cochées dans Où filtrer, dans Tous les paramètres. Utilise un modèle d'IA sur votre ordinateur."
   },
   "topics": {
     "message": "Sujets que vous voulez voir"
@@ -173,5 +173,29 @@
   },
   "filterSearch": {
     "message": "Résultats de recherche"
+  },
+  "channels": {
+    "message": "Chaînes"
+  },
+  "allowedChannels": {
+    "message": "Ne jamais masquer ces chaînes"
+  },
+  "allowedChannelsHint": {
+    "message": "Les vidéos de ces chaînes restent visibles, quel que soit leur sujet."
+  },
+  "blockedChannels": {
+    "message": "Toujours masquer ces chaînes"
+  },
+  "blockedChannelsHint": {
+    "message": "Les vidéos de ces chaînes sont masquées sur toutes les pages cochées dans Où filtrer."
+  },
+  "channelsHint": {
+    "message": "Une chaîne par ligne, avec son nom tel qu'il apparaît sur YouTube."
+  },
+  "listFull": {
+    "message": "Une liste contient jusqu'à 50 chaînes. Seules les 50 premières sont enregistrées."
+  },
+  "saveFailed": {
+    "message": "Impossible d'enregistrer votre modification. Réessayez dans une minute."
   }
 }

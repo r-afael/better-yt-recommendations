@@ -42,15 +42,16 @@ YouTube tabs pick up changes right away.
   shelves on Home, Subscriptions and channel pages, and Shorts in search results and
   the sidebar. A link to a Short opens it as a regular video,
   without the endless feed of Shorts after it.
-- **Filter recommendations by topic** (on by default): hides videos that don't match
-  your topics on the pages you pick under Where to filter, or that are closer to a
-  topic to avoid. It does nothing until you type some topics to see or to avoid.
-  Turn it off to show every video again and free the model's memory.
+- **Filter recommendations** (on by default): hides videos that don't match your
+  topics on the pages you pick under Where to filter, that are closer to a topic to
+  avoid, or that come from a channel you always hide. It does nothing until you type
+  some topics to see or to avoid, or a channel to hide. Turn it off to show every
+  video again, including blocked channels, and free the model's memory.
 - A summary of your topics to see and to avoid; click it to change them.
 
 ### On the options page
 
-The **Filter recommendations by topic** switch is on both pages.
+The **Filter recommendations** switch is on both pages.
 
 - **Topics you want to see**: the topics to keep, separated by commas. The field is
   disabled while the filter is off.
@@ -72,6 +73,13 @@ The **Filter recommendations by topic** switch is on both pages.
   search results, the shelves YouTube mixes in, such as "People also watched", are
   filtered like the results. Playlists and mixes on Home and in search results are
   judged by their title, like videos. The page checkboxes are disabled while the filter is off.
+- **Never hide these channels** and **Always hide these channels**: one channel name per
+  line, as YouTube shows it, up to 50 per list. Videos from a channel you never hide stay
+  visible whatever their topic; videos from a channel you always hide are hidden on every
+  page you filter, without the model. Names match ignoring case and spacing, so two
+  channels with the same name both match, and a channel that changes its name needs adding
+  again. Typing a name into one list removes it from the other. The lists are disabled
+  while the filter is off.
 
 Settings synced from another computer are kept within the limits the options page allows.
 
@@ -110,8 +118,10 @@ When most videos on a page are off topic, YouTube loads more to fill it (the sid
 and Home both do this), and the filter checks those too. On some pages, that means
 checking more than a hundred videos before the list settles.
 
+Channel lists cost nothing: they don't need the model.
+
 On a low-end computer, checking videos may feel slow. If it does, turn off **Filter
-recommendations by topic**.
+recommendations**.
 
 ## Languages
 
@@ -146,8 +156,8 @@ refresh YouTube.
 ## Privacy
 
 The extension runs only on YouTube. It doesn't track you or collect your data. It
-saves your settings, including your topics to see and to avoid, in Chrome, which
-syncs them across your computers if you use Chrome sync.
+saves your settings, including your topics to see and to avoid and your channel lists,
+in Chrome, which syncs them across your computers if you use Chrome sync.
 
 The topic filter's model and its files download once from huggingface.co (Hugging
 Face). After that, the model runs on your computer. The titles and channels of the
@@ -180,6 +190,8 @@ refresh YouTube.
 - `src/topics.js` turns the topics field into a list of topics.
 - `src/verdict.js` decides from a video's scores whether it is hidden, and whether the
   filter needs the model.
+- `src/channels.js` reads the channel lists and says whether a channel is always shown
+  or always hidden.
 - `src/cards.js` finds the video cards on the watch page, Home, Subscriptions and
   search results, reads them, and hides or shows them.
 - `src/hidden-row.js` draws the row that counts the hidden videos and shows them.

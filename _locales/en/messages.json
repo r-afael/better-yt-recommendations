@@ -32,12 +32,12 @@
     "description": "Explains the hideShorts toggle: Shorts disappear and Shorts links open in the regular video player."
   },
   "topicFilter": {
-    "message": "Filter recommendations by topic",
-    "description": "Toggle, in the popup and on the options page, that hides recommended videos that don't match the user's topics."
+    "message": "Filter recommendations",
+    "description": "Switch that hides videos by topic and by channel lists."
   },
   "topicFilterHint": {
-    "message": "Hides videos that don't match your topics, on the pages checked under Where to filter in All settings. Uses an AI model on your computer.",
-    "description": "Explains the topic filter switch, in the popup and on the options page. \"Where to filter\" is the options section's heading (filterPages) and \"All settings\" the link to the options page (allSettings); use the same words."
+    "message": "Hides videos that don't match your topics or your channel lists, on the pages checked under Where to filter in All settings. Uses an AI model on your computer.",
+    "description": "Explains the Filter recommendations switch, in the popup and on the options page. \"Where to filter\" is the options section's heading (filterPages) and \"All settings\" the link to the options page (allSettings); use the same words."
   },
   "topics": {
     "message": "Topics you want to see",
@@ -85,7 +85,7 @@
   },
   "topicsSection": {
     "message": "Topics",
-    "description": "Heading of the options page section with the topic filter, the topics and the sensitivity."
+    "description": "Heading of the options page section with the Filter recommendations switch (topicFilter), the topics and the sensitivity."
   },
   "summaryTopics": {
     "message": "Topics: $TOPICS$",
@@ -222,5 +222,37 @@
   "filterSearch": {
     "message": "Search results",
     "description": "Checkbox: filter search results."
+  },
+  "channels": {
+    "message": "Channels",
+    "description": "Heading of the options section with the channel lists."
+  },
+  "allowedChannels": {
+    "message": "Never hide these channels",
+    "description": "Label of the list of channels whose videos always stay visible."
+  },
+  "allowedChannelsHint": {
+    "message": "Videos from these channels stay visible, whatever their topic.",
+    "description": "Explains the never-hide list."
+  },
+  "blockedChannels": {
+    "message": "Always hide these channels",
+    "description": "Label of the list of channels whose videos are always hidden."
+  },
+  "blockedChannelsHint": {
+    "message": "Videos from these channels are hidden on every page checked under Where to filter.",
+    "description": "Explains the always-hide list. \"Where to filter\" is the section above (filterPages); use the same words."
+  },
+  "channelsHint": {
+    "message": "One channel per line, as its name appears on YouTube.",
+    "description": "Explains how to type the channel lists."
+  },
+  "listFull": {
+    "message": "A list holds up to 50 channels. Only the first 50 are saved.",
+    "description": "Shown when a channel list has more than 50 names."
+  },
+  "saveFailed": {
+    "message": "Couldn't save your change. Try again in a minute.",
+    "description": "Shown when Chrome refused to save a setting."
   }
 }

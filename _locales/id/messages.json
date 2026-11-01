@@ -24,10 +24,10 @@
     "message": "Menghapus Shorts dari feed, penelusuran, dan sidebar, serta membuka link Shorts sebagai video biasa."
   },
   "topicFilter": {
-    "message": "Filter rekomendasi berdasarkan topik"
+    "message": "Filter rekomendasi"
   },
   "topicFilterHint": {
-    "message": "Menyembunyikan video yang tidak cocok dengan topik Anda di halaman yang dicentang pada Tempat memfilter di Semua setelan. Menggunakan model AI di komputer Anda."
+    "message": "Menyembunyikan video yang tidak cocok dengan topik atau daftar saluran Anda di halaman yang dicentang pada Tempat memfilter di Semua setelan. Menggunakan model AI di komputer Anda."
   },
   "topics": {
     "message": "Topik yang ingin Anda lihat"
@@ -173,5 +173,29 @@
   },
   "filterSearch": {
     "message": "Hasil penelusuran"
+  },
+  "channels": {
+    "message": "Saluran"
+  },
+  "allowedChannels": {
+    "message": "Jangan pernah sembunyikan saluran ini"
+  },
+  "allowedChannelsHint": {
+    "message": "Video dari saluran ini tetap terlihat, apa pun topiknya."
+  },
+  "blockedChannels": {
+    "message": "Selalu sembunyikan saluran ini"
+  },
+  "blockedChannelsHint": {
+    "message": "Video dari saluran ini disembunyikan di setiap halaman yang dicentang pada Tempat memfilter."
+  },
+  "channelsHint": {
+    "message": "Satu saluran per baris, sesuai namanya di YouTube."
+  },
+  "listFull": {
+    "message": "Satu daftar memuat hingga 50 saluran. Hanya 50 saluran pertama yang disimpan."
+  },
+  "saveFailed": {
+    "message": "Tidak dapat menyimpan perubahan Anda. Coba lagi dalam satu menit."
   }
 }

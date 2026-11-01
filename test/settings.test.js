@@ -1,12 +1,13 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import vm from "node:vm";
-import { fakeChrome, flush, runScripts } from "./helpers.js";
+import { channelNames, fakeChrome, flush, runScripts } from "./helpers.js";
 
 // Loads settings.js the way every part of the extension does, over a sync store holding stored.
+// settings.save measures values in bytes, and a bare context has no TextEncoder.
 function loadSettings(stored = {}) {
   const chrome = fakeChrome({ stored });
-  const context = vm.createContext({ chrome });
+  const context = vm.createContext({ chrome, TextEncoder });
   runScripts(context, ["src/settings.js"]);
   return { settings: context.BetterYT.settings, chrome };
 }
@@ -60,4 +61,31 @@ test("ignores settings this version doesn't know", async () => {
   await chrome.storage.sync.set({ somethingNewer: true });
   await flush();
   assert.deepEqual(received, [{ enforce: true }]);
+});
+
+test("refuses to save a value larger than Chrome sync can hold, and saves nothing", async () => {
+  const { settings, chrome } = loadSettings({ topics: "chess" });
+  // Each of these characters takes 3 bytes, so 50 names of 100 come to about 15,000 bytes.
+  const blockedChannels = Array.from({ length: 50 }, () => "频".repeat(100));
+  await assert.rejects(settings.save({ topics: "cooking", blockedChannels }), { code: settings.QUOTA_ERROR, key: "blockedChannels" });
+  assert.deepEqual({ ...chrome.data }, { topics: "chess" });
+});
+
+test("reads a channel list from another device within bounds", async () => {
+  const stored = channelNames(60);
+  const { settings } = loadSettings({ allowedChannels: ["y".repeat(120), 42, null, ...stored], blockedChannels: "MrBeast" });
+  const values = await settings.load();
+  assert.deepEqual(structuredClone(values.allowedChannels), ["y".repeat(100), ...stored.slice(0, 49)]);
+  assert.deepEqual(structuredClone(values.blockedChannels), []);
+});
+
+test("every read gets its own list", async () => {
+  const failing = loadSettings();
+  failing.chrome.storage.sync.get = async () => {
+    throw new Error("Sync is unavailable.");
+  };
+  for (const { settings } of [loadSettings(), failing]) {
+    (await settings.load()).blockedChannels.push("MrBeast");
+    assert.deepEqual(structuredClone((await settings.load()).blockedChannels), []);
+  }
 });

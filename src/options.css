@@ -52,3 +52,12 @@ section > .hint {
   margin: 0;
   padding: 0 16px 12px;
 }
+
+/* Lines under a section's fields: a shared hint, or why a change wasn't saved. */
+.field > p {
+  margin: 0;
+}
+
+.error {
+  color: var(--accent);
+}

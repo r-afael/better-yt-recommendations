@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { MATCH, PRELOAD, STATUS_KEY, flush, holdMessages, locales, openPage, readJson, recordMessages, score, untranslated } from "./helpers.js";
+import { MATCH, PRELOAD, STATUS_KEY, channelNames, flush, holdMessages, locales, openPage, readJson, recordMessages, score, untranslated } from "./helpers.js";
 
 const SAVE_DELAY_MS = 400;
 const IDLE_TEXT = "The model loads when a page needs it, or when you click Load now.";
@@ -39,10 +39,12 @@ async function reportStatus(chrome, status) {
 
 const PAGE_SETTINGS = ["filterWatch", "filterHome", "filterSubscriptions", "filterSearch"];
 
-test("the topic filter switch on the options page saves and enables the fields and page checkboxes", async (t) => {
+test("the Filter recommendations switch on the options page saves and enables the fields, page checkboxes and channel lists", async (t) => {
   const { document, chrome, toggle, field, avoidField, slider } = await setup(t, { stored: { topicFilter: false } });
   const titleBox = document.querySelector("#try-title");
-  const controls = [field, avoidField, slider, titleBox, ...PAGE_SETTINGS.map(toggle)];
+  const channelFields = [...document.querySelectorAll('textarea[name$="Channels"]')];
+  assert.equal(channelFields.length, 2);
+  const controls = [field, avoidField, slider, titleBox, ...PAGE_SETTINGS.map(toggle), ...channelFields];
   const disabled = () => controls.map((control) => control.disabled);
   const every = (value) => controls.map(() => value);
   assert.deepEqual(disabled(), every(true));
@@ -506,4 +508,106 @@ test("every translation fills every options page text", async (t) => {
     const { document } = await setup(t, { locale });
     assert.deepEqual(untranslated(document), [], locale);
   }
+});
+
+// The options page with its two channel lists.
+async function setupChannels(t, options) {
+  const page = await setup(t, options);
+  const { document, chrome } = page;
+  const allowed = document.querySelector('textarea[name="allowedChannels"]');
+  const blocked = document.querySelector('textarea[name="blockedChannels"]');
+  const channelsError = document.querySelector("#channels-error");
+  // The lists as stored, outside the page's context.
+  const stored = () => structuredClone({ allowedChannels: chrome.data.allowedChannels, blockedChannels: chrome.data.blockedChannels });
+  return { ...page, allowed, blocked, channelsError, stored };
+}
+
+const messages = readJson("_locales/en/messages.json");
+
+test("saves each channel list one name per line", async (t) => {
+  const { clock, type, allowed, blocked, stored } = await setupChannels(t, { stored: { allowedChannels: ["Fireship", "Traversy Media"] } });
+  assert.equal(allowed.value, "Fireship\nTraversy Media");
+  type("MrBeast\n\n  mrbeast \nVeritasium\n", blocked);
+  clock.tick(SAVE_DELAY_MS);
+  assert.deepEqual(stored(), { allowedChannels: ["Fireship", "Traversy Media"], blockedChannels: ["MrBeast", "Veritasium"] });
+});
+
+test("shows a channel added elsewhere without disturbing the list being typed in", async (t) => {
+  const { chrome, type, allowed, blocked } = await setupChannels(t, { stored: { allowedChannels: ["Fireship"] } });
+  blocked.focus();
+  type("MrBeast\nVer", blocked);
+  await chrome.storage.sync.set({ allowedChannels: ["Fireship", "Traversy Media"], blockedChannels: ["Elsewhere"] });
+  await flush();
+  assert.equal(allowed.value, "Fireship\nTraversy Media");
+  assert.equal(blocked.value, "MrBeast\nVer");
+});
+
+test("typing a channel into one list removes it from the other", async (t) => {
+  const { clock, type, allowed, blocked, stored } = await setupChannels(t, { stored: { allowedChannels: ["Fireship", "MrBeast"] } });
+  blocked.focus();
+  type("mrbeast", blocked);
+  clock.tick(SAVE_DELAY_MS);
+  assert.deepEqual(stored(), { allowedChannels: ["Fireship"], blockedChannels: ["mrbeast"] });
+  await flush();
+  assert.equal(allowed.value, "Fireship");
+});
+
+test("editing one channel list after the other keeps both", async (t) => {
+  const { clock, type, allowed, blocked, stored } = await setupChannels(t);
+  type("MrBeast", blocked);
+  clock.tick(SAVE_DELAY_MS);
+  // No storage event has reached the page yet, so only the saved change set says MrBeast is blocked.
+  type("Fireship", allowed);
+  clock.tick(SAVE_DELAY_MS);
+  assert.deepEqual(stored(), { allowedChannels: ["Fireship"], blockedChannels: ["MrBeast"] });
+});
+
+test("says when a list has more than 50 channels", async (t) => {
+  const { clock, type, allowed, channelsError, chrome } = await setupChannels(t);
+  assert.equal(channelsError.hidden, true);
+  allowed.focus();
+  type(channelNames(51).join("\n"), allowed);
+  assert.equal(channelsError.hidden, false);
+  assert.equal(channelsError.textContent, messages.listFull.message);
+  clock.tick(SAVE_DELAY_MS);
+  await flush();
+  assert.equal(chrome.data.allowedChannels.length, 50);
+  assert.equal(channelsError.hidden, false, "saving the first 50 still says the rest were left out");
+
+  type(channelNames(50).join("\n"), allowed);
+  assert.equal(channelsError.hidden, true);
+});
+
+test("says when a change couldn't be saved", async (t) => {
+  const { window, document, chrome, type, field, blocked } = await setupChannels(t);
+  const set = chrome.storage.sync.set;
+  for (const [into, text, line] of [[field, "chess", "#topics-error"], [blocked, "MrBeast", "#channels-error"]]) {
+    const errorLine = document.querySelector(line);
+    // Chrome refuses the first write, as it does past its write quota.
+    chrome.storage.sync.set = async () => {
+      chrome.storage.sync.set = set;
+      throw new Error("MAX_WRITE_OPERATIONS_PER_MINUTE quota exceeded");
+    };
+    type(text, into);
+    into.dispatchEvent(new window.Event("change", { bubbles: true }));
+    await flush();
+    assert.equal(errorLine.hidden, false, line);
+    assert.equal(errorLine.textContent, messages.saveFailed.message, line);
+
+    into.dispatchEvent(new window.Event("change", { bubbles: true }));
+    await flush();
+    assert.equal(errorLine.hidden, true, `${line}, once saved`);
+  }
+});
+
+test("a refused save in a section without an error line is still reported", async (t) => {
+  const { window, chrome, toggle } = await setupChannels(t);
+  const refusal = new Error("MAX_WRITE_OPERATIONS_PER_MINUTE quota exceeded");
+  chrome.storage.sync.set = async () => {
+    throw refusal;
+  };
+  const logged = t.mock.method(window.console, "error", () => {});
+  toggle("filterHome").click();
+  await flush();
+  assert.deepEqual(logged.mock.calls.map((call) => call.arguments.at(-1)), [refusal]);
 });

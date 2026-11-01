@@ -214,5 +214,5 @@
     return { render, state: () => modelStatus.state };
   }
 
-  globalThis.BetterYT.ui = { message, valueOf, setText, startPage, createModelStatus, formatThreshold, formatList };
+  globalThis.BetterYT.ui = { message, valueOf, setText, reportSaveError, startPage, createModelStatus, formatThreshold, formatList };
 })();

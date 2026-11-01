@@ -27,6 +27,9 @@ export const MATCH = "better-yt:match";
 // The message type the content script sends the background with the number of hidden videos.
 export const HIDDEN_COUNT = "better-yt:hidden-count";
 
+// Channel names such as "Channel 0", for filling a channel list.
+export const channelNames = (count) => Array.from({ length: count }, (_, index) => `Channel ${index}`);
+
 // Lets pending promises, storage events and mutation observers run.
 export const flush = () => new Promise((resolve) => setImmediate(resolve));
 

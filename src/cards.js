@@ -3,6 +3,8 @@
 (() => {
   "use strict";
 
+  const { clip, LIMITS } = globalThis.BetterYT.settings;
+
   // Sponsored slots, Shorts shelves and other shelves hold cards too, but aren't recommendations.
   const EXCLUDED = [
     "ytd-ad-slot-renderer",
@@ -68,9 +70,6 @@
   const HIDDEN_ATTRIBUTE = "data-better-yt-hidden";
   const REASON_ATTRIBUTE = "data-better-yt-reason";
   const MAX_TITLE_LENGTH = 200;
-  const MAX_CHANNEL_LENGTH = 100;
-
-  const clean = (text, maxLength) => (text ?? "").replaceAll(/\s+/gu, " ").trim().slice(0, maxLength).trim();
 
   // Returns the surface a page shows, such as SURFACES.home for "/", or null for other pages.
   function surfaceFor(pathname) {
@@ -117,7 +116,7 @@
 
   function readTitle(item) {
     const title = firstMatch(item, TITLE_ATTRIBUTE_HOLDERS)?.getAttribute("title");
-    return clean(title || firstMatch(item, TITLE_TEXT)?.textContent, MAX_TITLE_LENGTH);
+    return clip(title || firstMatch(item, TITLE_TEXT)?.textContent, MAX_TITLE_LENGTH);
   }
 
   // Returns the video a card shows, or null when the card isn't a readable video.
@@ -126,7 +125,7 @@
     const id = readId(item);
     const title = readTitle(item);
     if (!id || !title) return null;
-    const channel = clean(firstMatch(item, surface?.channel ?? CHANNEL_TEXT)?.textContent, MAX_CHANNEL_LENGTH);
+    const channel = clip(firstMatch(item, surface?.channel ?? CHANNEL_TEXT)?.textContent, LIMITS.MAX_CHANNEL_LENGTH);
     return { id, title, channel };
   }
 

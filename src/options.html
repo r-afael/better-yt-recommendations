@@ -42,6 +42,7 @@
           <p class="status" id="model-status" role="status" aria-live="polite" hidden></p>
           <progress id="model-progress" max="100" aria-labelledby="model-status" hidden></progress>
           <button type="button" id="load-now" class="secondary" data-i18n="loadNow" hidden></button>
+          <p class="error" id="topics-error" role="alert" hidden></p>
         </div>
       </section>
       <section aria-labelledby="pages-section">
@@ -64,6 +65,19 @@
         </label>
         <p class="hint" id="filterPages-hint" data-i18n="filterPagesHint"></p>
       </section>
+      <section aria-labelledby="channels-section">
+        <h2 id="channels-section" data-i18n="channels"></h2>
+        <div class="field">
+          <label class="title" for="allowedChannels" data-i18n="allowedChannels"></label>
+          <textarea id="allowedChannels" name="allowedChannels" rows="4" disabled aria-describedby="allowedChannels-hint channels-hint"></textarea>
+          <span class="hint" id="allowedChannels-hint" data-i18n="allowedChannelsHint"></span>
+          <label class="title" for="blockedChannels" data-i18n="blockedChannels"></label>
+          <textarea id="blockedChannels" name="blockedChannels" rows="4" disabled aria-describedby="blockedChannels-hint channels-hint"></textarea>
+          <span class="hint" id="blockedChannels-hint" data-i18n="blockedChannelsHint"></span>
+          <p class="hint" id="channels-hint" data-i18n="channelsHint"></p>
+          <p class="error" id="channels-error" role="alert" hidden></p>
+        </div>
+      </section>
     </form>
   </main>
   <footer>
@@ -73,6 +87,7 @@
   <script src="protocol.js"></script>
   <script src="topics.js"></script>
   <script src="verdict.js"></script>
+  <script src="channels.js"></script>
   <script src="ui.js"></script>
   <script src="options.js"></script>
 </body>

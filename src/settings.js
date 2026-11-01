@@ -6,12 +6,23 @@
     MAX_TEXT_LENGTH: 500, // The longest list of topics, as the options page lets the user type it.
     MIN_THRESHOLD: 0.1, // The ends of the sensitivity slider, which options.js sets from them.
     MAX_THRESHOLD: 0.4,
+    MAX_CHANNELS: 50, // Names per channel list.
+    MAX_CHANNEL_LENGTH: 100, // Characters per channel name.
+    MAX_CHANNEL_TEXT_LENGTH: 2500, // A channel list as typed, which fits in one sync item even at 3 bytes a character.
+    ITEM_BUDGET: 8000, // Bytes per synced setting, under Chrome's 8,192 so a save never fails at the edge.
   });
+
+  // What a save rejects with when a value is too large for Chrome sync, as the error's code.
+  const QUOTA_ERROR = "better-yt:quota";
 
   const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
   const toSliderStep = (value) => Math.round(value * 100) / 100; // The slider moves in steps of 0.01.
   // Cutting between the two halves of an emoji would leave half of it, so that half goes too.
   const cut = (value, maxLength) => value.slice(0, maxLength).replace(/[\uD800-\uDBFF]$/u, "");
+  const collapseSpaces = (value) => String(value ?? "").replaceAll(/\s+/gu, " ").trim();
+  // Text as shown, with its spacing collapsed and cut to maxLength. Card text and the channel
+  // names typed into a list are cut this one way, so the same long name reads the same in both.
+  const clip = (value, maxLength) => cut(collapseSpaces(value), maxLength).trim();
 
   // Each setting's default and how a stored value is read: a value synced from another computer,
   // or edited by hand, reads as the nearest valid value or as the default.
@@ -24,6 +35,15 @@
     fallback,
     check: (value) => (Number.isFinite(value) ? toSliderStep(clamp(value, min, max)) : fallback),
   });
+  // Every read builds a new list, so no two readers share one they could change.
+  const strings = (maxCount, maxLength) => ({
+    fallback: Object.freeze([]),
+    check(value) {
+      if (!Array.isArray(value)) return [];
+      return value.filter((entry) => typeof entry === "string").map((entry) => cut(entry, maxLength)).slice(0, maxCount);
+    },
+  });
+  const channelList = () => strings(LIMITS.MAX_CHANNELS, LIMITS.MAX_CHANNEL_LENGTH);
 
   const SCHEMA = Object.freeze({
     enabled: flag(true), // Open Your custom feed when Home opens.
@@ -39,6 +59,8 @@
     filterHome: flag(true), // Filter Home, which is all recommendations.
     filterSubscriptions: flag(false), // Filter the Subscriptions grid. Off: it shows what the user subscribed to.
     filterSearch: flag(false), // Filter search results. Off: they show what the user asked for.
+    allowedChannels: channelList(), // Channels whose videos are never hidden.
+    blockedChannels: channelList(), // Channels whose videos are always hidden where the filter works.
   });
 
   const DEFAULTS = Object.freeze(Object.fromEntries(Object.entries(SCHEMA).map(([key, { fallback }]) => [key, fallback])));
@@ -56,7 +78,16 @@
     }
   }
 
-  function save(changes) {
+  // Names typed in different ways, such as "Chess  Club" and "chess club", compare as the same.
+  const nameKey = (name) => collapseSpaces(String(name ?? "").normalize("NFKC")).toLocaleLowerCase();
+
+  // Whether a setting fits in one Chrome sync item, measured the way Chrome measures it.
+  const fits = (key, value) => key.length + new TextEncoder().encode(JSON.stringify(value)).length <= LIMITS.ITEM_BUDGET;
+
+  // Writes nothing when any value is too large to sync, so a change never half applies.
+  async function save(changes) {
+    const key = Object.keys(changes).find((name) => !fits(name, changes[name]));
+    if (key) throw Object.assign(new Error(`${key} is too large to sync.`), { code: QUOTA_ERROR, key });
     return chrome.storage.sync.set(changes);
   }
 
@@ -73,5 +104,5 @@
   }
 
   globalThis.BetterYT ??= {};
-  globalThis.BetterYT.settings = { DEFAULTS, LIMITS, load, save, subscribe, sanitize };
+  globalThis.BetterYT.settings = { DEFAULTS, LIMITS, QUOTA_ERROR, load, save, subscribe, sanitize, fits, nameKey, clip };
 })();

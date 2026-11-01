@@ -1,12 +1,14 @@
-// Hides the videos that don't match the user's topics, or that are closer to a topic to avoid,
-// in the lists checked under Where to filter: next to the video, Home, Subscriptions and search.
-// The model answers through the background service worker; until it does, videos stay visible.
+// Hides videos in the lists checked under Where to filter: next to the video, Home, Subscriptions
+// and search. A video is hidden when its channel is always hidden, or when it doesn't match the
+// user's topics or is closer to a topic to avoid. A channel that is never hidden keeps its videos
+// visible. Listed channels need no model; for the others, the model answers through the
+// background service worker, and until it does, videos stay visible.
 // A row above the list counts the hidden videos and shows them on request, and the toolbar
 // icon's badge shows the same count.
 (() => {
   "use strict";
 
-  const { cards, createHiddenRow, createScheduler, protocol, settings, verdict } = globalThis.BetterYT;
+  const { cards, channels, createHiddenRow, createScheduler, protocol, settings, verdict } = globalThis.BetterYT;
 
   const SCAN_DELAY_MS = 150; // Lets a burst of list mutations settle into one scan.
   const RETRY_MS = 30_000; // After a failure, so a broken model doesn't get a request storm.
@@ -23,6 +25,7 @@
 
   let options = null; // Nothing runs until the settings have loaded.
   let topicLists = { want: [], avoid: [] }; // The parsed topics to see and to avoid.
+  let channelIndex = channels.createIndex(settings.DEFAULTS); // Says "allow", "block" or null for a channel.
   let scores = new Map(); // Video id to its { want, avoid } similarities to the current lists.
   let requesting = false;
   let retryAt = -Infinity;
@@ -34,11 +37,13 @@
   let lastReported = 0; // The count last sent for the badge.
   const row = createHiddenRow({ onToggle: toggleReveal });
 
-  // Whether anything can hide a video.
-  const hasRules = () => verdict.hasTopics(topicLists);
+  // Whether the topics ask the model about videos, once the filter is on.
+  const asksModel = () => verdict.hasTopics(topicLists);
+  // Whether anything can hide a video, once the filter is on.
+  const hasRules = () => asksModel() || channelIndex.hasBlocked;
   // Whether the filter works on the page shown.
   const isActive = () => Boolean(options?.topicFilter) && Boolean(surface && options[surface.setting]) && hasRules();
-  const sameTopics = (a, b) => a.length === b.length && a.every((topic, index) => topic === b[index]);
+  const sameTopics = (a, b) => a.length === b.length && a.every((topic, position) => topic === b[position]);
   const sameLists = (a, b) => sameTopics(a.want, b.want) && sameTopics(a.avoid, b.avoid);
 
   // Runs scan() after a delay, keeping whichever pending run comes first.
@@ -102,14 +107,20 @@
     report(count);
   }
 
-  // Why an item's video is hidden, or null. Unscored videos stay visible.
-  function reasonFor(video) {
-    if (!video) return null;
-    return verdict.decide(scores.get(video.id) ?? verdict.NO_SCORE, options.threshold);
+  // Why an item's video is hidden, or null. ruling is what the channel lists say about its
+  // channel, and comes first; unscored videos stay visible.
+  function reasonFor(video, ruling) {
+    if (!video || ruling === "allow") return null;
+    if (ruling === "block") return "blocked";
+    const score = scores.get(video.id);
+    return score ? verdict.decide(score, options.threshold) : null;
   }
 
-  function applyVerdict(item, video) {
-    const reason = reasonFor(video);
+  // Whether to ask the model about a video: it has no score yet and its channel isn't listed.
+  const needsScore = (video, ruling) => video !== null && ruling === null && !scores.has(video.id);
+
+  function applyVerdict(item, video, ruling) {
+    const reason = reasonFor(video, ruling);
     const hiddenFor = reason ? video.id : null;
     if (cards.hiddenId(item) === hiddenFor && cards.hiddenReason(item) === reason) return;
     if (reason) cards.hide(item, hiddenFor, reason);
@@ -119,11 +130,13 @@
   function scan() {
     if (!isActive()) return;
     watch();
+    const asking = asksModel();
     const unknown = new Map();
     for (const item of cards.findItems(surface)) {
       const video = cards.readVideo(item, surface);
-      applyVerdict(item, video);
-      if (video && !scores.has(video.id)) unknown.set(video.id, video);
+      const ruling = video ? channelIndex.lookup(video.channel) : null;
+      applyVerdict(item, video, ruling);
+      if (asking && needsScore(video, ruling)) unknown.set(video.id, video);
     }
     requestVerdicts([...unknown.values()].slice(0, MAX_BATCH));
     showHiddenCount();
@@ -173,9 +186,10 @@
     console.warn("Better YT Recommendations: topic filtering failed; will retry shortly.", error);
   }
 
-  // After a settings change: filters the page shown, or shows every hidden video again.
+  // After a settings change: filters the page shown, or shows every hidden video again. The scan
+  // runs at once, so a change that unhid every card never shows a blocked channel's videos.
   function update() {
-    if (isActive()) scheduleScan(0);
+    if (isActive()) scan();
     else stop();
   }
 
@@ -193,8 +207,10 @@
     if (list) cards.unhideAll(list);
   }
 
+  // A new channel list keeps the scores: they don't depend on it.
   function applySettings(changes) {
     options = { ...options, ...changes };
+    if (channels.LISTS.some((list) => list in changes)) channelIndex = channels.createIndex(options);
     const next = verdict.lists(options);
     if (!sameLists(next, topicLists)) {
       // Answers to requests made for the old topics land in the old map and are dropped with it.

@@ -24,10 +24,10 @@
     "message": "Remove os Shorts dos feeds, da pesquisa e da barra lateral, e abre links de Shorts como vídeos normais."
   },
   "topicFilter": {
-    "message": "Filtrar recomendações por assunto"
+    "message": "Filtrar recomendações"
   },
   "topicFilterHint": {
-    "message": "Oculta os vídeos que não correspondem aos seus assuntos nas páginas marcadas em Onde filtrar, em Todas as configurações. Usa um modelo de IA no seu computador."
+    "message": "Oculta os vídeos que não correspondem aos seus assuntos ou às suas listas de canais nas páginas marcadas em Onde filtrar, em Todas as configurações. Usa um modelo de IA no seu computador."
   },
   "topics": {
     "message": "Assuntos que você quer ver"
@@ -173,5 +173,29 @@
   },
   "filterSearch": {
     "message": "Resultados da pesquisa"
+  },
+  "channels": {
+    "message": "Canais"
+  },
+  "allowedChannels": {
+    "message": "Nunca ocultar estes canais"
+  },
+  "allowedChannelsHint": {
+    "message": "Os vídeos destes canais continuam visíveis, seja qual for o assunto."
+  },
+  "blockedChannels": {
+    "message": "Sempre ocultar estes canais"
+  },
+  "blockedChannelsHint": {
+    "message": "Os vídeos destes canais ficam ocultos em todas as páginas marcadas em Onde filtrar."
+  },
+  "channelsHint": {
+    "message": "Um canal por linha, com o nome que aparece no YouTube."
+  },
+  "listFull": {
+    "message": "Uma lista comporta até 50 canais. Só os 50 primeiros são salvos."
+  },
+  "saveFailed": {
+    "message": "Não foi possível salvar sua alteração. Tente de novo daqui a um minuto."
   }
 }

@@ -24,10 +24,10 @@
     "message": "从信息流、搜索结果和侧边栏中移除 Shorts，并以普通视频的形式打开 Shorts 链接。"
   },
   "topicFilter": {
-    "message": "按主题筛选推荐"
+    "message": "筛选推荐"
   },
   "topicFilterHint": {
-    "message": "在“所有设置”的“筛选范围”中勾选的页面上，隐藏与你的主题不符的视频。使用你电脑上的 AI 模型。"
+    "message": "在“所有设置”的“筛选范围”中勾选的页面上，隐藏与你的主题或频道列表不符的视频。使用你电脑上的 AI 模型。"
   },
   "topics": {
     "message": "你想看的主题"
@@ -173,5 +173,29 @@
   },
   "filterSearch": {
     "message": "搜索结果"
+  },
+  "channels": {
+    "message": "频道"
+  },
+  "allowedChannels": {
+    "message": "从不隐藏这些频道"
+  },
+  "allowedChannelsHint": {
+    "message": "这些频道的视频始终显示，无论主题是什么。"
+  },
+  "blockedChannels": {
+    "message": "始终隐藏这些频道"
+  },
+  "blockedChannelsHint": {
+    "message": "在“筛选范围”中勾选的每个页面上，都会隐藏这些频道的视频。"
+  },
+  "channelsHint": {
+    "message": "每行一个频道，按 YouTube 上显示的名称填写。"
+  },
+  "listFull": {
+    "message": "每个列表最多 50 个频道，只会保存前 50 个。"
+  },
+  "saveFailed": {
+    "message": "无法保存你的更改。请过一分钟再试。"
   }
 }

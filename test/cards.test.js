@@ -12,7 +12,7 @@ const SEARCH_URL = "https://www.youtube.com/results?search_query=freecodecamp";
 function load(t, markup = fixture, url = "https://www.youtube.com/watch?v=W6NZfCO5SIk") {
   const dom = new JSDOM(markup, { url, runScripts: "outside-only" });
   t.after(() => dom.window.close());
-  runScripts(dom.getInternalVMContext(), ["src/cards.js"]);
+  runScripts(dom.getInternalVMContext(), ["src/settings.js", "src/cards.js"]);
   const { cards } = dom.window.BetterYT;
   return { document: dom.window.document, cards, ...cards.SURFACES };
 }

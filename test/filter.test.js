@@ -638,3 +638,53 @@ test("ignores hover and thumbnail class changes on Home, but rescans a recycled 
   await clock.tickAsync(SCAN_MS);
   assert.deepEqual(requestedIds(), ["recycled01A"]);
 });
+
+// Two of the watch fixture's channels, each with one video.
+const FREECODECAMP = { id: "PkZNo7MFNFg", channel: "freeCodeCamp.org" };
+const MOSH = { id: "PFmuCDHHpwk", channel: "Programming with Mosh" };
+
+test("hides a blocked channel's videos without asking the model", async (t) => {
+  const { requests, visibleIds, rowText, clock } = await setup(t, { stored: { blockedChannels: [FREECODECAMP.channel] } });
+  assert.deepEqual(visibleIds(), FIXTURE_IDS.filter((id) => id !== FREECODECAMP.id));
+  assert.equal(rowText(), "1 video hidden");
+  await clock.tickAsync(RETRY_MS);
+  assert.equal(requests.length, 0);
+});
+
+test("doesn't ask the model about a blocked channel's videos, and new topics never show them", async (t) => {
+  const { window, requestedIds, visibleIds } = await setup(t, { stored: { topics: "programming", blockedChannels: [FREECODECAMP.channel] } });
+  const others = FIXTURE_IDS.filter((id) => id !== FREECODECAMP.id);
+  assert.deepEqual(requestedIds(), others);
+  assert.deepEqual(visibleIds(), others, "hidden before any answer");
+
+  await window.chrome.storage.sync.set({ topics: "chess" });
+  await flush();
+  assert.deepEqual(visibleIds(), others, "still hidden while the new topics wait for an answer");
+});
+
+test("never hides an allowed channel's videos, and doesn't ask about them", async (t) => {
+  const { requestedIds, visibleIds, answer } = await setup(t, { stored: { topics: "programming", allowedChannels: [MOSH.channel] } });
+  assert.deepEqual(requestedIds(), FIXTURE_IDS.filter((id) => id !== MOSH.id));
+  await answer(FIXTURE_IDS);
+  assert.deepEqual(visibleIds(), [MOSH.id]);
+});
+
+test("changing the channel lists filters again without asking again", async (t) => {
+  const { requests, visibleIds, answer, changeSettings } = await setup(t);
+  await answer(["RphIVv0uWrM"]);
+  await changeSettings({ blockedChannels: [FREECODECAMP.channel] });
+  assert.deepEqual(visibleIds(), ["PFmuCDHHpwk", "C4dGVTl6ry8"]);
+
+  await changeSettings({ allowedChannels: ["Академия нейросетей Сергея Нагорного GORA ACADEMY"] });
+  assert.deepEqual(visibleIds(), ["PFmuCDHHpwk", "RphIVv0uWrM", "C4dGVTl6ry8"]);
+  await changeSettings({ blockedChannels: [] });
+  assert.deepEqual(visibleIds(), FIXTURE_IDS);
+  assert.equal(requests.length, 1);
+});
+
+test("turning the filter off shows blocked channels again", async (t) => {
+  const { visibleIds, rowShown, changeSettings } = await setup(t, { stored: { blockedChannels: [FREECODECAMP.channel] } });
+  await changeSettings({ topicFilter: false });
+  assert.deepEqual(visibleIds(), FIXTURE_IDS);
+  assert.equal(rowShown(), false);
+});

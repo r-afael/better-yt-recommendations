@@ -24,10 +24,10 @@
     "message": "從動態消息、搜尋結果和側邊欄移除 Shorts，並以一般影片的形式開啟 Shorts 連結。"
   },
   "topicFilter": {
-    "message": "依主題篩選推薦內容"
+    "message": "篩選推薦內容"
   },
   "topicFilterHint": {
-    "message": "在「所有設定」的「篩選範圍」中勾選的頁面上，隱藏與你的主題不符的影片。使用你電腦上的 AI 模型。"
+    "message": "在「所有設定」的「篩選範圍」中勾選的頁面上，隱藏與你的主題或頻道清單不符的影片。使用你電腦上的 AI 模型。"
   },
   "topics": {
     "message": "你想看的主題"
@@ -173,5 +173,29 @@
   },
   "filterSearch": {
     "message": "搜尋結果"
+  },
+  "channels": {
+    "message": "頻道"
+  },
+  "allowedChannels": {
+    "message": "永不隱藏這些頻道"
+  },
+  "allowedChannelsHint": {
+    "message": "這些頻道的影片一律顯示，無論主題為何。"
+  },
+  "blockedChannels": {
+    "message": "一律隱藏這些頻道"
+  },
+  "blockedChannelsHint": {
+    "message": "在「篩選範圍」中勾選的每個頁面上，都會隱藏這些頻道的影片。"
+  },
+  "channelsHint": {
+    "message": "每行一個頻道，依 YouTube 上顯示的名稱填寫。"
+  },
+  "listFull": {
+    "message": "每個清單最多 50 個頻道，只會儲存前 50 個。"
+  },
+  "saveFailed": {
+    "message": "無法儲存你的變更。請過一分鐘再試。"
   }
 }

@@ -50,7 +50,8 @@ function setup({ stored = { topics: "programming" }, answer = answerMatches } = 
     offscreen.forwarded.push(plain(message));
     return answer(message, offscreen);
   };
-  const context = vm.createContext({ chrome });
+  // settings.save measures values in bytes, and a bare context has no TextEncoder.
+  const context = vm.createContext({ chrome, TextEncoder });
   context.importScripts = (...names) => runScripts(context, names.map((name) => `src/${name}`));
   runScripts(context, ["src/background.js"]);
   const { protocol } = context.BetterYT;
