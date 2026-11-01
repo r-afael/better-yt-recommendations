@@ -100,5 +100,42 @@
   },
   "loadNow": {
     "message": "Загрузить сейчас"
+  },
+  "tryTitle": {
+    "message": "Проверить название"
+  },
+  "tryTitlePlaceholder": {
+    "message": "Как победить сицилианскую защиту"
+  },
+  "tryTitleHint": {
+    "message": "Введите название видео, чтобы увидеть, как фильтр оценит его с темами и чувствительностью, указанными выше."
+  },
+  "tryScores": {
+    "message": "Ближайшая нужная тема: $WANT$ · Ближайшая нежелательная тема: $AVOID$",
+    "placeholders": {
+      "want": {
+        "content": "$1",
+        "example": "0.31"
+      },
+      "avoid": {
+        "content": "$2",
+        "example": "none"
+      }
+    }
+  },
+  "tryScoreNone": {
+    "message": "нет"
+  },
+  "tryShown": {
+    "message": "Показано"
+  },
+  "tryHidden": {
+    "message": "Скрыто"
+  },
+  "tryNeedsTopics": {
+    "message": "Добавьте тему выше, чтобы проверить название."
+  },
+  "tryError": {
+    "message": "Не удалось проверить название. Попробуйте ещё раз чуть позже."
   }
 }

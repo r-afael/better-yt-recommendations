@@ -130,5 +130,51 @@
   "loadNow": {
     "message": "Load now",
     "description": "Button next to the model status that starts loading the topic model right away."
+  },
+  "tryTitle": {
+    "message": "Try a title",
+    "description": "Label of the box where the user types a video title to test the filter."
+  },
+  "tryTitlePlaceholder": {
+    "message": "How to beat the Sicilian Defense",
+    "description": "Example video title in the empty box. Use a title that makes sense in this language."
+  },
+  "tryTitleHint": {
+    "message": "Type a video title to see how the filter would judge it with the topics and sensitivity above.",
+    "description": "Explains the try-a-title box."
+  },
+  "tryScores": {
+    "message": "Closest wanted topic: $WANT$ · Closest topic to avoid: $AVOID$",
+    "description": "Shows how similar the typed title is to the topics, from -1 to 1.",
+    "placeholders": {
+      "want": {
+        "content": "$1",
+        "example": "0.31"
+      },
+      "avoid": {
+        "content": "$2",
+        "example": "none"
+      }
+    }
+  },
+  "tryScoreNone": {
+    "message": "none",
+    "description": "Shown instead of a number when that list of topics is empty."
+  },
+  "tryShown": {
+    "message": "Shown",
+    "description": "Verdict: the filter would keep the typed title visible."
+  },
+  "tryHidden": {
+    "message": "Hidden",
+    "description": "Verdict: the filter would hide the typed title."
+  },
+  "tryNeedsTopics": {
+    "message": "Add a topic above to try a title.",
+    "description": "Shown in the try box when no topics are set."
+  },
+  "tryError": {
+    "message": "Couldn't check the title. Try again shortly.",
+    "description": "Shown in the try box when the model failed to answer."
   }
 }

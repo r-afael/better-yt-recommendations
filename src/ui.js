@@ -52,6 +52,11 @@
 
   const controlChanges = (control) => ({ [control.name]: valueOf(control) });
 
+  // Rewriting the same text would make screen readers announce it again.
+  function setText(element, text) {
+    if (element.textContent !== text) element.textContent = text;
+  }
+
   const formatThreshold = (value) => value.toLocaleString(message("lang"), { minimumFractionDigits: 2 });
 
   // "programming, chess" in English and "编程、国际象棋" in Chinese. The unit type would drop the separators.
@@ -172,14 +177,13 @@
 
   // The live region only names the state, so screen readers announce changes of state and not
   // every percent of the download. The progress bar, which isn't live, shows the percent.
-  function createModelStatus({ status, progressBar, loadButton, isVisible }) {
+  // onChange lets the page follow the status too, reading it with state().
+  function createModelStatus({ status, progressBar, loadButton, isVisible, onChange = noop }) {
     let modelStatus = { state: MODEL_STATES.IDLE };
 
     function render() {
       status.hidden = !isVisible();
-      const text = message(STATUS_MESSAGES[modelStatus.state] ?? STATUS_MESSAGES[MODEL_STATES.IDLE]);
-      // Rewriting the same text would make screen readers announce it again.
-      if (status.textContent !== text) status.textContent = text;
+      setText(status, message(STATUS_MESSAGES[modelStatus.state] ?? STATUS_MESSAGES[MODEL_STATES.IDLE]));
       progressBar.hidden = status.hidden || modelStatus.state !== MODEL_STATES.LOADING;
       progressBar.value = Math.round((modelStatus.progress ?? 0) * 100);
       loadButton.hidden = status.hidden || !LOADABLE_STATES.has(modelStatus.state);
@@ -190,6 +194,7 @@
       modelStatus = value ?? { state: MODEL_STATES.IDLE };
       loadButton.disabled = false;
       render();
+      onChange();
     }
 
     // A failure brings no new status, so any answer but { ok: true }, or none at all from a send
@@ -206,8 +211,8 @@
     });
     chrome.storage.session.get(STATUS_KEY).then((stored) => showModelStatus(stored[STATUS_KEY]));
 
-    return { render };
+    return { render, state: () => modelStatus.state };
   }
 
-  globalThis.BetterYT.ui = { message, valueOf, startPage, createModelStatus, formatThreshold, formatList };
+  globalThis.BetterYT.ui = { message, valueOf, setText, startPage, createModelStatus, formatThreshold, formatList };
 })();

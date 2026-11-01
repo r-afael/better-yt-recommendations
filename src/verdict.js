@@ -13,11 +13,13 @@
     return { want: topicList.parse(topics), avoid: topicList.parse(avoidTopics) };
   }
 
+  // Whether there is any topic to match, wanted or to avoid.
+  const hasTopics = ({ want, avoid }) => want.length > 0 || avoid.length > 0;
+
   // The model is needed only while the filter is on and has topics to match.
   function needsModel(values) {
     if (!values.topicFilter) return false;
-    const { want, avoid } = lists(values);
-    return want.length > 0 || avoid.length > 0;
+    return hasTopics(lists(values));
   }
 
   // Returns why a video with these similarities is hidden, "off-topic" or "avoided", or null to show it.
@@ -29,5 +31,5 @@
     return null; // Visible. Ties keep the video.
   }
 
-  globalThis.BetterYT.verdict = Object.freeze({ NO_SCORE, lists, needsModel, decide });
+  globalThis.BetterYT.verdict = Object.freeze({ NO_SCORE, lists, hasTopics, needsModel, decide });
 })();

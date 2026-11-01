@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import FakeTimers from "@sinonjs/fake-timers";
 import { JSDOM } from "jsdom";
-import { fakeChrome, flush, read, readJson, runScripts, score } from "./helpers.js";
+import { MATCH, fakeChrome, flush, holdMessages, read, readJson, runScripts, score } from "./helpers.js";
 
 // Loads what the browser loads, in the manifest's order, so a misordered or missing script fails here.
 const contentScripts = readJson("manifest.json").content_scripts;
@@ -34,11 +34,7 @@ async function setup(t, { path = "/watch?v=W6NZfCO5SIk", stored = { topics: "pro
     toFake: ["setTimeout", "clearTimeout", "Date", "performance"],
   });
   const chrome = fakeChrome({ stored });
-  // Each request waits until the test answers it.
-  const requests = [];
-  chrome.runtime.sendMessage = (message) => new Promise((resolve, reject) => {
-    requests.push({ message: structuredClone(message), resolve, reject });
-  });
+  const requests = holdMessages(chrome);
   const warnings = [];
   window.console.warn = (...args) => warnings.push(args);
 
@@ -82,7 +78,7 @@ test("hides off-topic videos once the model answers", async (t) => {
   const { requests, visibleIds, answer } = await setup(t, { stored: { topics: "programming, javascript" } });
   assert.equal(requests.length, 1);
   const { message } = requests[0];
-  assert.equal(message.type, "better-yt:match");
+  assert.equal(message.type, MATCH);
   assert.deepEqual(message.topics, ["programming", "javascript"]);
   assert.deepEqual(message.videos[0], {
     id: "PFmuCDHHpwk",

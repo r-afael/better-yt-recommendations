@@ -31,6 +31,14 @@
           </span>
           <input type="range" id="threshold" name="threshold" min="0.1" max="0.4" step="0.01" aria-describedby="threshold-hint">
           <span class="hint" id="threshold-hint"></span>
+          <div class="try">
+            <label class="title" for="try-title" data-i18n="tryTitle"></label>
+            <input id="try-title" type="text" maxlength="200" data-i18n-placeholder="tryTitlePlaceholder" aria-describedby="try-hint">
+            <span class="hint" id="try-hint" data-i18n="tryTitleHint"></span>
+            <p id="try-result" role="status" aria-live="polite">
+              <span id="try-verdict" class="verdict"></span> <span id="try-scores"></span>
+            </p>
+          </div>
           <p class="status" id="model-status" role="status" aria-live="polite" hidden></p>
           <progress id="model-progress" max="100" aria-labelledby="model-status" hidden></progress>
           <button type="button" id="load-now" class="secondary" data-i18n="loadNow" hidden></button>

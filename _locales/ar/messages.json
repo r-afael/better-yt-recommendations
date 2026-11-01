@@ -100,5 +100,42 @@
   },
   "loadNow": {
     "message": "حمّل الآن"
+  },
+  "tryTitle": {
+    "message": "جرّب عنوانًا"
+  },
+  "tryTitlePlaceholder": {
+    "message": "كيف تتغلب على الدفاع الصقلي"
+  },
+  "tryTitleHint": {
+    "message": "اكتب عنوان فيديو لترى كيف ستحكم عليه التصفية بالموضوعات والحساسية أعلاه."
+  },
+  "tryScores": {
+    "message": "أقرب موضوع تريده: $WANT$ · أقرب موضوع تتجنّبه: $AVOID$",
+    "placeholders": {
+      "want": {
+        "content": "$1",
+        "example": "0.31"
+      },
+      "avoid": {
+        "content": "$2",
+        "example": "none"
+      }
+    }
+  },
+  "tryScoreNone": {
+    "message": "لا يوجد"
+  },
+  "tryShown": {
+    "message": "ظاهر"
+  },
+  "tryHidden": {
+    "message": "مخفي"
+  },
+  "tryNeedsTopics": {
+    "message": "أضف موضوعًا أعلاه لتجربة عنوان."
+  },
+  "tryError": {
+    "message": "تعذّر فحص العنوان. حاول مجددًا بعد قليل."
   }
 }

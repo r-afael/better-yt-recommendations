@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { PRELOAD, STATUS_KEY, flush, locales, openPage, readJson, recordMessages, untranslated } from "./helpers.js";
+import { MATCH, PRELOAD, STATUS_KEY, flush, holdMessages, locales, openPage, readJson, recordMessages, score, untranslated } from "./helpers.js";
 
 const SAVE_DELAY_MS = 400;
 const IDLE_TEXT = "The model loads when a page needs it, or when you click Load now.";
@@ -38,15 +38,16 @@ async function reportStatus(chrome, status) {
 }
 
 test("the topic filter switch on the options page saves and enables the fields", async (t) => {
-  const { chrome, toggle, field, avoidField, slider } = await setup(t, { stored: { topicFilter: false } });
-  const disabled = () => [field.disabled, avoidField.disabled, slider.disabled];
-  assert.deepEqual(disabled(), [true, true, true]);
+  const { document, chrome, toggle, field, avoidField, slider } = await setup(t, { stored: { topicFilter: false } });
+  const titleBox = document.querySelector("#try-title");
+  const disabled = () => [field.disabled, avoidField.disabled, slider.disabled, titleBox.disabled];
+  assert.deepEqual(disabled(), [true, true, true, true]);
   toggle("topicFilter").click();
   await flush();
   assert.equal(chrome.data.topicFilter, true);
-  assert.deepEqual(disabled(), [false, false, false]);
+  assert.deepEqual(disabled(), [false, false, false, false]);
   toggle("topicFilter").click();
-  assert.deepEqual(disabled(), [true, true, true]);
+  assert.deepEqual(disabled(), [true, true, true, true]);
 });
 
 test("shows the stored topics", async (t) => {
@@ -306,6 +307,172 @@ test("ignores storage changes that aren't the model status", async (t) => {
   await chrome.storage.sync.set({ [STATUS_KEY]: { state: "ready" } });
   await flush();
   assert.equal(status.textContent, IDLE_TEXT);
+});
+
+const TRY_TITLE = "How to beat the Sicilian Defense";
+const TRY_DELAY_MS = 400; // How long the try box waits for typing to pause.
+const TRY_ERROR = "Couldn't check the title. Try again shortly.";
+
+// The options page with each title it tries waiting until the test answers it. Other messages,
+// such as loading the model, are answered at once.
+async function setupTry(t, options) {
+  const page = await setup(t, options);
+  const requests = holdMessages(page.chrome, (message) => message.type === MATCH);
+  const titleBox = page.document.querySelector("#try-title");
+  const verdictText = () => page.document.querySelector("#try-verdict").textContent;
+  const scoresText = () => page.document.querySelector("#try-scores").textContent;
+  // Types a title and waits for typing to pause.
+  const tryTitle = (text) => {
+    page.type(text, titleBox);
+    page.clock.tick(TRY_DELAY_MS);
+  };
+  const answer = async (value, request = requests.at(-1)) => {
+    request.resolve(value);
+    await flush();
+  };
+  return { ...page, requests, titleBox, verdictText, scoresText, tryTitle, answer };
+}
+
+test("checks a typed title once typing pauses, with the topics on the page", async (t) => {
+  const { clock, requests, titleBox, type, avoidField } = await setupTry(t, { stored: { topics: "chess" } });
+  type("chess, cooking");
+  type("gaming", avoidField);
+  clock.tick(TRY_DELAY_MS);
+  assert.equal(requests.length, 0, "not without a title");
+
+  type("How to beat", titleBox);
+  clock.tick(TRY_DELAY_MS / 2);
+  type(TRY_TITLE, titleBox);
+  clock.tick(TRY_DELAY_MS - 1);
+  assert.equal(requests.length, 0);
+  clock.tick(1);
+  assert.deepEqual(requests.map((request) => request.message), [{
+    type: MATCH,
+    topics: ["chess", "cooking"],
+    avoidTopics: ["gaming"],
+    videos: [{ id: "try", title: TRY_TITLE, channel: "" }],
+  }]);
+
+  type("chess", avoidField);
+  clock.tick(TRY_DELAY_MS);
+  assert.equal(requests.length, 2, "changing the topics checks the title again");
+  assert.deepEqual(requests[1].message.avoidTopics, ["chess"]);
+});
+
+test("shows both scores and whether the title would be hidden", async (t) => {
+  const { clock, requests, tryTitle, answer, type, avoidField, verdictText, scoresText } = await setupTry(t, {
+    stored: { topics: "chess", avoidTopics: "gaming" },
+  });
+  tryTitle(TRY_TITLE);
+  await answer({ scores: { try: score(0.31, 0.35) } });
+  assert.equal(verdictText(), "Hidden");
+  assert.equal(scoresText(), "Closest wanted topic: 0.31 · Closest topic to avoid: 0.35");
+
+  type("", avoidField);
+  clock.tick(TRY_DELAY_MS);
+  assert.deepEqual(requests.at(-1).message.avoidTopics, []);
+  await answer({ scores: { try: score(0.4) } });
+  assert.equal(verdictText(), "Shown");
+  assert.equal(scoresText(), "Closest wanted topic: 0.40 · Closest topic to avoid: none");
+});
+
+test("moving the sensitivity judges the title again without asking again", async (t) => {
+  const { requests, tryTitle, answer, verdictText, slide } = await setupTry(t, { stored: { topics: "chess", avoidTopics: "gaming" } });
+  tryTitle(TRY_TITLE);
+  await answer({ scores: { try: score(0.31, 0.2) } });
+  assert.equal(verdictText(), "Shown");
+  slide(0.35);
+  assert.equal(verdictText(), "Hidden");
+  slide(0.3);
+  assert.equal(verdictText(), "Shown");
+  assert.equal(requests.length, 1);
+});
+
+test("ignores the answer for a title that has changed since", async (t) => {
+  const { requests, tryTitle, answer, verdictText, scoresText } = await setupTry(t, { stored: { topics: "chess" } });
+  tryTitle("Celebrity gossip");
+  tryTitle(TRY_TITLE);
+  const [first, latest] = requests;
+  await answer({ scores: { try: score(0.1) } }, first);
+  assert.equal(verdictText(), "");
+  assert.equal(scoresText(), "");
+  await answer({ scores: { try: score(0.31) } }, latest);
+  assert.equal(verdictText(), "Shown");
+});
+
+test("asks for a topic before trying a title", async (t) => {
+  const { clock, requests, tryTitle, type, verdictText, scoresText } = await setupTry(t);
+  tryTitle(TRY_TITLE);
+  assert.equal(requests.length, 0);
+  assert.equal(verdictText(), "");
+  assert.equal(scoresText(), "Add a topic above to try a title.");
+
+  type("chess");
+  clock.tick(TRY_DELAY_MS);
+  assert.equal(requests.length, 1);
+  assert.equal(scoresText(), "");
+});
+
+test("says when the title couldn't be checked", async (t) => {
+  const { requests, tryTitle, answer, verdictText, scoresText, slide } = await setupTry(t, { stored: { topics: "chess" } });
+  const failures = [
+    () => answer({ error: "The topic model did not answer." }),
+    async () => {
+      requests.at(-1).reject(new Error("Extension context invalidated."));
+      await flush();
+    },
+    () => answer({ scores: {} }),
+  ];
+  for (const [index, fail] of failures.entries()) {
+    tryTitle(`${TRY_TITLE} ${index}`);
+    await fail();
+    assert.equal(verdictText(), "", `failure ${index}`);
+    assert.equal(scoresText(), TRY_ERROR, `failure ${index}`);
+    slide(0.3);
+    assert.equal(scoresText(), TRY_ERROR, `failure ${index}, after moving the sensitivity`);
+  }
+});
+
+test("shows that the model is loading while it waits", async (t) => {
+  const { chrome, tryTitle, answer, verdictText, scoresText } = await setupTry(t, { stored: { topics: "chess" } });
+  tryTitle(TRY_TITLE);
+  assert.equal(scoresText(), "");
+  await reportStatus(chrome, { state: "loading", progress: 0.2 });
+  assert.equal(scoresText(), "Loading the model…");
+  await reportStatus(chrome, { state: "ready" });
+  await answer({ scores: { try: score(0.31) } });
+  assert.equal(verdictText(), "Shown");
+});
+
+test("turning the filter off stops trying titles and clears the verdict", async (t) => {
+  const { clock, requests, tryTitle, answer, type, titleBox, toggle, verdictText, scoresText } = await setupTry(t, {
+    stored: { topics: "chess" },
+  });
+  const filterSwitch = toggle("topicFilter");
+  tryTitle(TRY_TITLE);
+  await answer({ scores: { try: score(0.31) } });
+  filterSwitch.click();
+  assert.equal(verdictText(), "");
+  assert.equal(scoresText(), "");
+
+  filterSwitch.click();
+  tryTitle("Chess openings for beginners");
+  type("Chess openings for kids", titleBox);
+  filterSwitch.click();
+  clock.tick(TRY_DELAY_MS);
+  assert.equal(requests.length, 2, "the title still waiting for typing to pause is never sent");
+  await answer({ scores: { try: score(0.31) } });
+  assert.equal(verdictText(), "", "a late answer is ignored");
+  assert.equal(scoresText(), "");
+});
+
+test("submitting the options form, as Enter in the title box does, keeps the page open", async (t) => {
+  const { document } = await setup(t);
+  const form = document.querySelector("#settings");
+  let submit;
+  form.addEventListener("submit", (event) => (submit = event));
+  form.requestSubmit();
+  assert.equal(submit.defaultPrevented, true);
 });
 
 test("translates the topics placeholder and the model's status", async (t) => {

@@ -21,6 +21,9 @@ export const STATUS_KEY = "modelStatus";
 // The message type a page sends the background to load the model right away.
 export const PRELOAD = "better-yt:preload";
 
+// The message type the content script and the options page send the background to score videos.
+export const MATCH = "better-yt:match";
+
 // Lets pending promises, storage events and mutation observers run.
 export const flush = () => new Promise((resolve) => setImmediate(resolve));
 
@@ -152,6 +155,18 @@ export function recordMessages(chrome, answer = async () => ({ ok: true })) {
     return answer(message);
   };
   return sent;
+}
+
+// Keeps each message that holds(message) waiting until the test answers it with the recorded
+// resolve or reject, and answers the others with { ok: true }. Returns the held requests in the
+// order they were sent.
+export function holdMessages(chrome, holds = () => true) {
+  const requests = [];
+  chrome.runtime.sendMessage = (message) => {
+    if (!holds(message)) return Promise.resolve({ ok: true });
+    return new Promise((resolve, reject) => requests.push({ message: structuredClone(message), resolve, reject }));
+  };
+  return requests;
 }
 
 // Opens one of the extension's pages, such as src/popup.html, and runs its own scripts in order

@@ -100,5 +100,42 @@
   },
   "loadNow": {
     "message": "अभी लोड करें"
+  },
+  "tryTitle": {
+    "message": "कोई शीर्षक आज़माएँ"
+  },
+  "tryTitlePlaceholder": {
+    "message": "सिसिलियन डिफ़ेंस को कैसे हराएँ"
+  },
+  "tryTitleHint": {
+    "message": "ऊपर दिए गए विषयों और संवेदनशीलता के साथ फ़िल्टर किसी वीडियो को कैसे परखेगा, यह देखने के लिए वीडियो का शीर्षक लिखें।"
+  },
+  "tryScores": {
+    "message": "सबसे नज़दीकी पसंदीदा विषय: $WANT$ · बचने वाला सबसे नज़दीकी विषय: $AVOID$",
+    "placeholders": {
+      "want": {
+        "content": "$1",
+        "example": "0.31"
+      },
+      "avoid": {
+        "content": "$2",
+        "example": "none"
+      }
+    }
+  },
+  "tryScoreNone": {
+    "message": "कोई नहीं"
+  },
+  "tryShown": {
+    "message": "दिखेगा"
+  },
+  "tryHidden": {
+    "message": "छिपेगा"
+  },
+  "tryNeedsTopics": {
+    "message": "शीर्षक आज़माने के लिए ऊपर कोई विषय जोड़ें।"
+  },
+  "tryError": {
+    "message": "शीर्षक की जाँच नहीं हो सकी। थोड़ी देर में फिर से कोशिश करें।"
   }
 }

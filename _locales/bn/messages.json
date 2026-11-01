@@ -100,5 +100,42 @@
   },
   "loadNow": {
     "message": "এখনই লোড করুন"
+  },
+  "tryTitle": {
+    "message": "একটি শিরোনাম পরীক্ষা করুন"
+  },
+  "tryTitlePlaceholder": {
+    "message": "সিসিলিয়ান ডিফেন্সকে কীভাবে হারাবেন"
+  },
+  "tryTitleHint": {
+    "message": "উপরের বিষয় ও সংবেদনশীলতা দিয়ে ফিল্টার কোনো ভিডিওকে কীভাবে বিচার করবে তা দেখতে একটি ভিডিওর শিরোনাম লিখুন।"
+  },
+  "tryScores": {
+    "message": "সবচেয়ে কাছের কাঙ্ক্ষিত বিষয়: $WANT$ · এড়াতে চাওয়া সবচেয়ে কাছের বিষয়: $AVOID$",
+    "placeholders": {
+      "want": {
+        "content": "$1",
+        "example": "0.31"
+      },
+      "avoid": {
+        "content": "$2",
+        "example": "none"
+      }
+    }
+  },
+  "tryScoreNone": {
+    "message": "নেই"
+  },
+  "tryShown": {
+    "message": "দেখানো হবে"
+  },
+  "tryHidden": {
+    "message": "লুকানো হবে"
+  },
+  "tryNeedsTopics": {
+    "message": "শিরোনাম পরীক্ষা করতে উপরে একটি বিষয় যোগ করুন।"
+  },
+  "tryError": {
+    "message": "শিরোনামটি পরীক্ষা করা যায়নি। একটু পরে আবার চেষ্টা করুন।"
   }
 }

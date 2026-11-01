@@ -100,5 +100,42 @@
   },
   "loadNow": {
     "message": "Muat sekarang"
+  },
+  "tryTitle": {
+    "message": "Coba judul"
+  },
+  "tryTitlePlaceholder": {
+    "message": "Cara mengalahkan Pertahanan Sisilia"
+  },
+  "tryTitleHint": {
+    "message": "Ketik judul video untuk melihat bagaimana filter menilainya dengan topik dan sensitivitas di atas."
+  },
+  "tryScores": {
+    "message": "Topik yang diinginkan terdekat: $WANT$ · Topik yang dihindari terdekat: $AVOID$",
+    "placeholders": {
+      "want": {
+        "content": "$1",
+        "example": "0.31"
+      },
+      "avoid": {
+        "content": "$2",
+        "example": "none"
+      }
+    }
+  },
+  "tryScoreNone": {
+    "message": "tidak ada"
+  },
+  "tryShown": {
+    "message": "Ditampilkan"
+  },
+  "tryHidden": {
+    "message": "Disembunyikan"
+  },
+  "tryNeedsTopics": {
+    "message": "Tambahkan topik di atas untuk mencoba judul."
+  },
+  "tryError": {
+    "message": "Tidak dapat memeriksa judul. Coba lagi sebentar lagi."
   }
 }

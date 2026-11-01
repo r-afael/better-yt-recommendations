@@ -1,8 +1,8 @@
-// Messages between the content script, the background service worker and the
-// offscreen document that runs the topic model.
+// Messages between the content script, the extension's pages (the popup and the options page),
+// the background service worker and the offscreen document that runs the topic model.
 globalThis.BetterYT ??= {};
 globalThis.BetterYT.protocol = Object.freeze({
-  // Content script to background, which forwards it to the offscreen document:
+  // Content script or options page to background, which forwards it to the offscreen document:
   // { type, topics: string[], avoidTopics: string[], videos: [{ id, title, channel }] }
   // Answered with { scores: { [id]: { want, avoid } } }, each video's highest similarity from -1
   // to 1 to a wanted topic and to a topic to avoid, null when that list is empty,

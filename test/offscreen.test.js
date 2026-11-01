@@ -3,9 +3,8 @@ import test from "node:test";
 import vm from "node:vm";
 import FakeTimers from "@sinonjs/fake-timers";
 import { JSDOM } from "jsdom";
-import { PRELOAD, fakeChrome, flush, read, runScripts, score } from "./helpers.js";
+import { MATCH, PRELOAD, fakeChrome, flush, read, runScripts, score } from "./helpers.js";
 
-const MATCH = "better-yt:match";
 const IDLE_MS = 1_000;
 const LOADING = (progress) => ({ state: "loading", progress });
 const READY = { state: "ready" };

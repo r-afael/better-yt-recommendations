@@ -100,5 +100,42 @@
   },
   "loadNow": {
     "message": "立即加载"
+  },
+  "tryTitle": {
+    "message": "试试标题"
+  },
+  "tryTitlePlaceholder": {
+    "message": "如何击败西西里防御"
+  },
+  "tryTitleHint": {
+    "message": "输入一个视频标题，看看过滤器会如何根据上面的主题和灵敏度判断它。"
+  },
+  "tryScores": {
+    "message": "最接近的想看主题：$WANT$ · 最接近的想避开主题：$AVOID$",
+    "placeholders": {
+      "want": {
+        "content": "$1",
+        "example": "0.31"
+      },
+      "avoid": {
+        "content": "$2",
+        "example": "none"
+      }
+    }
+  },
+  "tryScoreNone": {
+    "message": "无"
+  },
+  "tryShown": {
+    "message": "显示"
+  },
+  "tryHidden": {
+    "message": "隐藏"
+  },
+  "tryNeedsTopics": {
+    "message": "请先在上面添加一个主题，再试标题。"
+  },
+  "tryError": {
+    "message": "无法检查该标题。请稍后重试。"
   }
 }

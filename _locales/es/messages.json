@@ -100,5 +100,42 @@
   },
   "loadNow": {
     "message": "Cargar ahora"
+  },
+  "tryTitle": {
+    "message": "Prueba un título"
+  },
+  "tryTitlePlaceholder": {
+    "message": "Cómo vencer a la defensa siciliana"
+  },
+  "tryTitleHint": {
+    "message": "Escribe el título de un video para ver cómo lo juzgaría el filtro con los temas y la sensibilidad de arriba."
+  },
+  "tryScores": {
+    "message": "Tema deseado más cercano: $WANT$ · Tema a evitar más cercano: $AVOID$",
+    "placeholders": {
+      "want": {
+        "content": "$1",
+        "example": "0.31"
+      },
+      "avoid": {
+        "content": "$2",
+        "example": "none"
+      }
+    }
+  },
+  "tryScoreNone": {
+    "message": "ninguno"
+  },
+  "tryShown": {
+    "message": "Se muestra"
+  },
+  "tryHidden": {
+    "message": "Se oculta"
+  },
+  "tryNeedsTopics": {
+    "message": "Añade un tema arriba para probar un título."
+  },
+  "tryError": {
+    "message": "No se pudo comprobar el título. Vuelve a intentarlo en breve."
   }
 }

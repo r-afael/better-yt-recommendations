@@ -29,3 +29,20 @@ footer {
   padding-inline: 0;
   border-top: 0;
 }
+
+/* The try box sits between the slider and the model status, set apart from both. */
+.try {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-block: 6px;
+}
+
+#try-result {
+  min-height: 1.4em;
+  margin: 0;
+}
+
+.verdict {
+  font-weight: 600;
+}

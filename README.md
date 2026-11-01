@@ -62,6 +62,9 @@ The **Filter recommendations by topic** switch is on both pages.
   to stay visible, from 0.10 to 0.40. Move it up to hide more videos, or down if the
   filter hides videos you'd want. The sidebar updates as you move it. With only
   topics to avoid, it works the other way round: move it up to hide fewer videos.
+- **Try a title**: type a video title to see how close it is to your topics and
+  whether the filter would show or hide it. Move the sensitivity to see the verdict
+  change. The first try loads the model if it isn't loaded yet.
 
 The filter judges each video by its title and channel, so it makes mistakes: it may
 hide a few videos you'd want, or keep a few you wouldn't. A handful of specific

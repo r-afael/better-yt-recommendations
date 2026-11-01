@@ -100,5 +100,42 @@
   },
   "loadNow": {
     "message": "立即載入"
+  },
+  "tryTitle": {
+    "message": "試試標題"
+  },
+  "tryTitlePlaceholder": {
+    "message": "如何擊敗西西里防禦"
+  },
+  "tryTitleHint": {
+    "message": "輸入一個影片標題，看看過濾器會如何根據上面的主題和靈敏度判斷它。"
+  },
+  "tryScores": {
+    "message": "最接近的想看主題：$WANT$ · 最接近的想避開主題：$AVOID$",
+    "placeholders": {
+      "want": {
+        "content": "$1",
+        "example": "0.31"
+      },
+      "avoid": {
+        "content": "$2",
+        "example": "none"
+      }
+    }
+  },
+  "tryScoreNone": {
+    "message": "無"
+  },
+  "tryShown": {
+    "message": "顯示"
+  },
+  "tryHidden": {
+    "message": "隱藏"
+  },
+  "tryNeedsTopics": {
+    "message": "請先在上面新增一個主題，再試標題。"
+  },
+  "tryError": {
+    "message": "無法檢查該標題。請稍後再試。"
   }
 }

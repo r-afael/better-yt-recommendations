@@ -100,5 +100,42 @@
   },
   "loadNow": {
     "message": "Charger maintenant"
+  },
+  "tryTitle": {
+    "message": "Tester un titre"
+  },
+  "tryTitlePlaceholder": {
+    "message": "Comment battre la défense sicilienne"
+  },
+  "tryTitleHint": {
+    "message": "Saisissez un titre de vidéo pour voir comment le filtre le jugerait avec les sujets et la sensibilité ci-dessus."
+  },
+  "tryScores": {
+    "message": "Sujet voulu le plus proche : $WANT$ · Sujet à éviter le plus proche : $AVOID$",
+    "placeholders": {
+      "want": {
+        "content": "$1",
+        "example": "0.31"
+      },
+      "avoid": {
+        "content": "$2",
+        "example": "none"
+      }
+    }
+  },
+  "tryScoreNone": {
+    "message": "aucun"
+  },
+  "tryShown": {
+    "message": "Affiché"
+  },
+  "tryHidden": {
+    "message": "Masqué"
+  },
+  "tryNeedsTopics": {
+    "message": "Ajoutez un sujet ci-dessus pour tester un titre."
+  },
+  "tryError": {
+    "message": "Impossible de vérifier le titre. Réessayez sous peu."
   }
 }
