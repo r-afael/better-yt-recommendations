@@ -514,7 +514,7 @@ test("the manifest ships only local scripts, asks for no host access, and stays 
   const contentScripts = manifest.content_scripts;
   const js = contentScripts.flatMap((entry) => entry.js);
   assert.equal(manifest.manifest_version, 3);
-  assert.deepEqual(manifest.permissions, ["storage", "offscreen"]);
+  assert.deepEqual(manifest.permissions, ["storage", "offscreen", "contextMenus"]);
   assert.equal(manifest.host_permissions, undefined);
   for (const entry of contentScripts) {
     assert.deepEqual(entry.matches, ["https://www.youtube.com/*", "https://youtube.com/*"]);

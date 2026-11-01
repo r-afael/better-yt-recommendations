@@ -197,5 +197,41 @@
   },
   "saveFailed": {
     "message": "无法保存你的更改。请过一分钟再试。"
+  },
+  "menuAllowChannel": {
+    "message": "从不隐藏此频道"
+  },
+  "menuBlockChannel": {
+    "message": "始终隐藏此频道"
+  },
+  "channelAllowed": {
+    "message": "$CHANNEL$ 将永远不会被隐藏。",
+    "placeholders": {
+      "channel": {
+        "content": "$1",
+        "example": "freeCodeCamp.org"
+      }
+    }
+  },
+  "channelBlocked": {
+    "message": "$CHANNEL$ 将始终被隐藏。",
+    "placeholders": {
+      "channel": {
+        "content": "$1",
+        "example": "freeCodeCamp.org"
+      }
+    }
+  },
+  "noChannelPicked": {
+    "message": "右键点击视频的缩略图或标题，即可选择其频道。"
+  },
+  "channelListFull": {
+    "message": "该列表已满。请先在“所有设置”中移除一个频道。"
+  },
+  "channelSavedNotFiltered": {
+    "message": "此设置在“筛选推荐”已开启、且该页面已在“筛选范围”中勾选时生效。"
+  },
+  "channelsMenuHint": {
+    "message": "你也可以在 YouTube 上右键点击视频的缩略图或标题，添加其频道。"
   }
 }

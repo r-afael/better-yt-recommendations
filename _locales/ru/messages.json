@@ -197,5 +197,41 @@
   },
   "saveFailed": {
     "message": "Не удалось сохранить изменение. Попробуйте ещё раз через минуту."
+  },
+  "menuAllowChannel": {
+    "message": "Никогда не скрывать этот канал"
+  },
+  "menuBlockChannel": {
+    "message": "Всегда скрывать этот канал"
+  },
+  "channelAllowed": {
+    "message": "Канал «$CHANNEL$» никогда не будет скрываться.",
+    "placeholders": {
+      "channel": {
+        "content": "$1",
+        "example": "freeCodeCamp.org"
+      }
+    }
+  },
+  "channelBlocked": {
+    "message": "Канал «$CHANNEL$» всегда будет скрываться.",
+    "placeholders": {
+      "channel": {
+        "content": "$1",
+        "example": "freeCodeCamp.org"
+      }
+    }
+  },
+  "noChannelPicked": {
+    "message": "Щёлкните правой кнопкой мыши по значку или названию видео, чтобы выбрать его канал."
+  },
+  "channelListFull": {
+    "message": "Этот список заполнен. Сначала удалите из него канал во «Всех настройках»."
+  },
+  "channelSavedNotFiltered": {
+    "message": "Это действует там, где включено «Фильтровать рекомендации» и страница отмечена в разделе «Где фильтровать»."
+  },
+  "channelsMenuHint": {
+    "message": "Можно также щёлкнуть правой кнопкой мыши по значку или названию видео на YouTube, чтобы добавить его канал."
   }
 }

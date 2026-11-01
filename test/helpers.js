@@ -117,6 +117,43 @@ function translate(entry, substitutions) {
   });
 }
 
+// Calls callback with runtime.lastError set to an error, the way Chrome reports a failed call.
+// Chrome logs "Unchecked runtime.lastError" when no callback reads it, and so does this, into
+// chrome.uncheckedErrors.
+function failWith(chrome, message, callback) {
+  let checked = false;
+  Object.defineProperty(chrome.runtime, "lastError", {
+    configurable: true,
+    get() {
+      checked = true;
+      return { message };
+    },
+  });
+  callback?.();
+  Object.defineProperty(chrome.runtime, "lastError", { configurable: true, writable: true, value: undefined });
+  if (!checked) chrome.uncheckedErrors.push(message);
+}
+
+// chrome.contextMenus in its callback form, as Chrome 116 has it. The entries are kept in
+// chrome.menus, a Map from id to properties.
+function fakeContextMenus(chrome) {
+  return {
+    removeAll(callback) {
+      chrome.menus.clear();
+      callback?.();
+    },
+    create(properties, callback) {
+      if (chrome.menus.has(properties.id)) {
+        failWith(chrome, `Cannot create item with duplicate id ${properties.id}`, callback);
+        return;
+      }
+      chrome.menus.set(properties.id, properties);
+      callback?.();
+    },
+    onClicked: fakeEvent(),
+  };
+}
+
 // The parts of the extension APIs the scripts use, backed by memory.
 // Tests replace runtime.sendMessage and other functions to script their own answers.
 export function fakeChrome({ stored = {}, session = {}, locale = "en" } = {}) {
@@ -128,19 +165,29 @@ export function fakeChrome({ stored = {}, session = {}, locale = "en" } = {}) {
     data: sync.data,
     openedOptions: 0,
     badges: {},
+    menus: new Map(),
+    uncheckedErrors: [],
+    tabMessages: [],
     storage: {
       sync,
       session: fakeStorageArea("session", session, onChanged),
       onChanged,
     },
     runtime: {
+      lastError: undefined,
       onMessage: fakeEvent(),
+      onInstalled: fakeEvent(),
       async sendMessage() {
         return undefined;
       },
       getURL: (path) => `chrome-extension://better-yt/${path}`,
       async openOptionsPage() {
         chrome.openedOptions += 1;
+      },
+    },
+    tabs: {
+      async sendMessage(tabId, message, options) {
+        chrome.tabMessages.push({ tabId, message, options });
       },
     },
     action: {
@@ -158,6 +205,7 @@ export function fakeChrome({ stored = {}, session = {}, locale = "en" } = {}) {
       },
     },
   };
+  chrome.contextMenus = fakeContextMenus(chrome);
   return chrome;
 }
 
@@ -200,6 +248,38 @@ export async function openPage(t, path, options) {
     clock.uninstall();
     window.close();
   });
+  return { window, document: window.document, chrome, clock };
+}
+
+// The scripts and styles the manifest adds to YouTube pages, in its order, so a missing or
+// misordered one fails the tests that load them.
+const contentScripts = readJson("manifest.json").content_scripts;
+const CONTENT_JS = contentScripts.flatMap((entry) => entry.js);
+const CONTENT_CSS = contentScripts.flatMap((entry) => entry.css).map(read).join("\n");
+
+// How long the filter lets a burst of list changes settle before it scans.
+export const SCAN_MS = 150;
+
+// Opens fixture markup as the YouTube page at path, such as "/watch?v=W6NZfCO5SIk", runs every
+// content script with its styles and fake timers, and waits for the first scan. The chrome fake
+// is made from stored settings unless the test passes one it has set up.
+export async function openYouTube(t, { fixture, path, stored, chrome = fakeChrome({ stored }) }) {
+  const dom = new JSDOM(`<style>${CONTENT_CSS}</style>${fixture}`, {
+    url: `https://www.youtube.com${path}`,
+    runScripts: "outside-only",
+  });
+  const { window } = dom;
+  const clock = FakeTimers.withGlobal(window).install({
+    toFake: ["setTimeout", "clearTimeout", "Date", "performance"],
+  });
+  window.chrome = chrome;
+  t.after(() => {
+    clock.uninstall();
+    window.close();
+  });
+  runScripts(dom.getInternalVMContext(), CONTENT_JS);
+  await flush();
+  await clock.tickAsync(SCAN_MS);
   return { window, document: window.document, chrome, clock };
 }
 

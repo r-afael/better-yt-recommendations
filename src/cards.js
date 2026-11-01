@@ -48,6 +48,9 @@
     }),
   });
 
+  // Every surface's items, for finding the card under a right-click on any page.
+  const ALL_ITEMS = Object.values(SURFACES).map((surface) => surface.items).join(", ");
+
   const ID_HOST = "div.ytLockupViewModelHost";
   const ID_CLASS_PREFIX = "content-id-";
   const WATCH_LINK = 'a[href*="/watch?v="]';
@@ -129,6 +132,41 @@
     return { id, title, channel };
   }
 
+  // Returns the card an element is in, on any page, or null. A card in a sponsored slot or a shelf
+  // is still a card, so an ad's channel can be listed too.
+  function itemAt(target) {
+    return target?.closest?.(ALL_ITEMS) ?? null;
+  }
+
+  // Where a link goes: "/watch?v=<id>" for a video link, ignoring its other parameters, and the
+  // path for other links, such as "/@freecodecamp". Null for a missing or unreadable link.
+  function destinationOf(href) {
+    let url;
+    try {
+      url = new URL(href);
+    } catch {
+      return null;
+    }
+    if (url.pathname !== "/watch") return url.pathname;
+    const id = url.searchParams.get("v");
+    return id ? `/watch?v=${id}` : null;
+  }
+
+  // Whether any link in a card goes to a destination, such as the same video or channel.
+  function linksTo(item, destination) {
+    return [...item.querySelectorAll("a[href]")].some((link) => destinationOf(link.href) === destination);
+  }
+
+  // Returns the card a right-clicked link belongs to, or null. The card under the last right-click
+  // wins when it holds that link; otherwise it's the first card that does, which also finds the
+  // card when the click landed outside it, such as on Home's preview player.
+  function itemForLink(linkUrl, last) {
+    const destination = destinationOf(linkUrl);
+    if (destination === null) return null;
+    if (last?.isConnected && linksTo(last, destination)) return last;
+    return [...document.querySelectorAll(ALL_ITEMS)].find((item) => linksTo(item, destination)) ?? null;
+  }
+
   // The id tells a hidden card apart from the same element recycled for another video.
   function hide(item, id, reason) {
     item.setAttribute(HIDDEN_ATTRIBUTE, id);
@@ -168,6 +206,8 @@
     container,
     findItems,
     isRelevant,
+    itemAt,
+    itemForLink,
     readVideo,
     hide,
     unhide,

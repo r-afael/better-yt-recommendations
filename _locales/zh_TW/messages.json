@@ -197,5 +197,41 @@
   },
   "saveFailed": {
     "message": "無法儲存你的變更。請過一分鐘再試。"
+  },
+  "menuAllowChannel": {
+    "message": "永不隱藏這個頻道"
+  },
+  "menuBlockChannel": {
+    "message": "一律隱藏這個頻道"
+  },
+  "channelAllowed": {
+    "message": "$CHANNEL$ 將永遠不會被隱藏。",
+    "placeholders": {
+      "channel": {
+        "content": "$1",
+        "example": "freeCodeCamp.org"
+      }
+    }
+  },
+  "channelBlocked": {
+    "message": "$CHANNEL$ 將一律被隱藏。",
+    "placeholders": {
+      "channel": {
+        "content": "$1",
+        "example": "freeCodeCamp.org"
+      }
+    }
+  },
+  "noChannelPicked": {
+    "message": "在影片的縮圖或標題上按右鍵，即可選取該影片的頻道。"
+  },
+  "channelListFull": {
+    "message": "這個清單已滿。請先在「所有設定」中移除一個頻道。"
+  },
+  "channelSavedNotFiltered": {
+    "message": "此設定會在「篩選推薦內容」已開啟、且該頁面已在「篩選範圍」中勾選時生效。"
+  },
+  "channelsMenuHint": {
+    "message": "你也可以在 YouTube 上對影片的縮圖或標題按右鍵，新增該影片的頻道。"
   }
 }

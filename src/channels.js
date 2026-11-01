@@ -4,11 +4,11 @@
 (() => {
   "use strict";
 
-  const { settings } = globalThis.BetterYT;
+  const { protocol, settings } = globalThis.BetterYT;
   const { LIMITS } = settings;
 
-  // The two settings that hold the lists.
-  const LISTS = Object.freeze(["allowedChannels", "blockedChannels"]);
+  // The settings that hold the lists, named in protocol.js.
+  const LISTS = protocol.CHANNEL_LISTS;
 
   const key = settings.nameKey;
   // A name with its spacing collapsed, cut the way a card's channel is read.
@@ -66,5 +66,5 @@
     return Object.freeze({ lookup, hasBlocked: blocked.size > 0 });
   }
 
-  globalThis.BetterYT.channels = Object.freeze({ LISTS, clean, key, parse, countNames, add, reconcile, createIndex });
+  globalThis.BetterYT.channels = Object.freeze({ clean, key, parse, countNames, add, reconcile, createIndex });
 })();

@@ -197,5 +197,41 @@
   },
   "saveFailed": {
     "message": "आपका बदलाव सेव नहीं हो सका। एक मिनट बाद फिर से कोशिश करें।"
+  },
+  "menuAllowChannel": {
+    "message": "इस चैनल को कभी न छिपाएँ"
+  },
+  "menuBlockChannel": {
+    "message": "इस चैनल को हमेशा छिपाएँ"
+  },
+  "channelAllowed": {
+    "message": "$CHANNEL$ को कभी नहीं छिपाया जाएगा।",
+    "placeholders": {
+      "channel": {
+        "content": "$1",
+        "example": "freeCodeCamp.org"
+      }
+    }
+  },
+  "channelBlocked": {
+    "message": "$CHANNEL$ को हमेशा छिपाया जाएगा।",
+    "placeholders": {
+      "channel": {
+        "content": "$1",
+        "example": "freeCodeCamp.org"
+      }
+    }
+  },
+  "noChannelPicked": {
+    "message": "किसी वीडियो का चैनल चुनने के लिए उसके थंबनेल या टाइटल पर राइट-क्लिक करें।"
+  },
+  "channelListFull": {
+    "message": "यह सूची भर गई है। पहले सभी सेटिंग्स में जाकर कोई चैनल हटाएँ।"
+  },
+  "channelSavedNotFiltered": {
+    "message": "यह वहाँ लागू होता है जहाँ \"सुझाव फ़िल्टर करें\" चालू है और पेज \"कहाँ फ़िल्टर करें\" के तहत चुना गया है।"
+  },
+  "channelsMenuHint": {
+    "message": "आप YouTube पर किसी वीडियो के थंबनेल या टाइटल पर राइट-क्लिक करके भी उसका चैनल जोड़ सकते हैं।"
   }
 }

@@ -5,7 +5,7 @@ import { channelNames as names, fakeChrome, runScripts } from "./helpers.js";
 
 function loadChannels() {
   const context = vm.createContext({ chrome: fakeChrome(), TextEncoder });
-  runScripts(context, ["src/settings.js", "src/channels.js"]);
+  runScripts(context, ["src/settings.js", "src/protocol.js", "src/channels.js"]);
   return context.BetterYT.channels;
 }
 

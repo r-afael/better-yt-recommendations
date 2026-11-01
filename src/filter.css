@@ -32,3 +32,24 @@
   font: inherit;
   cursor: pointer;
 }
+
+/* Messages from src/toast.js: centered above the bottom edge, clear of YouTube's own messages in
+   the bottom-left corner. */
+.better-yt-toast {
+  position: fixed;
+  inset-inline: 0;
+  bottom: 72px;
+  width: max-content;
+  max-width: calc(100vw - 32px);
+  margin: 0 auto;
+  z-index: 2300;
+  padding: 10px 16px;
+  border-radius: 8px;
+  background: #0f0f0f;
+  color: #ffffff;
+  font: 1.4rem/2rem "Roboto", "Arial", sans-serif;
+}
+
+.better-yt-toast[hidden] {
+  display: none;
+}

@@ -254,5 +254,49 @@
   "saveFailed": {
     "message": "Couldn't save your change. Try again in a minute.",
     "description": "Shown when Chrome refused to save a setting."
+  },
+  "menuAllowChannel": {
+    "message": "Never hide this channel",
+    "description": "Right-click menu entry on a YouTube video that adds its channel to the never-hide list."
+  },
+  "menuBlockChannel": {
+    "message": "Always hide this channel",
+    "description": "Right-click menu entry on a YouTube video that adds its channel to the always-hide list."
+  },
+  "channelAllowed": {
+    "message": "$CHANNEL$ will never be hidden.",
+    "description": "Message shown on YouTube after the user picked Never hide this channel.",
+    "placeholders": {
+      "channel": {
+        "content": "$1",
+        "example": "freeCodeCamp.org"
+      }
+    }
+  },
+  "channelBlocked": {
+    "message": "$CHANNEL$ will always be hidden.",
+    "description": "Message shown on YouTube after the user picked Always hide this channel.",
+    "placeholders": {
+      "channel": {
+        "content": "$1",
+        "example": "freeCodeCamp.org"
+      }
+    }
+  },
+  "noChannelPicked": {
+    "message": "Right-click a video's thumbnail or title to pick its channel.",
+    "description": "Message shown when the right-click wasn't on a video."
+  },
+  "channelListFull": {
+    "message": "That list is full. Remove a channel in All settings first.",
+    "description": "Message shown when a channel list can't take another name."
+  },
+  "channelSavedNotFiltered": {
+    "message": "It applies where Filter recommendations is on and the page is checked under Where to filter.",
+    "description": "Second sentence after \"… will always be hidden.\" when nothing is hidden right now, because the filter is off or this page isn't checked."
+  },
+  "channelsMenuHint": {
+    "message": "You can also right-click a video's thumbnail or title on YouTube to add its channel.",
+    "description": "Hint under the channel lists on the options page."
   }
 }

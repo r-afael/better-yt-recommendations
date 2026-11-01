@@ -11,7 +11,7 @@
     "48": "src/icons/icon-48.png",
     "128": "src/icons/icon-128.png"
   },
-  "permissions": ["storage", "offscreen"],
+  "permissions": ["storage", "offscreen", "contextMenus"],
   "background": {
     "service_worker": "src/background.js"
   },
@@ -50,6 +50,8 @@
         "src/channels.js",
         "src/cards.js",
         "src/hidden-row.js",
+        "src/toast.js",
+        "src/channel-menu.js",
         "src/filter.js"
       ],
       "css": ["src/filter.css"],

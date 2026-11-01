@@ -12,6 +12,8 @@ and channel names of the videos in the lists it filters: next to the video you'r
 watching, on Home, and, if you turn them on, in your Subscriptions and search results.
 It compares them with your topics on your computer and doesn't store them or send them
 anywhere.
+When you right-click a video and pick one of the extension's menu entries, it reads that
+video's channel name and saves it to your list.
 
 ## What the extension stores
 

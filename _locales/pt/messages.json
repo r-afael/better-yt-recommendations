@@ -197,5 +197,41 @@
   },
   "saveFailed": {
     "message": "Não foi possível salvar sua alteração. Tente de novo daqui a um minuto."
+  },
+  "menuAllowChannel": {
+    "message": "Nunca ocultar este canal"
+  },
+  "menuBlockChannel": {
+    "message": "Sempre ocultar este canal"
+  },
+  "channelAllowed": {
+    "message": "O canal $CHANNEL$ nunca será ocultado.",
+    "placeholders": {
+      "channel": {
+        "content": "$1",
+        "example": "freeCodeCamp.org"
+      }
+    }
+  },
+  "channelBlocked": {
+    "message": "O canal $CHANNEL$ sempre será ocultado.",
+    "placeholders": {
+      "channel": {
+        "content": "$1",
+        "example": "freeCodeCamp.org"
+      }
+    }
+  },
+  "noChannelPicked": {
+    "message": "Clique com o botão direito na miniatura ou no título de um vídeo para escolher o canal dele."
+  },
+  "channelListFull": {
+    "message": "Essa lista está cheia. Remova um canal em Todas as configurações primeiro."
+  },
+  "channelSavedNotFiltered": {
+    "message": "Vale onde Filtrar recomendações está ativado e a página está marcada em Onde filtrar."
+  },
+  "channelsMenuHint": {
+    "message": "Você também pode clicar com o botão direito na miniatura ou no título de um vídeo no YouTube para adicionar o canal dele."
   }
 }

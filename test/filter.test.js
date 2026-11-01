@@ -1,19 +1,12 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import FakeTimers from "@sinonjs/fake-timers";
-import { JSDOM } from "jsdom";
-import { HIDDEN_COUNT, MATCH, fakeChrome, flush, holdMessages, read, readJson, runScripts, score } from "./helpers.js";
+import { HIDDEN_COUNT, MATCH, SCAN_MS, fakeChrome, flush, holdMessages, openYouTube, read, score } from "./helpers.js";
 
-// Loads what the browser loads, in the manifest's order, so a misordered or missing script fails here.
-const contentScripts = readJson("manifest.json").content_scripts;
-const scripts = contentScripts.flatMap((entry) => entry.js);
-const css = contentScripts.flatMap((entry) => entry.css);
 const watchFixture = read("test/fixtures/watch-sidebar.html");
 const homeFixture = read("test/fixtures/home-grid.html");
 // The Subscriptions grid has the same markup as Home's.
 const subscriptionsFixture = homeFixture.replaceAll('page-subtype="home"', 'page-subtype="subscriptions"');
 const searchFixture = read("test/fixtures/search-results.html");
-const styles = css.map(read).join("\n");
 const FIXTURE_IDS = ["PFmuCDHHpwk", "PkZNo7MFNFg", "RphIVv0uWrM", "C4dGVTl6ry8"];
 const ON_TOPIC_IDS = FIXTURE_IDS.filter((id) => id !== "RphIVv0uWrM"); // Once RphIVv0uWrM is hidden.
 const HOME_IDS = ["rfscVS0vtbw", "W6NZfCO5SIk", "dQw4w9WgXcQ", "jNQXAC9IVRw"];
@@ -25,7 +18,6 @@ const WATCH_PATH = "/watch?v=W6NZfCO5SIk";
 const SEARCH_PATH = "/results?search_query=freecodecamp";
 const COLLAPSED = { text: "Show them", expanded: "false" };
 const REVEALED = { text: "Hide them again", expanded: "true" };
-const SCAN_MS = 150;
 const RETRY_MS = 30_000;
 const REQUEST_TIMEOUT_MS = 60_000;
 
@@ -38,33 +30,15 @@ function showVideo(item, id, title = `Video ${id}`) {
 }
 
 async function setup(t, { fixture = watchFixture, path = WATCH_PATH, stored = { topics: "programming" } } = {}) {
-  const dom = new JSDOM(`<style>${styles}</style>${fixture}`, {
-    url: `https://www.youtube.com${path}`,
-    runScripts: "outside-only",
-  });
-  const { window } = dom;
-  const { document } = window;
-  const clock = FakeTimers.withGlobal(window).install({
-    toFake: ["setTimeout", "clearTimeout", "Date", "performance"],
-  });
   const chrome = fakeChrome({ stored });
   // MATCH requests wait for the test to answer them; the hidden counts sent for the badge are recorded.
   const reports = [];
   const requests = holdMessages(chrome, (message) => message.type !== HIDDEN_COUNT, async (message) => {
     reports.push(message.count);
   });
+  const { window, document, clock } = await openYouTube(t, { fixture, path, chrome });
   const warnings = [];
   window.console.warn = (...args) => warnings.push(args);
-
-  t.after(() => {
-    clock.uninstall();
-    window.close();
-  });
-
-  window.chrome = chrome;
-  runScripts(dom.getInternalVMContext(), scripts);
-  await flush();
-  await clock.tickAsync(SCAN_MS);
 
   const items = () => [...document.querySelectorAll("yt-lockup-view-model")];
   // Hiding a grid cell hides the card inside it, so every ancestor counts.

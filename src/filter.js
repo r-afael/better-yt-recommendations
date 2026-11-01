@@ -210,7 +210,7 @@
   // A new channel list keeps the scores: they don't depend on it.
   function applySettings(changes) {
     options = { ...options, ...changes };
-    if (channels.LISTS.some((list) => list in changes)) channelIndex = channels.createIndex(options);
+    if (protocol.CHANNEL_LISTS.some((list) => list in changes)) channelIndex = channels.createIndex(options);
     const next = verdict.lists(options);
     if (!sameLists(next, topicLists)) {
       // Answers to requests made for the old topics land in the old map and are dropped with it.

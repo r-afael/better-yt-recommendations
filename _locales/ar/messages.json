@@ -197,5 +197,41 @@
   },
   "saveFailed": {
     "message": "تعذّر حفظ التغيير. حاول مجددًا بعد دقيقة."
+  },
+  "menuAllowChannel": {
+    "message": "لا تُخفِ هذه القناة أبدًا"
+  },
+  "menuBlockChannel": {
+    "message": "أخفِ هذه القناة دائمًا"
+  },
+  "channelAllowed": {
+    "message": "لن تُخفى القناة $CHANNEL$ أبدًا.",
+    "placeholders": {
+      "channel": {
+        "content": "$1",
+        "example": "freeCodeCamp.org"
+      }
+    }
+  },
+  "channelBlocked": {
+    "message": "ستُخفى القناة $CHANNEL$ دائمًا.",
+    "placeholders": {
+      "channel": {
+        "content": "$1",
+        "example": "freeCodeCamp.org"
+      }
+    }
+  },
+  "noChannelPicked": {
+    "message": "انقر بزر الماوس الأيمن على الصورة المصغّرة لفيديو أو على عنوانه لاختيار قناته."
+  },
+  "channelListFull": {
+    "message": "هذه القائمة ممتلئة. أزِل منها قناة في «كل الإعدادات» أولًا."
+  },
+  "channelSavedNotFiltered": {
+    "message": "يسري ذلك حيث يكون «تصفية المقترحات» مفعّلًا وتكون الصفحة محددة ضمن «أين تتم التصفية»."
+  },
+  "channelsMenuHint": {
+    "message": "يمكنك أيضًا النقر بزر الماوس الأيمن على الصورة المصغّرة لفيديو أو على عنوانه في YouTube لإضافة قناته."
   }
 }

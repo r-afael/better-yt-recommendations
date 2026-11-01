@@ -79,7 +79,11 @@ The **Filter recommendations** switch is on both pages.
   page you filter, without the model. Names match ignoring case and spacing, so two
   channels with the same name both match, and a channel that changes its name needs adding
   again. Typing a name into one list removes it from the other. The lists are disabled
-  while the filter is off.
+  while the filter is off. You can also right-click a video's thumbnail or title on
+  YouTube (or its channel name on Home and in search results) and pick **Never hide this
+  channel** or **Always hide this channel**. A message at the bottom of the page confirms it.
+  Ads and the shelves the filter leaves alone, such as Home's, stay as they are when you pick
+  a channel from them; the channel is listed for every page the filter works on.
 
 Settings synced from another computer are kept within the limits the options page allows.
 
@@ -162,7 +166,9 @@ in Chrome, which syncs them across your computers if you use Chrome sync.
 The topic filter's model and its files download once from huggingface.co (Hugging
 Face). After that, the model runs on your computer. The titles and channels of the
 videos you see are never sent anywhere. The extension asks for the "offscreen"
-permission to run the model in a hidden page of its own.
+permission to run the model in a hidden page of its own. It asks for the "contextMenus"
+permission to add Never hide this channel and Always hide this channel to the right-click
+menu on YouTube.
 
 Read the full [privacy policy](PRIVACY.md).
 
@@ -196,9 +202,12 @@ refresh YouTube.
   search results, reads them, and hides or shows them.
 - `src/hidden-row.js` draws the row that counts the hidden videos and shows them.
   `src/badge.js` shows that count on the toolbar icon.
+- `src/channel-menu.js` remembers the video you right-clicked and adds its channel to a
+  list. `src/menus.js` adds the right-click menu entries. `src/toast.js` shows short
+  messages on YouTube.
 - `src/filter.js` decides which videos to check, asks for verdicts and applies them.
   `src/filter.css` hides the filtered videos, or dims them while they're shown, and
-  styles the row.
+  styles the row and the messages.
 - `src/background.js` receives the extension's messages and events in the background
   and hands each one to the module that handles it.
 - `src/model-host.js` opens the hidden page that runs the model when a page needs it or

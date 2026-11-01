@@ -197,5 +197,41 @@
   },
   "saveFailed": {
     "message": "Tidak dapat menyimpan perubahan Anda. Coba lagi dalam satu menit."
+  },
+  "menuAllowChannel": {
+    "message": "Jangan pernah sembunyikan saluran ini"
+  },
+  "menuBlockChannel": {
+    "message": "Selalu sembunyikan saluran ini"
+  },
+  "channelAllowed": {
+    "message": "$CHANNEL$ tidak akan pernah disembunyikan.",
+    "placeholders": {
+      "channel": {
+        "content": "$1",
+        "example": "freeCodeCamp.org"
+      }
+    }
+  },
+  "channelBlocked": {
+    "message": "$CHANNEL$ akan selalu disembunyikan.",
+    "placeholders": {
+      "channel": {
+        "content": "$1",
+        "example": "freeCodeCamp.org"
+      }
+    }
+  },
+  "noChannelPicked": {
+    "message": "Klik kanan thumbnail atau judul video untuk memilih salurannya."
+  },
+  "channelListFull": {
+    "message": "Daftar itu sudah penuh. Hapus dulu satu saluran di Semua setelan."
+  },
+  "channelSavedNotFiltered": {
+    "message": "Ini berlaku jika Filter rekomendasi aktif dan halamannya dicentang pada Tempat memfilter."
+  },
+  "channelsMenuHint": {
+    "message": "Anda juga dapat mengklik kanan thumbnail atau judul video di YouTube untuk menambahkan salurannya."
   }
 }

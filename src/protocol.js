@@ -24,6 +24,16 @@ globalThis.BetterYT.protocol = Object.freeze({
   // tab's current page, 0 when it stops or the page goes away. The background shows it on the
   // tab's badge and ignores it without a tab or a non-negative integer count. No answer.
   HIDDEN_COUNT: "better-yt:hidden-count",
+  // Background to the tab and frame where a right-click menu entry was picked:
+  // { type, list, linkUrl }, where list is one of CHANNEL_LISTS and linkUrl is the link the menu
+  // opened on, if any. The content script saves the channel of the card that link belongs to and
+  // says so on the page. No answer.
+  LIST_CHANNEL: "better-yt:list-channel",
+  // The settings that hold the channel lists, the only lists LIST_CHANNEL may name.
+  CHANNEL_LISTS: Object.freeze(["allowedChannels", "blockedChannels"]),
+  // The ids of the right-click menu entries Never hide this channel and Always hide this channel.
+  MENU_ALLOW_CHANNEL: "better-yt:allow-channel",
+  MENU_BLOCK_CHANNEL: "better-yt:block-channel",
   // The target of messages that only the offscreen document handles.
   OFFSCREEN: "offscreen",
   // Where the background keeps the latest model status, in chrome.storage.session.

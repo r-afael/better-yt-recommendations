@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import vm from "node:vm";
-import { fakeChrome, flush, runScripts } from "./helpers.js";
+import { fakeChrome, flush, readJson, runScripts } from "./helpers.js";
 
 const OFFSCREEN_URL = "chrome-extension://better-yt/src/offscreen.html";
 const MISSING_RECEIVER = "Could not establish connection. Receiving end does not exist.";
@@ -378,4 +378,75 @@ test("ignores hidden counts from pages without a tab", async () => {
   await flush();
 
   assert.deepEqual(chrome.badges, {});
+});
+
+// The menu shows where the content script that answers it runs.
+const YOUTUBE_PAGES = readJson("manifest.json").content_scripts.find((entry) => entry.js.includes("src/channel-menu.js")).matches;
+const CARD_LINKS = ["https://*.youtube.com/watch*", "https://*.youtube.com/@*", "https://*.youtube.com/channel/*"];
+const VIDEO_LINK = "https://www.youtube.com/watch?v=PkZNo7MFNFg";
+
+test("creates both menu entries for video links on YouTube when installed", () => {
+  const { chrome, protocol } = setup();
+
+  chrome.runtime.onInstalled.dispatch({ reason: "install" });
+
+  const onVideoLinks = { contexts: ["link"], documentUrlPatterns: YOUTUBE_PAGES, targetUrlPatterns: CARD_LINKS };
+  assert.deepEqual(plain([...chrome.menus.values()]), [
+    { id: protocol.MENU_ALLOW_CHANNEL, title: "Never hide this channel", ...onVideoLinks },
+    { id: protocol.MENU_BLOCK_CHANNEL, title: "Always hide this channel", ...onVideoLinks },
+  ]);
+});
+
+// Chrome keeps an extension's menu entries when it updates, and creating one again fails.
+test("an update replaces the previous version's entries, without unchecked errors", () => {
+  const { chrome, protocol } = setup();
+  chrome.menus.set(protocol.MENU_ALLOW_CHANNEL, { id: protocol.MENU_ALLOW_CHANNEL, title: "Old title" });
+  chrome.menus.set("better-yt:retired-entry", { id: "better-yt:retired-entry", title: "Retired entry" });
+
+  chrome.runtime.onInstalled.dispatch({ reason: "update", previousVersion: "1.3.0" });
+
+  assert.deepEqual(plain([...chrome.menus.values()].map(({ id, title }) => ({ id, title }))), [
+    { id: protocol.MENU_ALLOW_CHANNEL, title: "Never hide this channel" },
+    { id: protocol.MENU_BLOCK_CHANNEL, title: "Always hide this channel" },
+  ]);
+  assert.deepEqual(chrome.uncheckedErrors, []);
+});
+
+test("a menu click asks the clicked tab and frame to list the channel, with the clicked link", async () => {
+  const { chrome, protocol } = setup();
+
+  chrome.contextMenus.onClicked.dispatch({ menuItemId: protocol.MENU_BLOCK_CHANNEL, linkUrl: VIDEO_LINK, frameId: 3 }, { id: 7 });
+  chrome.contextMenus.onClicked.dispatch({ menuItemId: protocol.MENU_ALLOW_CHANNEL, linkUrl: VIDEO_LINK }, { id: 8 });
+  await flush();
+
+  assert.deepEqual(plain(chrome.tabMessages), [
+    { tabId: 7, message: { type: protocol.LIST_CHANNEL, list: "blockedChannels", linkUrl: VIDEO_LINK }, options: { frameId: 3 } },
+    { tabId: 8, message: { type: protocol.LIST_CHANNEL, list: "allowedChannels", linkUrl: VIDEO_LINK }, options: { frameId: 0 } },
+  ]);
+});
+
+test("ignores clicks on other menu entries and clicks without a tab", async () => {
+  const { chrome, protocol } = setup();
+
+  chrome.contextMenus.onClicked.dispatch({ menuItemId: "another-extension-entry", linkUrl: VIDEO_LINK, frameId: 0 }, { id: 7 });
+  chrome.contextMenus.onClicked.dispatch({ menuItemId: protocol.MENU_BLOCK_CHANNEL, linkUrl: VIDEO_LINK, frameId: 0 });
+  await flush();
+
+  assert.deepEqual(chrome.tabMessages, []);
+});
+
+// Picking an entry in a tab whose content script hasn't loaded yet can't reach it. node:test fails
+// a test that leaves the rejection unhandled.
+test("a menu click on a tab without the content script fails quietly", async () => {
+  const { chrome, protocol } = setup();
+  const tried = [];
+  chrome.tabs.sendMessage = async (tabId) => {
+    tried.push(tabId);
+    throw new Error(MISSING_RECEIVER);
+  };
+
+  chrome.contextMenus.onClicked.dispatch({ menuItemId: protocol.MENU_BLOCK_CHANNEL, linkUrl: VIDEO_LINK, frameId: 0 }, { id: 7 });
+  await flush();
+
+  assert.deepEqual(tried, [7]);
 });

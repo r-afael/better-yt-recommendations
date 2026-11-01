@@ -197,5 +197,41 @@
   },
   "saveFailed": {
     "message": "আপনার পরিবর্তন সংরক্ষণ করা যায়নি। এক মিনিট পরে আবার চেষ্টা করুন।"
+  },
+  "menuAllowChannel": {
+    "message": "এই চ্যানেলটি কখনো লুকাবেন না"
+  },
+  "menuBlockChannel": {
+    "message": "এই চ্যানেলটি সবসময় লুকান"
+  },
+  "channelAllowed": {
+    "message": "$CHANNEL$ কখনো লুকানো হবে না।",
+    "placeholders": {
+      "channel": {
+        "content": "$1",
+        "example": "freeCodeCamp.org"
+      }
+    }
+  },
+  "channelBlocked": {
+    "message": "$CHANNEL$ সবসময় লুকানো থাকবে।",
+    "placeholders": {
+      "channel": {
+        "content": "$1",
+        "example": "freeCodeCamp.org"
+      }
+    }
+  },
+  "noChannelPicked": {
+    "message": "কোনো ভিডিওর চ্যানেল বেছে নিতে তার থাম্বনেইল বা শিরোনামে রাইট-ক্লিক করুন।"
+  },
+  "channelListFull": {
+    "message": "তালিকাটি পূর্ণ। আগে সব সেটিংসে গিয়ে একটি চ্যানেল সরান।"
+  },
+  "channelSavedNotFiltered": {
+    "message": "এটি সেখানে প্রযোজ্য, যেখানে \"সুপারিশ ফিল্টার করুন\" চালু আছে এবং পেজটি \"কোথায় ফিল্টার করবেন\" অংশে চিহ্নিত আছে।"
+  },
+  "channelsMenuHint": {
+    "message": "YouTube-এ কোনো ভিডিওর থাম্বনেইল বা শিরোনামে রাইট-ক্লিক করেও তার চ্যানেল যোগ করতে পারেন।"
   }
 }
