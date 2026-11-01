@@ -74,5 +74,9 @@
   "modelError": {
     "message": "Couldn't load the model. It will try again shortly.",
     "description": "Status of the topic model after it failed to load."
+  },
+  "sourceCode": {
+    "message": "Source code on GitHub",
+    "description": "Link at the bottom of the popup that opens the extension's source code on GitHub."
   }
 }

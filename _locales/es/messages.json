@@ -55,5 +55,8 @@
   },
   "modelError": {
     "message": "No se pudo cargar el modelo. Se volverá a intentar en breve."
+  },
+  "sourceCode": {
+    "message": "Código fuente en GitHub"
   }
 }

@@ -195,6 +195,24 @@ progress {
   accent-color: var(--accent);
 }
 
+footer {
+  padding: 10px 16px;
+  border-top: 1px solid var(--line);
+}
+
+footer a {
+  color: var(--muted);
+}
+
+footer a:hover {
+  color: var(--text);
+}
+
+footer a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .switch,
   .switch::before {

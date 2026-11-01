@@ -55,5 +55,8 @@
   },
   "modelError": {
     "message": "无法加载模型。稍后将重试。"
+  },
+  "sourceCode": {
+    "message": "GitHub 上的源代码"
   }
 }

@@ -280,6 +280,15 @@ test("every translation fills every popup text", async (t) => {
   }
 });
 
+// Links in the popup only open when they target a new tab.
+test("links to the source code in a new tab", async (t) => {
+  const { document } = await setup(t);
+  const link = document.querySelector("footer a");
+  assert.equal(link.href, "https://github.com/r-afael/better-yt-recommendations");
+  assert.equal(link.target, "_blank");
+  assert.equal(link.textContent, "Source code on GitHub");
+});
+
 test("translates the topics placeholder and the model's status", async (t) => {
   const { field, status } = await setup(t, {
     locale: "es",

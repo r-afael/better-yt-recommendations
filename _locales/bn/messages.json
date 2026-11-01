@@ -55,5 +55,8 @@
   },
   "modelError": {
     "message": "মডেল লোড করা যায়নি। একটু পরে আবার চেষ্টা করা হবে।"
+  },
+  "sourceCode": {
+    "message": "GitHub-এ সোর্স কোড"
   }
 }

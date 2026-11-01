@@ -55,5 +55,8 @@
   },
   "modelError": {
     "message": "Tidak dapat memuat model. Akan dicoba lagi sebentar lagi."
+  },
+  "sourceCode": {
+    "message": "Kode sumber di GitHub"
   }
 }
