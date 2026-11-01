@@ -1,11 +1,18 @@
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import vm from "node:vm";
+import FakeTimers from "@sinonjs/fake-timers";
 import { JSDOM } from "jsdom";
 
 const root = new URL("../", import.meta.url);
 
 export const read = (path) => readFileSync(new URL(path, root), "utf8");
 export const readJson = (path) => JSON.parse(read(path));
+
+// Every translation the extension ships, such as "en" and "zh_CN".
+export const locales = readdirSync(new URL("_locales/", root));
+
+// Where the background reports the model's status in chrome.storage.session, as the pages read it.
+export const STATUS_KEY = "modelStatus";
 
 // Lets pending promises, storage events and mutation observers run.
 export const flush = () => new Promise((resolve) => setImmediate(resolve));
@@ -101,8 +108,9 @@ export function fakeChrome({ stored = {}, session = {}, locale = "en" } = {}) {
   const onChanged = fakeEvent();
   const sync = fakeStorageArea("sync", stored, onChanged);
 
-  return {
+  const chrome = {
     data: sync.data,
+    openedOptions: 0,
     storage: {
       sync,
       session: fakeStorageArea("session", session, onChanged),
@@ -114,6 +122,9 @@ export function fakeChrome({ stored = {}, session = {}, locale = "en" } = {}) {
         return undefined;
       },
       getURL: (path) => `chrome-extension://better-yt/${path}`,
+      async openOptionsPage() {
+        chrome.openedOptions += 1;
+      },
     },
     i18n: {
       getMessage(key, substitutions) {
@@ -122,4 +133,41 @@ export function fakeChrome({ stored = {}, session = {}, locale = "en" } = {}) {
       },
     },
   };
+  return chrome;
+}
+
+// Opens one of the extension's pages, such as src/popup.html, and runs its own scripts in order
+// with a fake chrome and fake timers.
+export async function openPage(t, path, options) {
+  const dom = new JSDOM(read(path), { runScripts: "outside-only" });
+  const { window } = dom;
+  const clock = FakeTimers.withGlobal(window).install({ toFake: ["setTimeout", "clearTimeout"] });
+  const chrome = fakeChrome(options);
+  window.chrome = chrome;
+  const directory = path.slice(0, path.lastIndexOf("/") + 1);
+  const scripts = [...window.document.querySelectorAll("script[src]")].map((script) => directory + script.getAttribute("src"));
+  runScripts(dom.getInternalVMContext(), scripts);
+  await flush();
+  t.after(() => {
+    clock.uninstall();
+    window.close();
+  });
+  return { window, document: window.document, chrome, clock };
+}
+
+// The translation attributes of a page, each with the part of its element it fills.
+const I18N_TARGETS = [
+  ["data-i18n", (element) => element.textContent],
+  ["data-i18n-placeholder", (element) => element.placeholder],
+  ["data-i18n-aria-label", (element) => element.getAttribute("aria-label")],
+  ["data-i18n-title", (element) => element.title],
+];
+
+// Names the messages that left their part of the page empty, such as "data-i18n=topics".
+export function untranslated(document) {
+  return I18N_TARGETS.flatMap(([attribute, text]) =>
+    [...document.querySelectorAll(`[${attribute}]`)]
+      .filter((element) => !text(element)?.trim())
+      .map((element) => `${attribute}=${element.getAttribute(attribute)}`),
+  );
 }

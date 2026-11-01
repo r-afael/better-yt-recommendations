@@ -58,5 +58,23 @@
   },
   "sourceCode": {
     "message": "Исходный код на GitHub"
+  },
+  "allSettings": {
+    "message": "Все настройки"
+  },
+  "topicsSection": {
+    "message": "Темы"
+  },
+  "summaryTopics": {
+    "message": "Темы: $TOPICS$",
+    "placeholders": {
+      "topics": {
+        "content": "$1",
+        "example": "chess, cooking"
+      }
+    }
+  },
+  "noTopicsYet": {
+    "message": "Тем пока нет. Добавьте их в разделе «Все настройки»."
   }
 }

@@ -50,6 +50,10 @@
 
   const formatThreshold = (value) => value.toLocaleString(message("lang"), { minimumFractionDigits: 2 });
 
+  // "programming, chess" in English and "编程、国际象棋" in Chinese. The unit type would drop the separators.
+  const formatList = (items) =>
+    new Intl.ListFormat(message("lang"), { style: "narrow", type: "conjunction" }).format(items);
+
   // skip lets a page keep what the user is editing when changes arrive from elsewhere (see isBusy).
   function show(form, values, { skip = () => false } = {}) {
     for (const control of form.elements) {
@@ -184,5 +188,5 @@
     return { render };
   }
 
-  globalThis.BetterYT.ui = { message, valueOf, startPage, createModelStatus, formatThreshold };
+  globalThis.BetterYT.ui = { message, valueOf, startPage, createModelStatus, formatThreshold, formatList };
 })();

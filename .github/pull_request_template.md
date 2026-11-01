@@ -15,5 +15,5 @@
 - [ ] The title starts with `feat:`, `fix:`, `docs:`, `chore:`, `refactor:`, `test:`, `ci:` or `perf:`
 - [ ] `pnpm check` passes
 - [ ] I tried the change in Chrome with the unpacked extension
-- [ ] New popup text is translated in every `_locales/*/messages.json`
+- [ ] New text for the popup, the options page or YouTube pages is in every `_locales/*/messages.json`
 - [ ] The README is updated if a setting or behavior changed

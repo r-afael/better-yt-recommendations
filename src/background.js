@@ -76,7 +76,7 @@ importScripts("protocol.js", "topics.js");
     }
   }
 
-  // Freeing the model also resets the status the popup shows.
+  // Freeing the model also resets the status the popup and the options page show.
   // A failed close is ignored: a document closed elsewhere is already freed.
   async function release() {
     await closeOffscreen().catch(() => {});

@@ -28,7 +28,8 @@ tests, which must cover at least 80% of the code.
 - Test what the extension does, not how it does it. Tests that only raise coverage
   aren't needed.
 - Keep functions small and follow the style of the code around them.
-- Add new popup text to every `_locales/*/messages.json`.
+- Add new text for the popup, the options page or YouTube pages to every
+  `_locales/*/messages.json`.
 - Update the README when a setting or behavior changes.
 
 Pull requests are squash-merged, and the title becomes the commit message on `main`.

@@ -6,7 +6,12 @@
   <link rel="stylesheet" href="popup.css">
 </head>
 <body>
-  <h1>Better YT Recommendations</h1>
+  <header class="header">
+    <h1>Better YT Recommendations</h1>
+    <button type="button" id="open-options-icon" class="icon-button" data-i18n-aria-label="allSettings" data-i18n-title="allSettings">
+      <svg aria-hidden="true" width="20" height="20" viewBox="0 0 20 20"><path fill="currentColor" fill-rule="evenodd" d="M16.38 8.29L18.91 8.75L18.91 11.25L16.38 11.71L15.72 13.3L17.19 15.42L15.42 17.19L13.3 15.72L11.71 16.38L11.25 18.91L8.75 18.91L8.29 16.38L6.7 15.72L4.58 17.19L2.81 15.42L4.28 13.3L3.62 11.71L1.09 11.25L1.09 8.75L3.62 8.29L4.28 6.7L2.81 4.58L4.58 2.81L6.7 4.28L8.29 3.62L8.75 1.09L11.25 1.09L11.71 3.62L13.3 4.28L15.42 2.81L17.19 4.58L15.72 6.7ZM13 10a3 3 0 1 0 -6 0a3 3 0 1 0 6 0Z"/></svg>
+    </button>
+  </header>
   <form id="settings">
     <label class="setting">
       <span>
@@ -36,21 +41,14 @@
       </span>
       <input type="checkbox" class="switch" name="topicFilter" aria-labelledby="topicFilter-title" aria-describedby="topicFilter-hint">
     </label>
-    <div class="field">
-      <label class="title" for="topics" data-i18n="topics"></label>
-      <textarea id="topics" name="topics" rows="3" maxlength="500" data-i18n-placeholder="topicsPlaceholder" aria-describedby="topics-hint"></textarea>
-      <span class="hint" id="topics-hint" data-i18n="topicsHint"></span>
-      <span class="range-label">
-        <label class="title" for="threshold" data-i18n="sensitivity"></label>
-        <output id="threshold-value" for="threshold"></output>
-      </span>
-      <input type="range" id="threshold" name="threshold" min="0.1" max="0.4" step="0.01" aria-describedby="threshold-hint">
-      <span class="hint" id="threshold-hint" data-i18n="sensitivityHint"></span>
+    <div class="field summary-field">
+      <button type="button" id="summary" class="summary"><span id="summary-topics"></span></button>
       <p class="status" id="model-status" role="status" aria-live="polite" hidden></p>
       <progress id="model-progress" max="100" aria-labelledby="model-status" hidden></progress>
     </div>
   </form>
   <footer>
+    <button type="button" id="open-options" class="link" data-i18n="allSettings"></button>
     <a href="https://github.com/r-afael/better-yt-recommendations" target="_blank" rel="noopener noreferrer" data-i18n="sourceCode"></a>
   </footer>
   <script src="settings.js"></script>

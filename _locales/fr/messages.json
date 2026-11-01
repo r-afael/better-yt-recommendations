@@ -58,5 +58,23 @@
   },
   "sourceCode": {
     "message": "Code source sur GitHub"
+  },
+  "allSettings": {
+    "message": "Tous les paramètres"
+  },
+  "topicsSection": {
+    "message": "Sujets"
+  },
+  "summaryTopics": {
+    "message": "Sujets : $TOPICS$",
+    "placeholders": {
+      "topics": {
+        "content": "$1",
+        "example": "chess, cooking"
+      }
+    }
+  },
+  "noTopicsYet": {
+    "message": "Aucun sujet pour l'instant. Ajoutez-en dans Tous les paramètres."
   }
 }

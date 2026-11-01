@@ -58,5 +58,23 @@
   },
   "sourceCode": {
     "message": "GitHub 上的原始碼"
+  },
+  "allSettings": {
+    "message": "所有設定"
+  },
+  "topicsSection": {
+    "message": "主題"
+  },
+  "summaryTopics": {
+    "message": "主題：$TOPICS$",
+    "placeholders": {
+      "topics": {
+        "content": "$1",
+        "example": "chess, cooking"
+      }
+    }
+  },
+  "noTopicsYet": {
+    "message": "尚未設定主題。請在「所有設定」中新增。"
   }
 }

@@ -58,5 +58,23 @@
   },
   "sourceCode": {
     "message": "Código-fonte no GitHub"
+  },
+  "allSettings": {
+    "message": "Todas as configurações"
+  },
+  "topicsSection": {
+    "message": "Assuntos"
+  },
+  "summaryTopics": {
+    "message": "Assuntos: $TOPICS$",
+    "placeholders": {
+      "topics": {
+        "content": "$1",
+        "example": "chess, cooking"
+      }
+    }
+  },
+  "noTopicsYet": {
+    "message": "Nenhum assunto ainda. Adicione alguns em Todas as configurações."
   }
 }

@@ -58,5 +58,23 @@
   },
   "sourceCode": {
     "message": "GitHub-এ সোর্স কোড"
+  },
+  "allSettings": {
+    "message": "সব সেটিংস"
+  },
+  "topicsSection": {
+    "message": "বিষয়"
+  },
+  "summaryTopics": {
+    "message": "বিষয়: $TOPICS$",
+    "placeholders": {
+      "topics": {
+        "content": "$1",
+        "example": "chess, cooking"
+      }
+    }
+  },
+  "noTopicsYet": {
+    "message": "এখনও কোনো বিষয় নেই। সব সেটিংস-এ কয়েকটি যোগ করুন।"
   }
 }

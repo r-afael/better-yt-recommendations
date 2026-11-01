@@ -26,8 +26,11 @@ on desktop.*
 
 ## Settings
 
-Click the extension's icon in the Chrome toolbar to change these. Open YouTube tabs
-pick up changes right away.
+Click the extension's icon in the Chrome toolbar for the main switches. Click **All
+settings** (or the gear) to open the options page in a tab, with everything else. Open
+YouTube tabs pick up changes right away.
+
+### In the popup
 
 - **Open custom feed on Home** (on by default): switches to Your custom feed when
   Home opens. Turn it off to stay on whichever Home tab you pick. The topic filter
@@ -43,6 +46,12 @@ pick up changes right away.
   next to the one you're watching that don't match your topics. It does nothing
   until you type some topics. Turn it off to show every video again and free the
   model's memory.
+- A summary of your topics; click it to change them.
+
+### On the options page
+
+The **Filter recommendations by topic** switch is on both pages.
+
 - **Topics you want to see**: the topics to keep, separated by commas. The field is
   disabled while the filter is off.
 - **Filter sensitivity** (0.25 by default): how close to your topics a video must be
@@ -54,10 +63,10 @@ hide a few videos you'd want, or keep a few you wouldn't. A handful of specific
 topics works better than one broad word. For example, "programming, JavaScript, web
 development" keeps more coding videos than "programming" alone.
 
-While the filter is on and has topics, a line below the field shows the model's
-status: waiting for you to open a video, loading, ready, or failed. Videos stay
-visible while the model loads, and if it fails to load or to answer. After a
-failure, it tries again a little later.
+While the filter is on and has topics, a line in the popup and on the options page
+shows the model's status: waiting for you to open a video, loading, ready, or
+failed. Videos stay visible while the model loads, and if it fails to load or to
+answer. After a failure, it tries again a little later.
 
 ![The settings popup, with all three toggles on, the topics programming, software engineering and chess, the filter sensitivity at 0.25, and the status The model is ready](docs/settings-popup.png)
 
@@ -84,7 +93,7 @@ recommendations by topic**.
 The extension recognizes the custom feed tab when YouTube is in any of the ten most
 spoken languages: English, Mandarin Chinese (Simplified and Traditional), Hindi,
 Spanish, Arabic, French, Bengali, Portuguese, Russian, and Indonesian. The settings
-popup is translated into the same languages.
+popup and the options page are translated into the same languages.
 
 YouTube first launched the custom feed in English, so tab names in other languages
 are based on YouTube's Help Center. If the extension doesn't find the tab in your
@@ -128,15 +137,17 @@ refresh YouTube.
 
 - `src/content.js` selects the tab on YouTube.
 - `src/labels.js` lists the tab's name in each language.
-- `src/settings.js` stores the settings for the content script and the popup.
+- `src/settings.js` stores the settings for the content scripts, the popup and the options page.
 - `src/shorts.js` hides Shorts and opens Shorts links as regular videos.
   `src/shorts.css` lists what to hide. Both load as soon as a YouTube page starts, so
   Shorts never flash on screen; the other content scripts load once the page is ready.
 - `src/scheduler.js` debounces the content scripts' work after page changes.
 - `src/popup.html`, `src/popup.css` and `src/popup.js` are the settings popup.
+- `src/options.html`, `src/options.css` and `src/options.js` are the options page.
+  `src/options.css` builds on `src/popup.css`.
 - `src/ui.js` holds the code the settings popup and the options page share: starting the
   page, translation, saving, and the model status.
-- `_locales/` has the popup's translations.
+- `_locales/` has the translations of the popup and the options page.
 - `src/protocol.js` names the messages the extension's parts send each other.
 - `src/topics.js` turns the topics field into a list of topics.
 - `src/sidebar.js` finds the recommended videos on the watch page and hides or shows

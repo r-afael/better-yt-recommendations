@@ -17,8 +17,8 @@ anywhere.
 Your settings, including your topics and the filter sensitivity, are saved in
 Chrome's extension storage. If you use Chrome sync, Chrome syncs them across your
 computers under [Google's privacy policy](https://policies.google.com/privacy). The
-extension also keeps the model's loading status until you close Chrome, so the
-settings popup can show it.
+extension also keeps the model's loading status until you close Chrome, so the popup
+and the options page can show it.
 
 Uninstalling the extension deletes everything it stored.
 

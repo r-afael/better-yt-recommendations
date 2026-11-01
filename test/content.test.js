@@ -523,6 +523,6 @@ test("the manifest ships only local scripts, asks for no host access, and stays 
   assert.deepEqual(js.filter((path) => scripts.includes(path)), scripts);
   // Extension pages may run WebAssembly but no remote or inline scripts.
   assert.equal(manifest.content_security_policy.extension_pages, "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'");
-  const files = [...js, ...contentScripts.flatMap((entry) => entry.css), manifest.background.service_worker, manifest.action.default_popup];
+  const files = [...js, ...contentScripts.flatMap((entry) => entry.css), manifest.background.service_worker, manifest.action.default_popup, manifest.options_ui.page];
   for (const path of files) assert.ok(read(path));
 });

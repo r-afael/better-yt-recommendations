@@ -5,7 +5,7 @@
   },
   "lang": {
     "message": "en",
-    "description": "BCP 47 code of this translation, used as the popup's lang attribute."
+    "description": "BCP 47 code of this translation, used as the lang attribute of the popup and the options page."
   },
   "autoOpen": {
     "message": "Open custom feed on Home",
@@ -33,7 +33,7 @@
   },
   "topicFilter": {
     "message": "Filter recommendations by topic",
-    "description": "Popup toggle that hides recommended videos that don't match the user's topics."
+    "description": "Toggle, in the popup and on the options page, that hides recommended videos that don't match the user's topics."
   },
   "topicFilterHint": {
     "message": "Hides videos next to the one you're watching that don't match your topics. Uses an AI model on your computer.",
@@ -77,6 +77,28 @@
   },
   "sourceCode": {
     "message": "Source code on GitHub",
-    "description": "Link at the bottom of the popup that opens the extension's source code on GitHub."
+    "description": "Link at the bottom of the popup and the options page that opens the extension's source code on GitHub."
+  },
+  "allSettings": {
+    "message": "All settings",
+    "description": "Popup link and gear button that open the options page with every setting."
+  },
+  "topicsSection": {
+    "message": "Topics",
+    "description": "Heading of the options page section with the topic filter, the topics and the sensitivity."
+  },
+  "summaryTopics": {
+    "message": "Topics: $TOPICS$",
+    "description": "Popup line listing the topics the filter keeps.",
+    "placeholders": {
+      "topics": {
+        "content": "$1",
+        "example": "chess, cooking"
+      }
+    }
+  },
+  "noTopicsYet": {
+    "message": "No topics yet. Add some in All settings.",
+    "description": "Popup line shown when no topics are set. \"All settings\" is the name of the link below it."
   }
 }

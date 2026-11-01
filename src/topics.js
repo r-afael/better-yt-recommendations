@@ -1,4 +1,4 @@
-// Topics the user wants to see, typed into the popup as a list such as "programming, chess".
+// Topics the user wants to see, typed on the options page as a list such as "programming, chess".
 (() => {
   "use strict";
 

@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Better YT Recommendations</title>
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <main>
+    <h1>Better YT Recommendations</h1>
+    <form id="settings">
+      <section aria-labelledby="topics-section">
+        <h2 id="topics-section" data-i18n="topicsSection"></h2>
+        <label class="setting">
+          <span>
+            <span class="title" id="topicFilter-title" data-i18n="topicFilter"></span>
+            <span class="hint" id="topicFilter-hint" data-i18n="topicFilterHint"></span>
+          </span>
+          <input type="checkbox" class="switch" name="topicFilter" aria-labelledby="topicFilter-title" aria-describedby="topicFilter-hint">
+        </label>
+        <div class="field">
+          <label class="title" for="topics" data-i18n="topics"></label>
+          <textarea id="topics" name="topics" rows="3" maxlength="500" data-i18n-placeholder="topicsPlaceholder" aria-describedby="topics-hint"></textarea>
+          <span class="hint" id="topics-hint" data-i18n="topicsHint"></span>
+          <span class="range-label">
+            <label class="title" for="threshold" data-i18n="sensitivity"></label>
+            <output id="threshold-value" for="threshold"></output>
+          </span>
+          <input type="range" id="threshold" name="threshold" min="0.1" max="0.4" step="0.01" aria-describedby="threshold-hint">
+          <span class="hint" id="threshold-hint" data-i18n="sensitivityHint"></span>
+          <p class="status" id="model-status" role="status" aria-live="polite" hidden></p>
+          <progress id="model-progress" max="100" aria-labelledby="model-status" hidden></progress>
+        </div>
+      </section>
+    </form>
+  </main>
+  <footer>
+    <a href="https://github.com/r-afael/better-yt-recommendations" target="_blank" rel="noopener noreferrer" data-i18n="sourceCode"></a>
+  </footer>
+  <script src="settings.js"></script>
+  <script src="protocol.js"></script>
+  <script src="topics.js"></script>
+  <script src="ui.js"></script>
+  <script src="options.js"></script>
+</body>
+</html>

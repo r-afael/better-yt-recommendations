@@ -58,5 +58,23 @@
   },
   "sourceCode": {
     "message": "الشيفرة المصدرية على GitHub"
+  },
+  "allSettings": {
+    "message": "كل الإعدادات"
+  },
+  "topicsSection": {
+    "message": "الموضوعات"
+  },
+  "summaryTopics": {
+    "message": "الموضوعات: $TOPICS$",
+    "placeholders": {
+      "topics": {
+        "content": "$1",
+        "example": "chess, cooking"
+      }
+    }
+  },
+  "noTopicsYet": {
+    "message": "لا توجد موضوعات بعد. أضِف بعضها في «كل الإعدادات»."
   }
 }
