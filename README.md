@@ -154,8 +154,10 @@ refresh YouTube.
   them.
 - `src/topic-filter.js` decides which videos to check, asks for verdicts and applies
   them. `src/topic-filter.css` hides the off-topic videos.
-- `src/background.js` opens the hidden page that runs the model, passes messages to
-  it, and closes it to free memory.
+- `src/background.js` receives the extension's messages and events in the background
+  and hands each one to the module that handles it.
+- `src/model-host.js` opens the hidden page that runs the model, passes messages to it,
+  and closes it to free memory.
 - `src/offscreen.html` and `src/offscreen.js` are that hidden page. They load the
   model when needed and close it after 5 idle minutes.
 - `src/matcher.js` compares video titles with your topics.

@@ -20,7 +20,8 @@ export default [
     },
   },
   {
-    files: ["src/background.js"],
+    // Scripts the service worker loads get its globals instead of the browser's.
+    files: ["src/background.js", "src/model-host.js"],
     languageOptions: {
       globals: { ...globals.serviceworker, chrome: "readonly" },
     },
