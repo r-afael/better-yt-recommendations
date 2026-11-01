@@ -29,17 +29,12 @@
     return video?.channel || "";
   }
 
-  // Whether the page shown hides videos from the block list right now.
-  function filtersHere(values, surface) {
-    return values.topicFilter && Boolean(surface && values[surface.setting]);
-  }
-
   // The message for a channel just saved. When the list hides videos but nothing will be hidden
   // right now, it also says where the list applies.
   function confirmation(list, channel, values, surface) {
     const { key, hides } = CONFIRMATIONS[list];
     const saved = message(key, channel);
-    if (!hides || filtersHere(values, surface)) return saved;
+    if (!hides || cards.filtersOn(values, surface)) return saved;
     return `${saved} ${message("channelSavedNotFiltered")}`;
   }
 

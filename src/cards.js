@@ -78,6 +78,9 @@
     return Object.values(SURFACES).find((surface) => surface.paths.includes(pathname)) ?? null;
   }
 
+  // Whether the filter is switched on for a surface's page in the given settings.
+  const filtersOn = (values, surface) => Boolean(values.topicFilter && surface && values[surface.setting]);
+
   function container(surface, root = document) {
     return root.querySelector(surface.container);
   }
@@ -201,6 +204,7 @@
     EXCLUDED,
     WATCHED_ATTRIBUTES,
     surfaceFor,
+    filtersOn,
     container,
     findItems,
     isRelevant,

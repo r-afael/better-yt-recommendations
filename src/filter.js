@@ -42,7 +42,7 @@
   // Whether anything can hide a video, once the filter is on.
   const hasRules = () => asksModel() || channelIndex.hasBlocked;
   // Whether the filter works on the page shown.
-  const isActive = () => Boolean(options?.topicFilter) && Boolean(surface && options[surface.setting]) && hasRules();
+  const isActive = () => cards.filtersOn(options ?? {}, surface) && hasRules();
   const sameTopics = (a, b) => a.length === b.length && a.every((topic, position) => topic === b[position]);
   const sameLists = (a, b) => sameTopics(a.want, b.want) && sameTopics(a.avoid, b.avoid);
 
