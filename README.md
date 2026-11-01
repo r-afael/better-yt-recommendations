@@ -73,6 +73,8 @@ The **Filter recommendations by topic** switch is on both pages.
   filtered like the results. Playlists and mixes on Home and in search results are
   judged by their title, like videos. The page checkboxes are disabled while the filter is off.
 
+Settings synced from another computer are kept within the limits the options page allows.
+
 When the filter hides videos, the list starts with a row such as "12 videos hidden".
 **Show them** shows them, dimmed and outlined, until you go to another page. The
 extension's icon in the toolbar shows how many videos are hidden on the page you're on.

@@ -4,7 +4,7 @@
 (() => {
   "use strict";
 
-  const { protocol, ui, verdict } = globalThis.BetterYT;
+  const { protocol, settings, ui, verdict } = globalThis.BetterYT;
   const { MATCH, MODEL_STATES } = protocol;
   const { setText } = ui;
 
@@ -122,6 +122,11 @@
     renderTry();
   }
 
+  // The fields' limits are set here rather than in the HTML, so the page allows what settings.js reads.
+  for (const field of [topicsField, avoidField]) field.maxLength = settings.LIMITS.MAX_TEXT_LENGTH;
+  tryTitle.maxLength = MAX_TITLE_LENGTH;
+  threshold.min = settings.LIMITS.MIN_THRESHOLD;
+  threshold.max = settings.LIMITS.MAX_THRESHOLD;
   for (const field of [tryTitle, topicsField, avoidField]) field.addEventListener("input", scheduleTry);
   // Enter in the title box would submit the form and reload the page.
   form.addEventListener("submit", (event) => event.preventDefault());
