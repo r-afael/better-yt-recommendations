@@ -134,6 +134,8 @@ refresh YouTube.
   Shorts never flash on screen; the other content scripts load once the page is ready.
 - `src/scheduler.js` debounces the content scripts' work after page changes.
 - `src/popup.html`, `src/popup.css` and `src/popup.js` are the settings popup.
+- `src/ui.js` holds the code the settings popup and the options page share: starting the
+  page, translation, saving, and the model status.
 - `_locales/` has the popup's translations.
 - `src/protocol.js` names the messages the extension's parts send each other.
 - `src/topics.js` turns the topics field into a list of topics.

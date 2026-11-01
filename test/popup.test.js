@@ -6,7 +6,7 @@ import { JSDOM } from "jsdom";
 import { fakeChrome, flush, read, readJson, runScripts } from "./helpers.js";
 
 const html = read("src/popup.html");
-const scripts = ["src/settings.js", "src/protocol.js", "src/topics.js", "src/popup.js"];
+const scripts = [...new JSDOM(html).window.document.querySelectorAll("script[src]")].map((s) => `src/${s.getAttribute("src")}`);
 const STATUS_KEY = "modelStatus";
 const SAVE_DELAY_MS = 400;
 const localeDirectory = new URL("../_locales/", import.meta.url);
@@ -122,6 +122,28 @@ test("saves the topics right away when the field changes", async (t) => {
   chrome.data.topics = "saved elsewhere";
   clock.tick(SAVE_DELAY_MS);
   assert.equal(chrome.data.topics, "saved elsewhere", "the pending save was cancelled");
+});
+
+test("shows a change made elsewhere without overwriting the field being typed in", async (t) => {
+  const { chrome, clock, toggle, field, type } = await setup(t);
+  field.focus();
+  type("chess");
+  clock.tick(SAVE_DELAY_MS);
+  await chrome.storage.sync.set({ enforce: true, topics: "elsewhere" });
+  await flush();
+  assert.equal(toggle("enforce").checked, true);
+  assert.equal(field.value, "chess");
+});
+
+test("a switch the user just clicked still shows a change made elsewhere", async (t) => {
+  const { chrome, toggle } = await setup(t);
+  toggle("enabled").focus();
+  toggle("enabled").click();
+  await flush();
+  await chrome.storage.sync.set({ enabled: true });
+  await flush();
+  assert.equal(toggle("enabled").checked, true);
+  assert.equal(toggle("enforce").disabled, false);
 });
 
 // Chrome fires blur when the popup closes by a click outside it, and pagehide otherwise.
