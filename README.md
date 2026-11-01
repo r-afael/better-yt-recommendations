@@ -119,6 +119,8 @@ Face). After that, the model runs on your computer. The titles and channels of t
 videos you see are never sent anywhere. The extension asks for the "offscreen"
 permission to run the model in a hidden page of its own.
 
+Read the full [privacy policy](PRIVACY.md).
+
 ## Development
 
 No build step. Reload the extension at `chrome://extensions` after editing, then
