@@ -21,7 +21,7 @@
     "message": "Filtrar recomendaciones por tema"
   },
   "topicFilterHint": {
-    "message": "Oculta los videos junto al que estás viendo que no coinciden con tus temas. Usa un modelo de IA en tu equipo: una descarga única de 160 MB y unos 600 MB de memoria mientras funciona."
+    "message": "Oculta los videos junto al que estás viendo que no coinciden con tus temas. Usa un modelo de IA en tu equipo."
   },
   "topics": {
     "message": "Temas que quieres ver"
@@ -31,6 +31,12 @@
   },
   "topicsHint": {
     "message": "Separa los temas con comas."
+  },
+  "sensitivity": {
+    "message": "Sensibilidad del filtro"
+  },
+  "sensitivityHint": {
+    "message": "Más alta oculta más videos; más baja muestra más."
   },
   "modelIdle": {
     "message": "El modelo se carga cuando abres un video."

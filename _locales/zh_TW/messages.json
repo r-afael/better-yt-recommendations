@@ -21,7 +21,7 @@
     "message": "依主題篩選推薦內容"
   },
   "topicFilterHint": {
-    "message": "隱藏正在觀看的影片旁與你的主題不符的影片。使用你電腦上的 AI 模型：一次性下載 160 MB，執行時約佔用 600 MB 記憶體。"
+    "message": "隱藏正在觀看的影片旁與你的主題不符的影片。使用你電腦上的 AI 模型。"
   },
   "topics": {
     "message": "你想看的主題"
@@ -31,6 +31,12 @@
   },
   "topicsHint": {
     "message": "請用逗號分隔各個主題。"
+  },
+  "sensitivity": {
+    "message": "過濾靈敏度"
+  },
+  "sensitivityHint": {
+    "message": "越高隱藏的影片越多，越低保留的越多。"
   },
   "modelIdle": {
     "message": "開啟影片時會載入模型。"

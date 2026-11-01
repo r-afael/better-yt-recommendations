@@ -21,7 +21,7 @@
     "message": "Filtrer les recommandations par sujet"
   },
   "topicFilterHint": {
-    "message": "Masque les vidéos à côté de celle que vous regardez qui ne correspondent pas à vos sujets. Utilise un modèle d'IA sur votre ordinateur : un téléchargement unique de 160 Mo et environ 600 Mo de mémoire pendant son fonctionnement."
+    "message": "Masque les vidéos à côté de celle que vous regardez qui ne correspondent pas à vos sujets. Utilise un modèle d'IA sur votre ordinateur."
   },
   "topics": {
     "message": "Sujets que vous voulez voir"
@@ -31,6 +31,12 @@
   },
   "topicsHint": {
     "message": "Séparez les sujets par des virgules."
+  },
+  "sensitivity": {
+    "message": "Sensibilité du filtre"
+  },
+  "sensitivityHint": {
+    "message": "Plus elle est haute, plus de vidéos sont masquées ; plus elle est basse, plus il en reste."
   },
   "modelIdle": {
     "message": "Le modèle se charge quand vous ouvrez une vidéo."

@@ -160,6 +160,30 @@ textarea:focus-visible {
   outline-offset: -1px;
 }
 
+.range-label {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-top: 6px;
+}
+
+output {
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+
+input[type="range"] {
+  width: 100%;
+  margin: 0;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+input[type="range"]:disabled {
+  cursor: default;
+}
+
 .status {
   margin: 0;
   color: var(--muted);

@@ -33,6 +33,12 @@
       <label class="title" for="topics" data-i18n="topics"></label>
       <textarea id="topics" name="topics" rows="3" maxlength="500" data-i18n-placeholder="topicsPlaceholder" aria-describedby="topics-hint"></textarea>
       <span class="hint" id="topics-hint" data-i18n="topicsHint"></span>
+      <span class="range-label">
+        <label class="title" for="threshold" data-i18n="sensitivity"></label>
+        <output id="threshold-value" for="threshold"></output>
+      </span>
+      <input type="range" id="threshold" name="threshold" min="0.1" max="0.4" step="0.01" aria-describedby="threshold-hint">
+      <span class="hint" id="threshold-hint" data-i18n="sensitivityHint"></span>
       <p class="status" id="model-status" role="status" aria-live="polite" hidden></p>
       <progress id="model-progress" max="100" aria-labelledby="model-status" hidden></progress>
     </div>

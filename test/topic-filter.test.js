@@ -55,9 +55,9 @@ async function setup(t, { path = "/watch?v=W6NZfCO5SIk", stored = { topics: "pro
     .filter((item) => window.getComputedStyle(item).display !== "none")
     .map((item) => /content-id-(\S+)/u.exec(item.querySelector(".ytLockupViewModelHost").className)[1]);
   const requestedIds = (request = requests.at(-1)) => request.message.videos.map((video) => video.id);
-  // Answers the latest request, treating the listed ids as off topic.
+  // Answers the latest request, scoring the listed ids 0 and the others 1.
   const answer = async (offTopic = [], request = requests.at(-1)) => {
-    request.resolve({ matches: Object.fromEntries(requestedIds(request).map((id) => [id, !offTopic.includes(id)])) });
+    request.resolve({ scores: Object.fromEntries(requestedIds(request).map((id) => [id, Number(!offTopic.includes(id))])) });
     await clock.tickAsync(SCAN_MS);
   };
   const changeSettings = async (changes) => {
@@ -96,10 +96,30 @@ test("hides off-topic videos once the model answers", async (t) => {
 
 test("keeps videos the answer leaves out visible without asking again", async (t) => {
   const { requests, visibleIds, clock } = await setup(t);
-  requests[0].resolve({ matches: { C4dGVTl6ry8: false } });
+  requests[0].resolve({ scores: { C4dGVTl6ry8: 0 } });
   await clock.tickAsync(RETRY_MS);
   assert.deepEqual(visibleIds(), FIXTURE_IDS.slice(0, 3));
   assert.equal(requests.length, 1);
+});
+
+test("hides videos scored below the sensitivity, and re-filters without asking when it changes", async (t) => {
+  const { requests, visibleIds, clock, changeSettings } = await setup(t);
+  requests[0].resolve({ scores: { PFmuCDHHpwk: 0.4, PkZNo7MFNFg: 0.25, RphIVv0uWrM: 0.2, C4dGVTl6ry8: 0.1 } });
+  await clock.tickAsync(SCAN_MS);
+  assert.deepEqual(visibleIds(), ["PFmuCDHHpwk", "PkZNo7MFNFg"], "the default keeps scores of 0.25 and up");
+
+  await changeSettings({ threshold: 0.35 });
+  assert.deepEqual(visibleIds(), ["PFmuCDHHpwk"]);
+  await changeSettings({ threshold: 0.1 });
+  assert.deepEqual(visibleIds(), FIXTURE_IDS);
+  assert.equal(requests.length, 1);
+});
+
+test("uses the stored sensitivity", async (t) => {
+  const { requests, visibleIds, clock } = await setup(t, { stored: { topics: "programming", threshold: 0.15 } });
+  requests[0].resolve({ scores: { PFmuCDHHpwk: 0.4, PkZNo7MFNFg: 0.25, RphIVv0uWrM: 0.2, C4dGVTl6ry8: 0.1 } });
+  await clock.tickAsync(SCAN_MS);
+  assert.deepEqual(visibleIds(), ["PFmuCDHHpwk", "PkZNo7MFNFg", "RphIVv0uWrM"]);
 });
 
 const failures = {

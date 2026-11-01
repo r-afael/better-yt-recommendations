@@ -6,7 +6,8 @@
   const { protocol, settings, topics } = globalThis.BetterYT;
   const { MODEL_STATES, STATUS_KEY } = protocol;
   const form = document.getElementById("settings");
-  const { enabled, enforce, topicFilter, topics: topicsField } = form.elements;
+  const { enabled, enforce, topicFilter, topics: topicsField, threshold } = form.elements;
+  const thresholdValue = document.getElementById("threshold-value");
   const status = document.getElementById("model-status");
   const progressBar = document.getElementById("model-progress");
 
@@ -20,6 +21,7 @@
 
   let modelStatus = { state: MODEL_STATES.IDLE };
   let saveTimer = null;
+  let pending = null; // The control whose value waits for saveTimer to be saved.
 
   const message = (key, substitutions) => chrome.i18n.getMessage(key, substitutions);
 
@@ -35,7 +37,14 @@
   }
 
   const isCheckbox = (control) => control.type === "checkbox";
-  const valueOf = (control) => (isCheckbox(control) ? control.checked : control.value);
+  const isRange = (control) => control.type === "range";
+
+  function valueOf(control) {
+    if (isCheckbox(control)) return control.checked;
+    return isRange(control) ? control.valueAsNumber : control.value;
+  }
+
+  const formatThreshold = (value) => value.toLocaleString(message("lang"), { minimumFractionDigits: 2 });
 
   function show(values) {
     for (const control of form.elements) {
@@ -60,27 +69,38 @@
     progressBar.value = Math.round((modelStatus.progress ?? 0) * 100);
   }
 
+  function renderThreshold() {
+    thresholdValue.value = formatThreshold(threshold.valueAsNumber);
+  }
+
   // Enforcement mode builds on opening the custom feed, and topics only apply while filtering.
   function render() {
     enforce.disabled = !enabled.checked;
     topicsField.disabled = !topicFilter.checked;
+    threshold.disabled = !topicFilter.checked;
+    renderThreshold();
     renderStatus();
   }
 
-  function cancelTopicsSave() {
+  function cancelPendingSave() {
     clearTimeout(saveTimer);
     saveTimer = null;
+    pending = null;
   }
 
-  function saveTopicsLater() {
-    cancelTopicsSave();
-    saveTimer = setTimeout(saveTopicsNow, SAVE_DELAY_MS);
+  // Saves control once its value stops changing. Another control's pending value is saved first.
+  function saveLater(control) {
+    if (pending !== control) savePendingNow();
+    clearTimeout(saveTimer);
+    pending = control;
+    saveTimer = setTimeout(savePendingNow, SAVE_DELAY_MS);
   }
 
-  function saveTopicsNow() {
-    if (saveTimer === null) return;
-    cancelTopicsSave();
-    save(topicsField);
+  function savePendingNow() {
+    if (pending === null) return;
+    const control = pending;
+    cancelPendingSave();
+    save(control);
   }
 
   function showModelStatus(value) {
@@ -91,19 +111,26 @@
   translatePage();
 
   form.addEventListener("change", (event) => {
-    if (event.target === topicsField) cancelTopicsSave();
+    // Holding an arrow key on the slider fires change at every step, so it saves only once it pauses.
+    if (isRange(event.target)) return;
+    if (event.target === pending) cancelPendingSave();
     save(event.target);
     render();
   });
 
   topicsField.addEventListener("input", () => {
-    saveTopicsLater();
+    saveLater(topicsField);
     renderStatus();
   });
 
-  // Closing the popup ends the page, so typing that hasn't been saved yet is saved now.
-  addEventListener("pagehide", saveTopicsNow);
-  addEventListener("blur", saveTopicsNow);
+  threshold.addEventListener("input", () => {
+    saveLater(threshold);
+    renderThreshold();
+  });
+
+  // Closing the popup ends the page, so changes that haven't been saved yet are saved now.
+  addEventListener("pagehide", savePendingNow);
+  addEventListener("blur", savePendingNow);
 
   chrome.storage.onChanged.addListener((changes, area) => {
     if (area === "session" && STATUS_KEY in changes) showModelStatus(changes[STATUS_KEY].newValue);

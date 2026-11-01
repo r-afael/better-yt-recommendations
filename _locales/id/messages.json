@@ -21,7 +21,7 @@
     "message": "Filter rekomendasi berdasarkan topik"
   },
   "topicFilterHint": {
-    "message": "Menyembunyikan video di samping video yang Anda tonton yang tidak cocok dengan topik Anda. Menggunakan model AI di komputer Anda: unduhan satu kali sebesar 160 MB dan sekitar 600 MB memori saat berjalan."
+    "message": "Menyembunyikan video di samping video yang Anda tonton yang tidak cocok dengan topik Anda. Menggunakan model AI di komputer Anda."
   },
   "topics": {
     "message": "Topik yang ingin Anda lihat"
@@ -31,6 +31,12 @@
   },
   "topicsHint": {
     "message": "Pisahkan topik dengan koma."
+  },
+  "sensitivity": {
+    "message": "Sensitivitas filter"
+  },
+  "sensitivityHint": {
+    "message": "Lebih tinggi menyembunyikan lebih banyak video; lebih rendah menampilkan lebih banyak."
   },
   "modelIdle": {
     "message": "Model dimuat saat Anda membuka video."

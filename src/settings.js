@@ -7,6 +7,9 @@
     enforce: false, // Keep Your custom feed selected while on Home.
     topicFilter: true, // Hide recommendations that don't match the topics. Does nothing until topics are set.
     topics: "", // Topics the user wants to see, as typed in the popup.
+    // How close to a topic a video must be to stay visible. 0.25 kept 95% of on-topic
+    // and hid 98% of off-topic sidebar videos in testing.
+    threshold: 0.25,
   });
 
   async function load() {

@@ -28,46 +28,46 @@ const video = (id, channel = "") => ({ id, title: id, channel });
 // Results come from another realm, so they are copied before deep comparisons.
 const plain = (value) => ({ ...value });
 
-test("matches videos whose similarity to a topic reaches the threshold", async () => {
-  const { embed } = fakeEmbed({ x: X, above: near(0.3), at: near(0.25), below: near(0.2) });
-  const matcher = createMatcher({ embed });
-  const matches = await matcher.match(["x"], [video("above"), video("at"), video("below")]);
-  assert.deepEqual(plain(matches), { above: true, at: true, below: false });
-});
-
-test("keeps a video that matches any one of the topics", async () => {
+test("scores each video by its similarity to the closest topic", async () => {
   const { embed } = fakeEmbed({ x: X, y: Y, chess: Y, cooking: [-1, 0] });
   const matcher = createMatcher({ embed });
-  const matches = await matcher.match(["x", "y"], [video("chess"), video("cooking")]);
-  assert.deepEqual(plain(matches), { chess: true, cooking: false });
+  const scores = await matcher.score(["x", "y"], [video("chess"), video("cooking")]);
+  assert.deepEqual(plain(scores), { chess: 1, cooking: 0 });
+});
+
+test("scores a video by its similarity to a single topic", async () => {
+  const { embed } = fakeEmbed({ x: X, close: near(0.3), opposite: [-1, 0] });
+  const matcher = createMatcher({ embed });
+  const scores = await matcher.score(["x"], [video("close"), video("opposite")]);
+  assert.deepEqual(plain(scores), { close: 0.3, opposite: -1 });
 });
 
 test("compares the title with the channel, or the title alone without one", async () => {
   const { embed, batches } = fakeEmbed({ x: X, "Lecture | MIT": X });
   const matcher = createMatcher({ embed });
-  const matches = await matcher.match(["x"], [
+  const scores = await matcher.score(["x"], [
     { id: "a", title: "Lecture", channel: "MIT" },
     { id: "b", title: "Lecture", channel: "" },
   ]);
-  assert.deepEqual(plain(matches), { a: true, b: false });
+  assert.deepEqual(plain(scores), { a: 1, b: 0 });
   assert.deepEqual(batches, [["x"], ["Lecture | MIT", "Lecture"]]);
 });
 
-test("keeps every video without embedding anything when there are no topics", async () => {
+test("scores every video as a perfect match without embedding anything when there are no topics", async () => {
   const { embed, batches } = fakeEmbed({});
   const matcher = createMatcher({ embed });
-  const matches = await matcher.match([], [video("a"), video("b")]);
-  assert.deepEqual(plain(matches), { a: true, b: true });
+  const scores = await matcher.score([], [video("a"), video("b")]);
+  assert.deepEqual(plain(scores), { a: 1, b: 1 });
   assert.deepEqual(batches, []);
 });
 
 test("embeds each video text once across requests and topic changes, and each new topic list once", async () => {
   const { embed, batches } = fakeEmbed({ x: X, y: Y, a: X });
   const matcher = createMatcher({ embed });
-  await matcher.match(["x"], [video("a"), video("b")]);
-  await matcher.match(["x"], [video("a"), video("b"), video("c")]);
-  const matches = await matcher.match(["y"], [video("a"), video("c")]);
-  assert.deepEqual(plain(matches), { a: false, c: true });
+  await matcher.score(["x"], [video("a"), video("b")]);
+  await matcher.score(["x"], [video("a"), video("b"), video("c")]);
+  const scores = await matcher.score(["y"], [video("a"), video("c")]);
+  assert.deepEqual(plain(scores), { a: 0, c: 1 });
   assert.deepEqual(batches, [["x"], ["a", "b"], ["c"], ["y"]]);
 });
 
@@ -75,24 +75,24 @@ test("embeds repeated texts once and in batches of the configured size", async (
   const { embed, batches } = fakeEmbed({ x: X });
   const matcher = createMatcher({ embed, batchSize: 2 });
   const videos = ["a", "b", "a", "c", "d", "e"].map((id) => video(id));
-  await matcher.match(["x"], videos);
+  await matcher.score(["x"], videos);
   assert.deepEqual(batches, [["x"], ["a", "b"], ["c", "d"], ["e"]]);
 });
 
 test("forgets the least recently used videos beyond the cache size", async () => {
   const { embed, batches } = fakeEmbed({ x: X, a: X });
   const matcher = createMatcher({ embed, cacheSize: 2 });
-  await matcher.match(["x"], [video("a"), video("b")]);
-  await matcher.match(["x"], [video("a")]);
-  await matcher.match(["x"], [video("c")]);
-  const matches = await matcher.match(["x"], [video("a"), video("b")]);
-  assert.deepEqual(plain(matches), { a: true, b: false });
+  await matcher.score(["x"], [video("a"), video("b")]);
+  await matcher.score(["x"], [video("a")]);
+  await matcher.score(["x"], [video("c")]);
+  const scores = await matcher.score(["x"], [video("a"), video("b")]);
+  assert.deepEqual(plain(scores), { a: 1, b: 0 });
   assert.deepEqual(batches.slice(1), [["a", "b"], ["c"], ["b"]]);
 });
 
 test("answers a request with more videos than the cache holds", async () => {
   const { embed } = fakeEmbed({ x: X, a: X, c: X });
   const matcher = createMatcher({ embed, cacheSize: 1 });
-  const matches = await matcher.match(["x"], [video("a"), video("b"), video("c")]);
-  assert.deepEqual(plain(matches), { a: true, b: false, c: true });
+  const scores = await matcher.score(["x"], [video("a"), video("b"), video("c")]);
+  assert.deepEqual(plain(scores), { a: 1, b: 0, c: 1 });
 });

@@ -21,7 +21,7 @@
     "message": "Filtrar recomendações por assunto"
   },
   "topicFilterHint": {
-    "message": "Oculta os vídeos ao lado do que você está assistindo que não correspondem aos seus assuntos. Usa um modelo de IA no seu computador: um download único de 160 MB e cerca de 600 MB de memória enquanto funciona."
+    "message": "Oculta os vídeos ao lado do que você está assistindo que não correspondem aos seus assuntos. Usa um modelo de IA no seu computador."
   },
   "topics": {
     "message": "Assuntos que você quer ver"
@@ -31,6 +31,12 @@
   },
   "topicsHint": {
     "message": "Separe os assuntos com vírgulas."
+  },
+  "sensitivity": {
+    "message": "Sensibilidade do filtro"
+  },
+  "sensitivityHint": {
+    "message": "Mais alta oculta mais vídeos; mais baixa mantém mais."
   },
   "modelIdle": {
     "message": "O modelo é carregado quando você abre um vídeo."

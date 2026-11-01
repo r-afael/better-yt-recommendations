@@ -34,9 +34,9 @@ function fakeOffscreen(chrome) {
   return state;
 }
 
-// The offscreen document's usual answer: every video matches.
+// The offscreen document's usual answer: every video matches perfectly.
 function answerMatches(message) {
-  return { matches: Object.fromEntries(message.videos.map((video) => [video.id, true])) };
+  return { scores: Object.fromEntries(message.videos.map((video) => [video.id, 1])) };
 }
 
 function setup({ stored = { topics: "programming" }, answer = answerMatches } = {}) {
@@ -71,7 +71,7 @@ test("forwards matching requests to the offscreen document and relays its answer
 
   const answer = await match();
 
-  assert.deepEqual(answer, { matches: { abc123def45: true } });
+  assert.deepEqual(answer, { scores: { abc123def45: 1 } });
   assert.deepEqual(offscreen.forwarded, [
     { type: protocol.MATCH, topics: ["programming"], videos: VIDEOS, target: protocol.OFFSCREEN },
   ]);
@@ -88,7 +88,7 @@ test("concurrent requests share one offscreen document", async () => {
   const answers = await Promise.all([match(), match(), match()]);
 
   assert.equal(offscreen.created.length, 1);
-  assert.equal(answers.filter((answer) => answer.matches).length, 3);
+  assert.equal(answers.filter((answer) => answer.scores).length, 3);
 });
 
 // Chrome's errors when the document closed before the request arrived, and while handling it.
@@ -106,7 +106,7 @@ for (const [moment, error] of [["before the request arrived", MISSING_RECEIVER],
 
     const answer = await match();
 
-    assert.deepEqual(answer, { matches: { abc123def45: true } });
+    assert.deepEqual(answer, { scores: { abc123def45: 1 } });
     assert.equal(offscreen.created.length, 2);
   });
 }
@@ -132,7 +132,7 @@ test("a request answered as the model goes idle reopens the document", async () 
   await flush();
   pending.closeChannel();
 
-  assert.deepEqual(await answer, { matches: { abc123def45: true } });
+  assert.deepEqual(await answer, { scores: { abc123def45: 1 } });
   assert.equal(offscreen.open, true);
   assert.equal(offscreen.created.length, 2);
 });

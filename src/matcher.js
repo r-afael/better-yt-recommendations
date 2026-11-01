@@ -1,9 +1,8 @@
-// Decides which videos match the user's topics by comparing their text embeddings.
+// Scores how close videos are to the user's topics by comparing their text embeddings.
 // Pure logic: the embedding model is passed in, so this runs anywhere.
 (() => {
   "use strict";
 
-  const DEFAULT_THRESHOLD = 0.25; // Kept 95% of on-topic and hid 98% of off-topic sidebar videos in testing.
   const DEFAULT_CACHE_SIZE = 2000; // Video vectors kept between requests, enough for a long viewing session.
   const DEFAULT_BATCH_SIZE = 32; // Texts per model call, which bounds the memory of one inference.
 
@@ -45,7 +44,6 @@
 
   function createMatcher({
     embed,
-    threshold = DEFAULT_THRESHOLD,
     cacheSize = DEFAULT_CACHE_SIZE,
     batchSize = DEFAULT_BATCH_SIZE,
   }) {
@@ -87,20 +85,20 @@
       return vectors;
     }
 
-    // Resolves to { [id]: boolean }, true when a video is close enough to any topic.
-    async function match(topics, videos) {
-      if (topics.length === 0) return Object.fromEntries(videos.map(({ id }) => [id, true]));
+    // Resolves to { [id]: score }, the video's highest similarity to any topic, from -1 to 1.
+    // Without topics, every video counts as a perfect match.
+    async function score(topics, videos) {
+      if (topics.length === 0) return Object.fromEntries(videos.map(({ id }) => [id, 1]));
       const topicList = await vectorsForTopics(topics);
       const texts = videos.map((video) => videoText(video));
       const vectors = await vectorsForTexts(texts);
       return Object.fromEntries(videos.map(({ id }, index) => {
         const vector = vectors.get(texts[index]);
-        const score = Math.max(...topicList.map((topic) => dot(topic, vector)));
-        return [id, score >= threshold];
+        return [id, Math.max(...topicList.map((topic) => dot(topic, vector)))];
       }));
     }
 
-    return Object.freeze({ match });
+    return Object.freeze({ score });
   }
 
   globalThis.BetterYT ??= {};

@@ -21,7 +21,7 @@
 
   let options = null; // Nothing runs until the settings have loaded.
   let topics = [];
-  let verdicts = new Map(); // Video id to whether it matches the current topics.
+  let scores = new Map(); // Video id to its highest similarity to the current topics.
   let requesting = false;
   let retryAt = -Infinity;
   let warned = false;
@@ -55,9 +55,9 @@
     sidebar.unmarkAll();
   }
 
-  // Hides an item only for a video known to be off topic, so unknown videos stay visible.
+  // Hides an item only for a video scored below the threshold, so unscored videos stay visible.
   function applyVerdict(item, video) {
-    const hiddenFor = video && verdicts.get(video.id) === false ? video.id : null;
+    const hiddenFor = video && scores.get(video.id) < options.threshold ? video.id : null;
     if (sidebar.markedId(item) === hiddenFor) return;
     if (hiddenFor) sidebar.markOffTopic(item, hiddenFor);
     else sidebar.unmark(item);
@@ -70,7 +70,7 @@
     for (const item of sidebar.findItems()) {
       const video = sidebar.readVideo(item);
       applyVerdict(item, video);
-      if (video && !verdicts.has(video.id)) unknown.set(video.id, video);
+      if (video && !scores.has(video.id)) unknown.set(video.id, video);
     }
     requestVerdicts([...unknown.values()].slice(0, MAX_BATCH));
   }
@@ -83,7 +83,7 @@
       return;
     }
     requesting = true;
-    const cache = verdicts;
+    const cache = scores;
     ask({ type: protocol.MATCH, topics, videos })
       .then((answer) => record(cache, videos, answer), fail)
       .finally(() => {
@@ -103,13 +103,13 @@
   }
 
   function record(cache, videos, answer) {
-    if (!answer?.matches) {
+    if (!answer?.scores) {
       fail(answer?.error ?? "No answer from the topic model.");
       return;
     }
     warned = false;
     // A video the answer leaves out counts as on topic, so it isn't requested again.
-    for (const { id } of videos) cache.set(id, answer.matches[id] !== false);
+    for (const { id } of videos) cache.set(id, answer.scores[id] ?? Infinity);
   }
 
   function fail(error) {
@@ -130,7 +130,7 @@
     if (!sameTopics(next, topics)) {
       // Answers to requests made for the old topics land in the old map and are dropped with it.
       topics = next;
-      verdicts = new Map();
+      scores = new Map();
       sidebar.unmarkAll();
     }
     update();

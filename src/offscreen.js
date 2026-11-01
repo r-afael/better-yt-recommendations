@@ -1,4 +1,4 @@
-// Runs in the offscreen document: answers MATCH requests with the topic model,
+// Runs in the offscreen document: answers MATCH requests with the topic model's scores,
 // reports the model's status, and says when it has been idle long enough to close.
 (() => {
   "use strict";
@@ -82,13 +82,13 @@
       if (problem) return { error: problem };
       try {
         const matcher = await getMatcher();
-        return { matches: await matcher.match(message.topics, message.videos) };
+        return { scores: await matcher.score(message.topics, message.videos) };
       } catch (error) {
         return { error: errorMessage(error) };
       }
     }
 
-    // Resolves to { matches } or { error }; never rejects.
+    // Resolves to { scores } or { error }; never rejects.
     async function handle(message) {
       requestStarted();
       try {

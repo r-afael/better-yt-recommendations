@@ -34,9 +34,9 @@ function setup() {
       state.loading = Promise.withResolvers();
       return state.loading.promise;
     },
-    // Keeps the videos whose title is one of the topics.
+    // Scores 1 the videos whose title is one of the topics, and 0 the others.
     createMatcher: () => ({
-      match: async (topics, videos) => Object.fromEntries(videos.map(({ id, title }) => [id, topics.includes(title)])),
+      score: async (topics, videos) => Object.fromEntries(videos.map(({ id, title }) => [id, Number(topics.includes(title))])),
     }),
     report: (status) => state.statuses.push(plain(status)),
     onIdle: () => {
@@ -62,8 +62,8 @@ test("loads the model once for concurrent requests and answers each of them", as
   const second = handle(request(["cooking"]));
   await finishLoading();
 
-  assert.deepEqual(await first, { matches: { a: true } });
-  assert.deepEqual(await second, { matches: { a: false } });
+  assert.deepEqual(await first, { scores: { a: 1 } });
+  assert.deepEqual(await second, { scores: { a: 0 } });
   assert.equal(state.loads, 1);
   assert.deepEqual(state.statuses, [LOADING(0), READY]);
 });
@@ -86,7 +86,7 @@ test("reports a failed load and tries again on the next request", async () => {
 
   const retried = handle(request());
   await finishLoading();
-  assert.deepEqual(await retried, { matches: { a: true } });
+  assert.deepEqual(await retried, { scores: { a: 1 } });
   assert.equal(state.loads, 2);
   assert.deepEqual(state.statuses, [LOADING(0), ERROR, LOADING(0), READY]);
 });
@@ -96,7 +96,7 @@ test("answers with an error when matching fails", async () => {
   runScripts(context, ["src/protocol.js", "src/offscreen.js"]);
   const service = context.BetterYT.offscreen.createService({
     loadModel: async () => () => [],
-    createMatcher: () => ({ match: () => Promise.reject(new Error("Out of memory")) }),
+    createMatcher: () => ({ score: () => Promise.reject(new Error("Out of memory")) }),
     report: () => {},
     onIdle: () => {},
   });
@@ -195,7 +195,7 @@ test("answers only the messages addressed to the offscreen document", async () =
   assert.equal(ignored.handled, false);
   assert.deepEqual(ignored.responses, []);
   assert.equal(answered.handled, true);
-  assert.deepEqual(answered.responses, [{ matches: { a: true } }]);
+  assert.deepEqual(answered.responses, [{ scores: { a: 1 } }]);
   assert.deepEqual(sent, [
     { type: "better-yt:status", status: LOADING(0) },
     { type: "better-yt:status", status: READY },

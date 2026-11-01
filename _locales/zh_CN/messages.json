@@ -21,7 +21,7 @@
     "message": "按主题筛选推荐"
   },
   "topicFilterHint": {
-    "message": "隐藏正在观看的视频旁与你的主题不符的视频。使用你电脑上的 AI 模型：一次性下载 160 MB，运行时约占用 600 MB 内存。"
+    "message": "隐藏正在观看的视频旁与你的主题不符的视频。使用你电脑上的 AI 模型。"
   },
   "topics": {
     "message": "你想看的主题"
@@ -31,6 +31,12 @@
   },
   "topicsHint": {
     "message": "用逗号分隔各个主题。"
+  },
+  "sensitivity": {
+    "message": "过滤灵敏度"
+  },
+  "sensitivityHint": {
+    "message": "越高隐藏的视频越多，越低保留的越多。"
   },
   "modelIdle": {
     "message": "打开视频时会加载模型。"

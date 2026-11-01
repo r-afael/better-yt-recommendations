@@ -28,8 +28,8 @@
     "description": "Popup toggle that hides recommended videos that don't match the user's topics."
   },
   "topicFilterHint": {
-    "message": "Hides videos next to the one you're watching that don't match your topics. Uses an AI model on your computer: a one-time 160 MB download and about 600 MB of memory while it runs.",
-    "description": "Explains the topicFilter toggle and what the local AI model costs."
+    "message": "Hides videos next to the one you're watching that don't match your topics. Uses an AI model on your computer.",
+    "description": "Explains the topicFilter toggle."
   },
   "topics": {
     "message": "Topics you want to see",
@@ -42,6 +42,14 @@
   "topicsHint": {
     "message": "Separate topics with commas.",
     "description": "Explains how to type several topics."
+  },
+  "sensitivity": {
+    "message": "Filter sensitivity",
+    "description": "Label of the slider that sets how close to a topic a video must be to stay visible."
+  },
+  "sensitivityHint": {
+    "message": "Higher hides more videos; lower keeps more.",
+    "description": "Explains which way to move the sensitivity slider."
   },
   "modelIdle": {
     "message": "The model loads when you open a video.",

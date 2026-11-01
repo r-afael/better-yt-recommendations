@@ -41,6 +41,9 @@ pick up changes right away.
   model's memory.
 - **Topics you want to see**: the topics to keep, separated by commas. The field is
   disabled while the filter is off.
+- **Filter sensitivity** (0.25 by default): how close to your topics a video must be
+  to stay visible, from 0.10 to 0.40. Move it up to hide more videos, or down if the
+  filter hides videos you'd want. The sidebar updates as you move it.
 
 The filter judges each video by its title and channel, so it makes mistakes: it may
 hide a few videos you'd want, or keep a few you wouldn't. A handful of specific
@@ -52,7 +55,7 @@ status: waiting for you to open a video, loading, ready, or failed. Videos stay
 visible while the model loads, and if it fails to load or to answer. After a
 failure, it tries again a little later.
 
-![The settings popup, with all three toggles on, the topics programming, software engineering and chess, and the status The model is ready](docs/settings-popup.png)
+![The settings popup, with all three toggles on, the topics programming, software engineering and chess, the filter sensitivity at 0.25, and the status The model is ready](docs/settings-popup.png)
 
 ## Performance
 

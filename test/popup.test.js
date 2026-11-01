@@ -36,7 +36,15 @@ async function setup(t, options) {
     field.dispatchEvent(new window.Event("input", { bubbles: true }));
   };
   const commit = () => field.dispatchEvent(new window.Event("change", { bubbles: true }));
-  return { window, document, chrome, clock, toggle, field, status, progressBar, type, commit };
+  const slider = document.querySelector('input[name="threshold"]');
+  const sliderValue = document.querySelector("#threshold-value");
+  // Moves the slider the way a drag or an arrow key does: input, then change.
+  const slide = (value) => {
+    slider.value = String(value);
+    slider.dispatchEvent(new window.Event("input", { bubbles: true }));
+    slider.dispatchEvent(new window.Event("change", { bubbles: true }));
+  };
+  return { window, document, chrome, clock, toggle, field, status, progressBar, type, commit, slider, sliderValue, slide };
 }
 
 // What the background stores while the model loads, as chrome.storage.session reports it.
@@ -131,6 +139,48 @@ test("topics can only be edited while the topic filter is on", async (t) => {
   assert.equal(field.disabled, false);
   toggle("topicFilter").click();
   assert.equal(field.disabled, true);
+});
+
+test("shows the stored sensitivity, or 0.25 by default", async (t) => {
+  const { slider, sliderValue } = await setup(t);
+  assert.equal(slider.valueAsNumber, 0.25);
+  assert.equal(sliderValue.value, "0.25");
+
+  const stored = await setup(t, { stored: { threshold: 0.3 } });
+  assert.equal(stored.slider.valueAsNumber, 0.3);
+  assert.equal(stored.sliderValue.value, "0.30");
+});
+
+test("saves the sensitivity as a number once the slider pauses, showing each value as it moves", async (t) => {
+  const { chrome, clock, slide, sliderValue } = await setup(t);
+  slide(0.31);
+  assert.equal(sliderValue.value, "0.31");
+  slide(0.32);
+  clock.tick(SAVE_DELAY_MS - 1);
+  assert.equal(chrome.data.threshold, undefined);
+  clock.tick(1);
+  assert.equal(chrome.data.threshold, 0.32);
+});
+
+test("saves both the topics and the sensitivity when the user moves from one to the other", async (t) => {
+  const { window, chrome, type, slide } = await setup(t);
+  type("chess");
+  slide(0.2);
+  assert.equal(chrome.data.topics, "chess");
+  window.dispatchEvent(new window.Event("pagehide"));
+  assert.equal(chrome.data.threshold, 0.2);
+});
+
+test("the sensitivity can only be changed while the topic filter is on", async (t) => {
+  const { slider, toggle } = await setup(t, { stored: { topicFilter: false } });
+  assert.equal(slider.disabled, true);
+  toggle("topicFilter").click();
+  assert.equal(slider.disabled, false);
+});
+
+test("shows the sensitivity in the browser's language", async (t) => {
+  const { sliderValue } = await setup(t, { locale: "ar", stored: { threshold: 0.3 } });
+  assert.equal(sliderValue.value, (0.3).toLocaleString("ar", { minimumFractionDigits: 2 }));
 });
 
 test("describes each model state", async (t) => {
