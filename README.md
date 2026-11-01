@@ -150,10 +150,10 @@ refresh YouTube.
 - `_locales/` has the translations of the popup and the options page.
 - `src/protocol.js` names the messages the extension's parts send each other.
 - `src/topics.js` turns the topics field into a list of topics.
-- `src/sidebar.js` finds the recommended videos on the watch page and hides or shows
-  them.
-- `src/topic-filter.js` decides which videos to check, asks for verdicts and applies
-  them. `src/topic-filter.css` hides the off-topic videos.
+- `src/cards.js` finds the video cards on the watch page, Home, Subscriptions and
+  search results, reads them, and hides or shows them.
+- `src/filter.js` decides which videos to check, asks for verdicts and applies them.
+  `src/filter.css` hides the filtered videos.
 - `src/background.js` receives the extension's messages and events in the background
   and hands each one to the module that handles it.
 - `src/model-host.js` opens the hidden page that runs the model, passes messages to it,

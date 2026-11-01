@@ -1,0 +1,4 @@
+/* Videos the filter hides. See src/cards.js. */
+[data-better-yt-hidden] {
+  display: none !important;
+}

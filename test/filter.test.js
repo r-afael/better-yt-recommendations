@@ -69,7 +69,7 @@ async function setup(t, { path = "/watch?v=W6NZfCO5SIk", stored = { topics: "pro
   };
   const addVideo = async (id) => {
     const item = items()[0].cloneNode(true);
-    item.removeAttribute("data-better-yt-off-topic");
+    item.removeAttribute("data-better-yt-hidden");
     showVideo(item, id);
     document.querySelector("#related #contents").append(item);
     await clock.tickAsync(SCAN_MS);

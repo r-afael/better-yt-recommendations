@@ -1,12 +1,11 @@
-// Hides the recommendations next to the video being watched that don't match the user's topics.
+// Hides the videos in the lists it works on that don't match the user's topics.
 // The model answers through the background service worker; until it does, videos stay visible.
 (() => {
   "use strict";
 
-  const { createScheduler, protocol, settings, sidebar, topics: topicList } = globalThis.BetterYT;
+  const { cards, createScheduler, protocol, settings, topics: topicList } = globalThis.BetterYT;
 
-  const WATCH_PATH = "/watch";
-  const SCAN_DELAY_MS = 150; // Lets a burst of sidebar mutations settle into one scan.
+  const SCAN_DELAY_MS = 150; // Lets a burst of list mutations settle into one scan.
   const RETRY_MS = 30_000; // After a failure, so a broken model doesn't get a request storm.
   const MAX_BATCH = 30; // Videos per request, so the first verdicts arrive quickly.
   const REQUEST_TIMEOUT_MS = 60_000; // A request that never settles counts as a failure, so filtering resumes.
@@ -27,8 +26,9 @@
   let warned = false;
   let observer = null;
   let observed = null;
+  let surface = cards.surfaceFor(location.pathname);
 
-  const isActive = () => Boolean(options?.topicFilter) && topics.length > 0 && location.pathname === WATCH_PATH;
+  const isActive = () => Boolean(options?.topicFilter) && topics.length > 0 && surface?.id === "watch";
   const sameTopics = (a, b) => a.length === b.length && a.every((topic, index) => topic === b[index]);
 
   // Runs scan() after a delay, keeping whichever pending run comes first.
@@ -37,9 +37,9 @@
     if (isActive()) scanLater.schedule(delay);
   };
 
-  // Watches the recommendations, or the whole page until they exist.
+  // Watches the list of videos, or the whole page until it exists.
   function watch() {
-    const target = sidebar.container() ?? document.documentElement;
+    const target = cards.container(surface) ?? document.documentElement;
     if (observed === target) return;
     observer ??= new MutationObserver(() => scheduleScan());
     observer.disconnect();
@@ -52,23 +52,23 @@
     observer = null;
     observed = null;
     scanLater.cancel();
-    sidebar.unmarkAll();
+    cards.unhideAll();
   }
 
   // Hides an item only for a video scored below the threshold, so unscored videos stay visible.
   function applyVerdict(item, video) {
     const hiddenFor = video && scores.get(video.id) < options.threshold ? video.id : null;
-    if (sidebar.markedId(item) === hiddenFor) return;
-    if (hiddenFor) sidebar.markOffTopic(item, hiddenFor);
-    else sidebar.unmark(item);
+    if (cards.hiddenId(item) === hiddenFor) return;
+    if (hiddenFor) cards.hide(item, hiddenFor, "off-topic");
+    else cards.unhide(item);
   }
 
   function scan() {
     if (!isActive()) return;
     watch();
     const unknown = new Map();
-    for (const item of sidebar.findItems()) {
-      const video = sidebar.readVideo(item);
+    for (const item of cards.findItems(surface)) {
+      const video = cards.readVideo(item, surface);
       applyVerdict(item, video);
       if (video && !scores.has(video.id)) unknown.set(video.id, video);
     }
@@ -131,12 +131,15 @@
       // Answers to requests made for the old topics land in the old map and are dropped with it.
       topics = next;
       scores = new Map();
-      sidebar.unmarkAll();
+      cards.unhideAll();
     }
     update();
   }
 
-  document.addEventListener("yt-navigate-finish", update);
+  document.addEventListener("yt-navigate-finish", () => {
+    surface = cards.surfaceFor(location.pathname);
+    update();
+  });
 
   settings.load().then((loaded) => {
     applySettings(loaded);

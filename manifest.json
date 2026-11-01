@@ -46,10 +46,10 @@
         "src/content.js",
         "src/protocol.js",
         "src/topics.js",
-        "src/sidebar.js",
-        "src/topic-filter.js"
+        "src/cards.js",
+        "src/filter.js"
       ],
-      "css": ["src/topic-filter.css"],
+      "css": ["src/filter.css"],
       "run_at": "document_idle"
     }
   ]

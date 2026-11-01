@@ -1,4 +1,0 @@
-/* Recommendations that don't match the user's topics. See src/sidebar.js. */
-[data-better-yt-off-topic] {
-  display: none !important;
-}
