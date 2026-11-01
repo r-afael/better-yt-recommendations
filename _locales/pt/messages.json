@@ -263,5 +263,38 @@
   },
   "changeShortcuts": {
     "message": "Alterar atalhos"
+  },
+  "profilesSection": {
+    "message": "Perfis"
+  },
+  "profile": {
+    "message": "Perfil"
+  },
+  "noProfile": {
+    "message": "Nenhum perfil"
+  },
+  "profileName": {
+    "message": "Nome do perfil"
+  },
+  "profileNamePlaceholder": {
+    "message": "Trabalho"
+  },
+  "saveProfile": {
+    "message": "Salvar como novo perfil"
+  },
+  "renameProfile": {
+    "message": "Renomear"
+  },
+  "deleteProfile": {
+    "message": "Excluir"
+  },
+  "profilesHint": {
+    "message": "Um perfil salva os assuntos acima com um nome. Troque de perfil aqui ou pela janela da extensão na barra de ferramentas. Trocar de Nenhum perfil para um perfil substitui os assuntos, então salve-os antes como perfil para mantê-los."
+  },
+  "profileNameTaken": {
+    "message": "Já existe um perfil com esse nome."
+  },
+  "profilesFull": {
+    "message": "Não há espaço para outro perfil. Exclua um ou encurte os assuntos dos outros."
   }
 }

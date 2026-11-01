@@ -1,9 +1,10 @@
-// Code the settings pages share: starting the page, translation, saving and the model status.
+// Code the settings pages share: starting the page, translation, saving, the profile switch and
+// the model status.
 // Each page looks up its own elements, defines render() and boots with startPage().
 (() => {
   "use strict";
 
-  const { protocol, settings, verdict } = globalThis.BetterYT;
+  const { profiles, protocol, settings, verdict } = globalThis.BetterYT;
   const { MODEL_STATES, STATUS_KEY, PRELOAD } = protocol;
 
   const SAVE_DELAY_MS = 400; // chrome.storage.sync allows about 120 writes a minute.
@@ -72,6 +73,18 @@
     }
   }
 
+  // Lists No profile, which the HTML holds, then each profile, and selects the one in use. The
+  // options are only rebuilt when the profiles change, so an open list isn't redrawn under the user.
+  function fillProfileSelect(select, values) {
+    const names = values.profiles.map(({ name }) => name);
+    const listed = [...select.options].slice(1).map(({ value }) => value);
+    const same = listed.length === names.length && listed.every((value, index) => value === names[index]);
+    if (!same) {
+      select.replaceChildren(select.options[0], ...names.map((name) => new Option(name, name)));
+    }
+    select.value = profiles.active(values)?.name ?? "";
+  }
+
   // Saves a control's value right away or once it stops changing.
   function createSaver({ save, changesFor, onSaved = noop, onError = reportSaveError }) {
     let timer = null;
@@ -105,9 +118,11 @@
       timer = setTimeout(flush, SAVE_DELAY_MS);
     }
 
-    // The value saved now replaces the same control's pending one.
+    // The value saved now replaces the same control's pending one, and goes after another
+    // control's, so the writes land in the order they were made.
     function saveNow(control) {
       if (pending === control) cancel();
+      else flush();
       write(control);
     }
 
@@ -138,8 +153,10 @@
     saver.isPending(control) || (savesAfterPause(control) && control === control.ownerDocument.activeElement);
 
   // Boots a settings page and owns its values: what is stored, merged with every change since.
+  // Until the stored settings load, the values are the defaults, so a change made before then
+  // still has every setting to read.
   function startPage({ form, render, changesFor = controlChanges, display = (values) => values, onSaved, onError }) {
-    const values = {};
+    const values = { ...settings.DEFAULTS };
 
     // A save that makes the filter need the model starts loading it, so it is likely ready by
     // the time the user opens YouTube. Only this computer loads it: the background never loads
@@ -214,5 +231,15 @@
     return { render, state: () => modelStatus.state };
   }
 
-  globalThis.BetterYT.ui = { message, valueOf, setText, reportSaveError, startPage, createModelStatus, formatThreshold, formatList };
+  globalThis.BetterYT.ui = {
+    message,
+    valueOf,
+    setText,
+    reportSaveError,
+    startPage,
+    createModelStatus,
+    fillProfileSelect,
+    formatThreshold,
+    formatList,
+  };
 })();

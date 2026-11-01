@@ -1,6 +1,19 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { PRELOAD, STATUS_KEY, flush, locales, openPage, readJson, recordMessages, untranslated } from "./helpers.js";
+import {
+  EVENING,
+  PRELOAD,
+  STATUS_KEY,
+  WORK,
+  flush,
+  locales,
+  openPage,
+  optionTexts,
+  pickOption,
+  readJson,
+  recordMessages,
+  untranslated,
+} from "./helpers.js";
 
 const alphabetically = (a, b) => a.localeCompare(b);
 
@@ -136,6 +149,54 @@ test("the summary lists the topics to avoid", async (t) => {
   await chrome.storage.sync.set({ avoidTopics: "" });
   await flush();
   assert.equal(avoidLine.hidden, true);
+});
+
+const NO_PROFILE = readJson("_locales/en/messages.json").noProfile.message;
+
+// The popup's profile row and its switch.
+async function setupProfiles(t, stored) {
+  const page = await setup(t, { stored });
+  const row = page.document.querySelector("#profile-row");
+  const select = page.document.querySelector("#profile");
+  const pick = (value) => pickOption(select, value);
+  const listed = () => optionTexts(select);
+  return { ...page, row, select, pick, listed };
+}
+
+test("shows the profile switch only once a profile exists", async (t) => {
+  const none = await setupProfiles(t);
+  assert.equal(none.row.hidden, true);
+  await none.chrome.storage.sync.set({ profiles: [WORK] });
+  await flush();
+  assert.equal(none.row.hidden, false);
+  assert.deepEqual(none.listed(), [NO_PROFILE, "Work"]);
+  assert.equal(none.select.value, "");
+
+  const { row, select, listed } = await setupProfiles(t, { profiles: [WORK, EVENING], activeProfile: "Evening" });
+  assert.equal(row.hidden, false);
+  assert.deepEqual(listed(), [NO_PROFILE, "Work", "Evening"]);
+  assert.equal(select.value, "Evening", "the stored profile is selected");
+});
+
+test("switching a profile from the popup saves its topics and updates the summary", async (t) => {
+  const { chrome, summary, pick } = await setupProfiles(t, { profiles: [WORK, EVENING], activeProfile: "Work", ...WORK });
+  const avoidLine = summary.querySelector("#summary-avoid");
+  assert.equal(avoidLine.textContent, "Avoiding: gaming");
+  pick("Evening");
+  await flush();
+  const { activeProfile, topics, avoidTopics } = chrome.data;
+  assert.deepEqual({ activeProfile, topics, avoidTopics }, { activeProfile: "Evening", topics: "cooking, chess", avoidTopics: "" });
+  assert.equal(summary.querySelector("#summary-topics").textContent, "Topics: cooking, chess");
+  assert.equal(avoidLine.hidden, true);
+});
+
+test("the profile switch is disabled while the filter is off, and the summary still opens the options page", async (t) => {
+  const { chrome, toggle, summary, select } = await setupProfiles(t, { topicFilter: false, profiles: [WORK], activeProfile: "Work" });
+  assert.equal(select.disabled, true);
+  summary.click();
+  assert.equal(chrome.openedOptions, 1);
+  toggle("topicFilter").click();
+  assert.equal(select.disabled, false);
 });
 
 test("All settings and the gear open the options page", async (t) => {

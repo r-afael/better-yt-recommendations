@@ -1,11 +1,13 @@
-// Toolbar popup with the main switches, a summary of the topics and the topic model's status.
+// Toolbar popup with the main switches, the profile switch, a summary of the topics and the
+// topic model's status.
 // Everything else is on the options page. Open YouTube tabs pick up changes right away.
 (() => {
   "use strict";
 
-  const { ui, verdict } = globalThis.BetterYT;
+  const { profiles, ui, verdict } = globalThis.BetterYT;
   const form = document.getElementById("settings");
-  const { enabled, enforce } = form.elements;
+  const { enabled, enforce, activeProfile: profileSelect } = form.elements;
+  const profileRow = document.getElementById("profile-row");
   const summaryField = document.querySelector(".summary-field");
   const summaryTopics = document.getElementById("summary-topics");
   const summaryAvoid = document.getElementById("summary-avoid");
@@ -30,9 +32,17 @@
     summaryField.classList.toggle("off", !page.values.topicFilter);
   }
 
+  // The switch shows once there is a profile to pick. Like the topics, it only applies while filtering.
+  function renderProfiles() {
+    profileRow.hidden = page.values.profiles.length === 0;
+    ui.fillProfileSelect(profileSelect, page.values);
+    profileSelect.disabled = !page.values.topicFilter;
+  }
+
   // Enforcement mode builds on opening the custom feed.
   function render() {
     enforce.disabled = !enabled.checked;
+    renderProfiles();
     renderSummary();
     status.render();
   }
@@ -41,5 +51,7 @@
     document.getElementById(id).addEventListener("click", () => chrome.runtime.openOptionsPage());
   }
 
-  const page = ui.startPage({ form, render });
+  // Picking a profile saves its topics with it, and the summary follows them once they're saved.
+  const changesFor = (control, values) => profiles.changesFor(control.name, ui.valueOf(control), values);
+  const page = ui.startPage({ form, render, changesFor });
 })();

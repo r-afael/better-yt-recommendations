@@ -48,6 +48,7 @@ YouTube tabs pick up changes right away.
   avoid, or that come from a channel you always hide. It does nothing until you type
   some topics to see or to avoid, or a channel to hide. Turn it off to show every
   video again, including blocked channels, and free the model's memory.
+- The **Profile** switch, once you have a profile.
 - A summary of your topics to see and to avoid; click it to change them.
 
 ### On the options page
@@ -67,6 +68,12 @@ The **Filter recommendations** switch is on both pages.
 - **Try a title**: type a video title to see how close it is to your topics and
   whether the filter would show or hide it. Move the sensitivity to see the verdict
   change. The first try loads the model if it isn't loaded yet.
+- **Profiles**: save your topics and topics to avoid under a name, like 'Work' or 'Evening',
+  and switch between them from the popup's **Profile** menu. While a profile is selected,
+  editing the topics updates it. Switching from No profile to a profile replaces your topics,
+  so save them as a profile first if you want to keep them. Deleting a profile keeps the
+  topics you have now. Up to 8 profiles fit, fewer if their topics are long; if a profile's
+  topics grow too long to save, they still apply, and the page says so.
 - **Where to filter**: Next to the video you're watching (on by default), Home (on by
   default, including Your custom feed), Subscriptions (off by default) and Search
   results (off by default). Subscriptions and search results show what you asked for,
@@ -169,8 +176,9 @@ refresh YouTube.
 ## Privacy
 
 The extension runs only on YouTube. It doesn't track you or collect your data. It
-saves your settings, including your topics to see and to avoid and your channel lists,
-in Chrome, which syncs them across your computers if you use Chrome sync.
+saves your settings, including your topics to see and to avoid, your channel lists and
+your topic profiles, in Chrome, which syncs them across your computers if you use Chrome
+sync.
 
 The topic filter's model and its files download once from huggingface.co (Hugging
 Face). After that, the model runs on your computer. The titles and channels of the
@@ -202,7 +210,7 @@ refresh YouTube.
 - `src/options.html`, `src/options.css` and `src/options.js` are the options page.
   `src/options.css` builds on `src/popup.css`.
 - `src/ui.js` holds the code the settings popup and the options page share: starting the
-  page, translation, saving, and the model status.
+  page, translation, saving, the profile switch, and the model status.
 - `_locales/` has the translations of the popup, the options page and the messages the
   extension shows on YouTube.
 - `src/protocol.js` names the messages the extension's parts send each other.
@@ -211,6 +219,7 @@ refresh YouTube.
   filter needs the model.
 - `src/channels.js` reads the channel lists and says whether a channel is always shown
   or always hidden.
+- `src/profiles.js` saves, renames and switches topic profiles.
 - `src/cards.js` finds the video cards on the watch page, Home, Subscriptions and
   search results, reads them, and hides or shows them.
 - `src/hidden-row.js` draws the row that counts the hidden videos and shows them.

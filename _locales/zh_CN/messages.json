@@ -263,5 +263,38 @@
   },
   "changeShortcuts": {
     "message": "更改快捷键"
+  },
+  "profilesSection": {
+    "message": "方案"
+  },
+  "profile": {
+    "message": "方案"
+  },
+  "noProfile": {
+    "message": "不使用方案"
+  },
+  "profileName": {
+    "message": "方案名称"
+  },
+  "profileNamePlaceholder": {
+    "message": "工作"
+  },
+  "saveProfile": {
+    "message": "另存为新方案"
+  },
+  "renameProfile": {
+    "message": "重命名"
+  },
+  "deleteProfile": {
+    "message": "删除"
+  },
+  "profilesHint": {
+    "message": "方案会以一个名称保存上方的主题。你可以在这里或通过工具栏中的扩展程序弹出式窗口切换方案。从“不使用方案”切换到某个方案会替换当前的主题，因此请先将它们另存为方案以便保留。"
+  },
+  "profileNameTaken": {
+    "message": "已有同名方案。"
+  },
+  "profilesFull": {
+    "message": "没有空间再添加方案了。请删除一个方案，或缩短其他方案的主题。"
   }
 }

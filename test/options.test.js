@@ -1,6 +1,25 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { MATCH, PRELOAD, STATUS_KEY, channelNames, flush, holdMessages, locales, openPage, readJson, recordMessages, score, untranslated } from "./helpers.js";
+import {
+  EVENING,
+  MATCH,
+  PRELOAD,
+  STATUS_KEY,
+  WORK,
+  channelNames,
+  fakeChrome,
+  flush,
+  holdMessages,
+  locales,
+  manyProfiles,
+  openPage,
+  optionTexts,
+  pickOption,
+  readJson,
+  recordMessages,
+  score,
+  untranslated,
+} from "./helpers.js";
 
 const SAVE_DELAY_MS = 400;
 const IDLE_TEXT = "The model loads when a page needs it, or when you click Load now.";
@@ -39,12 +58,17 @@ async function reportStatus(chrome, status) {
 
 const PAGE_SETTINGS = ["filterWatch", "filterHome", "filterSubscriptions", "filterSearch"];
 
-test("the Filter recommendations switch on the options page saves and enables the fields, page checkboxes and channel lists", async (t) => {
-  const { document, chrome, toggle, field, avoidField, slider } = await setup(t, { stored: { topicFilter: false } });
+test("the Filter recommendations switch on the options page saves and enables the fields, profiles, page checkboxes and channel lists", async (t) => {
+  const stored = { topicFilter: false, profiles: [WORK], activeProfile: WORK.name };
+  const { document, chrome, toggle, field, avoidField, slider, type } = await setup(t, { stored });
   const titleBox = document.querySelector("#try-title");
+  const profileName = document.querySelector("#profile-name");
+  const profileButtons = ["save", "rename", "delete"].map((action) => document.querySelector(`#${action}-profile`));
+  type("Office", profileName); // A name and a selected profile leave only the switch to disable the buttons.
+  const profileControls = [document.querySelector("#profile"), profileName, ...profileButtons];
   const channelFields = [...document.querySelectorAll('textarea[name$="Channels"]')];
   assert.equal(channelFields.length, 2);
-  const controls = [field, avoidField, slider, titleBox, ...PAGE_SETTINGS.map(toggle), ...channelFields];
+  const controls = [field, avoidField, slider, titleBox, ...profileControls, ...PAGE_SETTINGS.map(toggle), ...channelFields];
   const disabled = () => controls.map((control) => control.disabled);
   const every = (value) => controls.map(() => value);
   assert.deepEqual(disabled(), every(true));
@@ -647,4 +671,196 @@ test("Change shortcuts opens Chrome's shortcuts page", async (t) => {
   const { document, chrome } = await setup(t);
   document.querySelector("#change-shortcuts").click();
   assert.deepEqual(structuredClone(chrome.createdTabs), [{ url: "chrome://extensions/shortcuts" }]);
+});
+
+const NO_PROFILE = messages.noProfile.message;
+// Profiles whose topics take 3 bytes a character, so five of them nearly fill their sync item.
+const cjkProfiles = (count) => Array.from({ length: count }, (_, index) => ({ name: `频道 ${index}`, topics: "频".repeat(500), avoidTopics: "" }));
+
+// The options page with its profile switch, the profile name field and the profile buttons.
+async function setupProfiles(t, stored) {
+  const page = await setup(t, { stored });
+  const { window, document, chrome } = page;
+  const select = document.querySelector("#profile");
+  const nameField = document.querySelector("#profile-name");
+  const button = (action) => document.querySelector(`#${action}-profile`);
+  const profilesError = document.querySelector("#profiles-error");
+  const topicsError = document.querySelector("#topics-error");
+  const name = (text) => {
+    nameField.value = text;
+    nameField.dispatchEvent(new window.Event("input", { bubbles: true }));
+  };
+  const pick = (value) => pickOption(select, value);
+  const listed = () => optionTexts(select);
+  const storedProfiles = () => structuredClone(chrome.data.profiles);
+  return { ...page, select, nameField, button, profilesError, topicsError, name, pick, listed, storedProfiles };
+}
+
+test("topics typed before the stored settings load are still saved", async (t) => {
+  const chrome = fakeChrome();
+  chrome.storage.sync.get = () => new Promise(() => {}); // Sync never answers.
+  const { clock, type } = await setup(t, { chrome });
+  type("chess");
+  clock.tick(SAVE_DELAY_MS);
+  await flush();
+  assert.equal(chrome.data.topics, "chess");
+});
+
+test("saves the topics as a new profile and selects it", async (t) => {
+  const { chrome, select, nameField, button, name, listed, storedProfiles } = await setupProfiles(t, { topics: "chess", avoidTopics: "gaming" });
+  assert.equal(button("save").disabled, true, "until there is a name");
+  name("  Chess   club ");
+  assert.equal(button("save").disabled, false);
+  button("save").click();
+  await flush();
+  assert.deepEqual(storedProfiles(), [{ name: "Chess club", topics: "chess", avoidTopics: "gaming" }]);
+  assert.equal(chrome.data.activeProfile, "Chess club");
+  assert.deepEqual(listed(), [NO_PROFILE, "Chess club"]);
+  assert.equal(select.value, "Chess club");
+  assert.equal(nameField.value, "");
+  assert.equal(button("delete").disabled, false);
+});
+
+test("shows the stored profile as selected when the page opens", async (t) => {
+  const { select, listed } = await setupProfiles(t, { profiles: [WORK, EVENING], activeProfile: "evening", topics: EVENING.topics });
+  assert.deepEqual(listed(), [NO_PROFILE, "Work", "Evening"]);
+  assert.equal(select.value, "Evening");
+});
+
+test("switching profiles fills both topic fields and saves them in one write", async (t) => {
+  const { chrome, field, avoidField, pick } = await setupProfiles(t, { profiles: [WORK, EVENING], activeProfile: "Evening", topics: EVENING.topics });
+  const set = chrome.storage.sync.set;
+  let writes = 0;
+  chrome.storage.sync.set = (changes) => {
+    writes += 1;
+    return set(changes);
+  };
+  pick("Work");
+  await flush();
+  assert.equal(writes, 1);
+  const { activeProfile, topics, avoidTopics } = chrome.data;
+  assert.deepEqual({ activeProfile, topics, avoidTopics }, { activeProfile: "Work", topics: "programming", avoidTopics: "gaming" });
+  assert.equal(field.value, "programming");
+  assert.equal(avoidField.value, "gaming");
+});
+
+test("editing the topics updates the selected profile", async (t) => {
+  const { chrome, clock, type, storedProfiles } = await setupProfiles(t, { profiles: [WORK, EVENING], activeProfile: "Work", ...WORK });
+  type("programming, rust");
+  clock.tick(SAVE_DELAY_MS);
+  assert.equal(chrome.data.topics, "programming, rust");
+  assert.deepEqual(storedProfiles(), [{ ...WORK, topics: "programming, rust" }, EVENING]);
+});
+
+test("editing topics that no longer fit in the profile still applies them and says the profile is full", async (t) => {
+  const others = cjkProfiles(5);
+  const { chrome, clock, type, select, topicsError, storedProfiles } = await setupProfiles(t, {
+    profiles: [WORK, ...others],
+    activeProfile: "Work",
+    ...WORK,
+  });
+  const typed = "频".repeat(100);
+  type(typed);
+  clock.tick(SAVE_DELAY_MS);
+  await flush();
+  assert.equal(chrome.data.topics, typed);
+  assert.deepEqual(storedProfiles(), [WORK, ...others]);
+  assert.equal(chrome.data.activeProfile, "Work");
+  assert.equal(select.value, "Work");
+  assert.equal(topicsError.hidden, false);
+  assert.equal(topicsError.textContent, messages.profilesFull.message);
+});
+
+test("a profile switch from elsewhere during typing doesn't write the typed topics into the new profile", async (t) => {
+  const { chrome, clock, field, type, select, storedProfiles } = await setupProfiles(t, { profiles: [WORK, EVENING], activeProfile: "Work", ...WORK });
+  field.focus();
+  type("programming, rust");
+  await chrome.storage.sync.set({ activeProfile: "Evening", topics: EVENING.topics, avoidTopics: EVENING.avoidTopics });
+  await flush();
+  assert.equal(select.value, "Evening");
+  clock.tick(SAVE_DELAY_MS);
+  assert.deepEqual(storedProfiles(), [WORK, EVENING]);
+  assert.equal(chrome.data.topics, "programming, rust", "the typed topics still reach the filter");
+});
+
+test("typing in the other topics field after a switch from elsewhere doesn't move the first edit into the new profile", async (t) => {
+  const { chrome, clock, field, avoidField, type, storedProfiles } = await setupProfiles(t, { profiles: [WORK, EVENING], activeProfile: "Work", ...WORK });
+  field.focus();
+  type("programming, rust");
+  await chrome.storage.sync.set({ activeProfile: "Evening", topics: EVENING.topics, avoidTopics: EVENING.avoidTopics });
+  await flush();
+  avoidField.focus();
+  type("gossip", avoidField);
+  clock.tick(SAVE_DELAY_MS);
+  await flush();
+  assert.deepEqual(storedProfiles(), [WORK, { ...EVENING, avoidTopics: "gossip" }]);
+  assert.equal(chrome.data.topics, "programming, rust", "the typed topics still reach the filter");
+});
+
+test("switching profiles on the page while typing saves the typed topics into the profile they were typed for", async (t) => {
+  const { chrome, field, select, type, pick, storedProfiles } = await setupProfiles(t, { profiles: [WORK, EVENING], activeProfile: "Work", ...WORK });
+  field.focus();
+  type("programming, rust");
+  select.focus();
+  pick("Evening");
+  await flush();
+  assert.deepEqual(storedProfiles(), [{ ...WORK, topics: "programming, rust" }, EVENING]);
+  const { activeProfile, topics } = chrome.data;
+  assert.deepEqual({ activeProfile, topics }, { activeProfile: "Evening", topics: EVENING.topics });
+  assert.equal(field.value, EVENING.topics);
+});
+
+test("renaming the selected profile keeps it selected", async (t) => {
+  const { chrome, select, button, name, listed, storedProfiles } = await setupProfiles(t, { profiles: [WORK, EVENING], activeProfile: "Work" });
+  name("Office");
+  button("rename").click();
+  await flush();
+  assert.deepEqual(storedProfiles(), [{ ...WORK, name: "Office" }, EVENING]);
+  assert.equal(chrome.data.activeProfile, "Office");
+  assert.deepEqual(listed(), [NO_PROFILE, "Office", "Evening"]);
+  assert.equal(select.value, "Office");
+});
+
+test("deleting the selected profile keeps the topics", async (t) => {
+  const { chrome, field, select, button, listed, storedProfiles } = await setupProfiles(t, { profiles: [WORK, EVENING], activeProfile: "Work", ...WORK });
+  button("delete").click();
+  await flush();
+  assert.deepEqual(storedProfiles(), [EVENING]);
+  assert.equal(chrome.data.activeProfile, "");
+  assert.equal(chrome.data.topics, WORK.topics);
+  assert.equal(field.value, WORK.topics);
+  assert.deepEqual(listed(), [NO_PROFILE, "Evening"]);
+  assert.equal(select.value, "");
+  assert.equal(button("delete").disabled, true);
+});
+
+test("refuses a name already in use", async (t) => {
+  const { button, name, profilesError, storedProfiles } = await setupProfiles(t, { profiles: [WORK, EVENING], activeProfile: "Evening" });
+  for (const action of ["save", "rename"]) {
+    name(" WORK ");
+    button(action).click();
+    await flush();
+    assert.equal(profilesError.hidden, false, action);
+    assert.equal(profilesError.textContent, messages.profileNameTaken.message, action);
+    assert.deepEqual(storedProfiles(), [WORK, EVENING], action);
+  }
+  name("Office");
+  button("save").click();
+  await flush();
+  assert.equal(profilesError.hidden, true, "a save that works clears the error");
+  assert.deepEqual(storedProfiles(), [WORK, EVENING, { name: "Office", topics: "", avoidTopics: "" }]);
+});
+
+test("says when there's no room for another profile", async (t) => {
+  const eight = manyProfiles(8);
+  const cjk = cjkProfiles(5);
+  for (const [profiles, topics] of [[eight, "chess"], [cjk, "频".repeat(300)]]) {
+    const { button, name, profilesError, storedProfiles } = await setupProfiles(t, { profiles, topics });
+    name("One more");
+    button("save").click();
+    await flush();
+    assert.equal(profilesError.hidden, false, `${profiles.length} profiles`);
+    assert.equal(profilesError.textContent, messages.profilesFull.message, `${profiles.length} profiles`);
+    assert.deepEqual(storedProfiles(), profiles, `${profiles.length} profiles`);
+  }
 });

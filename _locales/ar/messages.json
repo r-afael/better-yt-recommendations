@@ -263,5 +263,38 @@
   },
   "changeShortcuts": {
     "message": "تغيير الاختصارات"
+  },
+  "profilesSection": {
+    "message": "الملفات الشخصية"
+  },
+  "profile": {
+    "message": "الملف الشخصي"
+  },
+  "noProfile": {
+    "message": "بلا ملف شخصي"
+  },
+  "profileName": {
+    "message": "اسم الملف الشخصي"
+  },
+  "profileNamePlaceholder": {
+    "message": "العمل"
+  },
+  "saveProfile": {
+    "message": "حفظ كملف شخصي جديد"
+  },
+  "renameProfile": {
+    "message": "إعادة التسمية"
+  },
+  "deleteProfile": {
+    "message": "حذف"
+  },
+  "profilesHint": {
+    "message": "يحفظ الملف الشخصي الموضوعات أعلاه باسم. بدّل بين الملفات الشخصية هنا أو من النافذة المنبثقة للإضافة في شريط الأدوات. التبديل من «بلا ملف شخصي» إلى ملف شخصي يستبدل الموضوعات، لذا احفظها أولًا كملف شخصي للاحتفاظ بها."
+  },
+  "profileNameTaken": {
+    "message": "يوجد ملف شخصي بهذا الاسم بالفعل."
+  },
+  "profilesFull": {
+    "message": "لا توجد مساحة لملف شخصي آخر. احذف ملفًا، أو اختصر موضوعات الملفات الأخرى."
   }
 }

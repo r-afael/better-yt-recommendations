@@ -45,6 +45,24 @@
           <p class="error" id="topics-error" role="alert" hidden></p>
         </div>
       </section>
+      <section aria-labelledby="profiles-section">
+        <h2 id="profiles-section" data-i18n="profilesSection"></h2>
+        <div class="field">
+          <label class="title" for="profile" data-i18n="profile"></label>
+          <select id="profile" name="activeProfile" disabled aria-describedby="profiles-hint">
+            <option value="" data-i18n="noProfile"></option>
+          </select>
+          <label class="title" for="profile-name" data-i18n="profileName"></label>
+          <input id="profile-name" type="text" data-i18n-placeholder="profileNamePlaceholder" disabled>
+          <div class="profile-actions">
+            <button type="button" id="save-profile" class="secondary" data-i18n="saveProfile" disabled></button>
+            <button type="button" id="rename-profile" class="secondary" data-i18n="renameProfile" disabled></button>
+            <button type="button" id="delete-profile" class="secondary" data-i18n="deleteProfile" disabled></button>
+          </div>
+          <p class="hint" id="profiles-hint" data-i18n="profilesHint"></p>
+          <p class="error" id="profiles-error" role="alert" hidden></p>
+        </div>
+      </section>
       <section aria-labelledby="pages-section">
         <h2 id="pages-section" data-i18n="filterPages"></h2>
         <label class="setting">
@@ -95,6 +113,7 @@
   <script src="topics.js"></script>
   <script src="verdict.js"></script>
   <script src="channels.js"></script>
+  <script src="profiles.js"></script>
   <script src="ui.js"></script>
   <script src="options.js"></script>
 </body>

@@ -31,6 +31,22 @@ export const HIDDEN_COUNT = "better-yt:hidden-count";
 // Channel names such as "Channel 0", for filling a channel list.
 export const channelNames = (count) => Array.from({ length: count }, (_, index) => `Channel ${index}`);
 
+// Two topic profiles, as the pages save them.
+export const WORK = Object.freeze({ name: "Work", topics: "programming", avoidTopics: "gaming" });
+export const EVENING = Object.freeze({ name: "Evening", topics: "cooking, chess", avoidTopics: "" });
+
+// Profiles such as "Profile 0" with Work's topics, for filling the profile list.
+export const manyProfiles = (count) => Array.from({ length: count }, (_, index) => ({ ...WORK, name: `Profile ${index}` }));
+
+// Picks an option of a select the way the user does, which fires change.
+export function pickOption(select, value) {
+  select.value = value;
+  select.dispatchEvent(new select.ownerDocument.defaultView.Event("change", { bubbles: true }));
+}
+
+// The texts of a select's options, in order.
+export const optionTexts = (select) => [...select.options].map((option) => option.textContent);
+
 // Lets pending promises, storage events and mutation observers run.
 export const flush = () => new Promise((resolve) => setImmediate(resolve));
 
@@ -262,12 +278,12 @@ export function holdMessages(chrome, holds = () => true, answer = async () => ({
 }
 
 // Opens one of the extension's pages, such as src/popup.html, and runs its own scripts in order
-// with a fake chrome and fake timers.
-export async function openPage(t, path, options) {
+// with fake timers and a fake chrome, made from options unless the test passes one it has set up.
+export async function openPage(t, path, { chrome: given, ...options } = {}) {
   const dom = new JSDOM(read(path), { runScripts: "outside-only" });
   const { window } = dom;
   const clock = FakeTimers.withGlobal(window).install({ toFake: ["setTimeout", "clearTimeout"] });
-  const chrome = fakeChrome(options);
+  const chrome = given ?? fakeChrome(options);
   window.chrome = chrome;
   const directory = path.slice(0, path.lastIndexOf("/") + 1);
   const scripts = [...window.document.querySelectorAll("script[src]")].map((script) => directory + script.getAttribute("src"));

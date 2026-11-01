@@ -338,5 +338,49 @@
   "changeShortcuts": {
     "message": "Change shortcuts",
     "description": "Button that opens Chrome's keyboard shortcuts page."
+  },
+  "profilesSection": {
+    "message": "Profiles",
+    "description": "Heading of the options section that manages topic profiles."
+  },
+  "profile": {
+    "message": "Profile",
+    "description": "Label of the profile switch, in the popup and in the options page's Profiles section."
+  },
+  "noProfile": {
+    "message": "No profile",
+    "description": "First choice of the profile switch: the topics aren't tied to a profile."
+  },
+  "profileName": {
+    "message": "Profile name",
+    "description": "Label of the field where the user names a profile."
+  },
+  "profileNamePlaceholder": {
+    "message": "Work",
+    "description": "Example profile name. Use a short word that makes sense in this language."
+  },
+  "saveProfile": {
+    "message": "Save as new profile",
+    "description": "Button that saves the current topics under the typed name."
+  },
+  "renameProfile": {
+    "message": "Rename",
+    "description": "Button that gives the selected profile the typed name."
+  },
+  "deleteProfile": {
+    "message": "Delete",
+    "description": "Button that deletes the selected profile. The topics stay as they are."
+  },
+  "profilesHint": {
+    "message": "A profile saves the topics above under a name. Switch profiles here or from the toolbar popup. Switching from No profile replaces the topics, so save them as a profile first to keep them.",
+    "description": "Hint under the Profiles section on the options page. \"No profile\" is the first choice of the profile switch (noProfile); use the same words. \"Toolbar popup\" is the extension's popup."
+  },
+  "profileNameTaken": {
+    "message": "A profile with that name already exists.",
+    "description": "Shown when the typed profile name is already used."
+  },
+  "profilesFull": {
+    "message": "No room for another profile. Delete one, or shorten the topics of the others.",
+    "description": "Shown when Chrome sync can't hold another profile, or can't hold the selected profile's new topics (which still apply)."
   }
 }

@@ -1,10 +1,11 @@
 // Options page with the settings that don't fit in the popup: the topics to see and to avoid,
-// the filter sensitivity, a box to try a title against them, the pages to filter, the channel
-// lists and the keyboard shortcuts. Open YouTube tabs pick up changes right away.
+// the filter sensitivity, a box to try a title against them, the topic profiles, the pages to
+// filter, the channel lists and the keyboard shortcuts. Open YouTube tabs pick up changes right
+// away.
 (() => {
   "use strict";
 
-  const { channels, protocol, settings, ui, verdict } = globalThis.BetterYT;
+  const { channels, profiles, protocol, settings, ui, verdict } = globalThis.BetterYT;
   const { COMMAND_TOGGLE_FILTER, COMMAND_TOGGLE_SHORTS, MATCH, MODEL_STATES } = protocol;
   const { setText } = ui;
 
@@ -14,25 +15,46 @@
   const COMMANDS = Object.freeze([COMMAND_TOGGLE_FILTER, COMMAND_TOGGLE_SHORTS]); // In the manifest's order.
   // Extension pages can't link to chrome:// pages, so the button opens it in a new tab.
   const SHORTCUTS_PAGE = "chrome://extensions/shortcuts";
+  // What the profiles section says when a profile button can't do what it was asked. The buttons
+  // only work with a name typed and, to rename, a profile selected, so "missing" has nothing to
+  // explain.
+  const PROFILE_ERRORS = Object.freeze({ taken: "profileNameTaken", full: "profilesFull", missing: null });
 
   const form = document.getElementById("settings");
-  const { topicFilter, topics: topicsField, avoidTopics: avoidField, threshold, allowedChannels, blockedChannels } = form.elements;
+  const {
+    topicFilter,
+    topics: topicsField,
+    avoidTopics: avoidField,
+    threshold,
+    activeProfile: profileSelect,
+    allowedChannels,
+    blockedChannels,
+  } = form.elements;
   const channelFields = [allowedChannels, blockedChannels];
+  const topicFields = [topicsField, avoidField];
   const thresholdValue = document.getElementById("threshold-value");
   const thresholdHint = document.getElementById("threshold-hint");
   const tryTitle = document.getElementById("try-title");
   const tryVerdict = document.getElementById("try-verdict");
   const tryScores = document.getElementById("try-scores");
   const pageSwitches = [...document.querySelectorAll('section[aria-labelledby="pages-section"] input')];
+  const profileName = document.getElementById("profile-name");
+  const saveProfile = document.getElementById("save-profile");
+  const renameProfile = document.getElementById("rename-profile");
+  const deleteProfile = document.getElementById("delete-profile");
+  const profilesError = document.getElementById("profiles-error");
+  const topicsError = document.getElementById("topics-error");
   const channelsError = document.getElementById("channels-error");
   const shortcutList = document.getElementById("shortcut-list");
-  const filterControls = [topicsField, avoidField, threshold, tryTitle, ...pageSwitches, ...channelFields];
+  const filterControls = [...topicFields, threshold, tryTitle, profileSelect, profileName, ...pageSwitches, ...channelFields];
 
   let tryTimer = null;
   let trySequence = 0; // Only the answer to the latest try is shown.
   let tryPending = false;
   let tryScore = null; // The latest try's { want, avoid }, which the slider judges again as it moves.
   let tryFailed = false;
+  // The profile selected when each topics field's pending edit started, which is the one it updates.
+  const editedProfiles = new Map();
 
   // The fields as typed, so the page follows the first topic and not only once it is saved.
   const typed = () => ({ topicFilter: topicFilter.checked, topics: topicsField.value, avoidTopics: avoidField.value });
@@ -117,11 +139,24 @@
     return want.length === 0 && avoid.length > 0 ? "sensitivityHintAvoid" : "sensitivityHint";
   }
 
-  // The topics, the sensitivity, the try box, the pages and the channel lists only apply while
-  // filtering. The channel lists start disabled in the HTML: a list typed before the stored ones
-  // load would have nothing to take its names out of. Moving the slider judges the tried title again.
+  // Each button needs a name to save or rename to, and a selected profile to rename or delete.
+  function renderProfiles() {
+    const off = !topicFilter.checked;
+    const unnamed = profileName.value.trim() === "";
+    const unselected = profiles.active(page.values) === null;
+    ui.fillProfileSelect(profileSelect, page.values);
+    saveProfile.disabled = off || unnamed;
+    renameProfile.disabled = off || unnamed || unselected;
+    deleteProfile.disabled = off || unselected;
+  }
+
+  // The topics, the sensitivity, the try box, the profiles, the pages and the channel lists only
+  // apply while filtering. The profiles and the channel lists start disabled in the HTML: a list
+  // typed before the stored ones load would have nothing to take its names out of. Moving the
+  // slider judges the tried title again.
   function render() {
     for (const control of filterControls) control.disabled = !topicFilter.checked;
+    renderProfiles();
     thresholdValue.value = ui.formatThreshold(threshold.valueAsNumber);
     thresholdHint.textContent = ui.message(sensitivityHint());
     status.render();
@@ -140,10 +175,11 @@
     return shown;
   }
 
-  // A typed channel list saves its names, and takes them out of the other list.
+  // A typed channel list saves its names, and takes them out of the other list. Topics update
+  // the profile they were typed for, and picking a profile brings its topics.
   function changesFor(control, values) {
-    if (!isChannelField(control)) return { [control.name]: ui.valueOf(control) };
-    return channels.reconcile(values, control.name, channels.parse(control.value));
+    if (isChannelField(control)) return channels.reconcile(values, control.name, channels.parse(control.value));
+    return profiles.changesFor(control.name, ui.valueOf(control), values, editedProfiles.get(control));
   }
 
   // Shows a message in a section's error line, or hides the line when key is null.
@@ -164,12 +200,48 @@
     if (line) showLine(line, line === channelsError ? channelNote() : null);
   }
 
+  // A refusal because a value no longer fits in Chrome sync, and one because the profiles don't.
+  const isQuotaError = (error) => error?.code === settings.QUOTA_ERROR;
+  const isProfilesFull = (error) => isQuotaError(error) && error.key === "profiles";
+
+  // Topics too long for their profile still reach the filter. The profile keeps its older topics.
+  function saveTopicsAlone(control) {
+    page.save({ [control.name]: ui.valueOf(control) }).then(
+      () => showLine(topicsError, PROFILE_ERRORS.full),
+      () => showLine(topicsError, "saveFailed"),
+    );
+  }
+
   // A section without an error line still reports the refused save, in the console.
   function onError(error, control) {
+    if (topicFields.includes(control) && isProfilesFull(error)) {
+      saveTopicsAlone(control);
+      return;
+    }
     const line = errorLineOf(control);
     if (line) showLine(line, "saveFailed");
     else ui.reportSaveError(error);
   }
+
+  function profilesSaved() {
+    profileName.value = "";
+    showLine(profilesError, null);
+    renderProfiles();
+  }
+
+  // Saves the profiles a button changed, and the profile now selected, or says why it can't.
+  function saveProfiles({ error, list, name }) {
+    if (error) {
+      showLine(profilesError, PROFILE_ERRORS[error]);
+      return;
+    }
+    page.save({ profiles: list, activeProfile: name }).then(profilesSaved, (refusal) =>
+      showLine(profilesError, isQuotaError(refusal) ? PROFILE_ERRORS.full : "saveFailed"),
+    );
+  }
+
+  // A new profile saves the topics as typed, even before their own save.
+  const typedProfile = () => ({ name: profileName.value, topics: topicsField.value, avoidTopics: avoidField.value });
 
   // A shortcut's description, then its keys, or Not set when Chrome left it unset.
   function shortcutRow({ description, shortcut }) {
@@ -189,7 +261,23 @@
   }
 
   // The fields' limits are set here rather than in the HTML, so the page allows what settings.js reads.
-  for (const field of [topicsField, avoidField]) field.maxLength = settings.LIMITS.MAX_TEXT_LENGTH;
+  for (const field of topicFields) {
+    field.maxLength = settings.LIMITS.MAX_TEXT_LENGTH;
+    // This runs before the form's listener makes the edit pending, so it sees where the edit starts.
+    field.addEventListener("input", () => {
+      if (!page.saver.isPending(field)) editedProfiles.set(field, page.values.activeProfile);
+    });
+  }
+  profileName.maxLength = settings.LIMITS.MAX_PROFILE_NAME_LENGTH;
+  profileName.addEventListener("input", renderProfiles);
+  saveProfile.addEventListener("click", () => saveProfiles(profiles.create(page.values.profiles, typedProfile())));
+  renameProfile.addEventListener("click", () =>
+    saveProfiles(profiles.rename(page.values.profiles, page.values.activeProfile, profileName.value)),
+  );
+  // Deleting a profile keeps its topics, so the filter goes on as before.
+  deleteProfile.addEventListener("click", () =>
+    saveProfiles({ list: profiles.remove(page.values.profiles, page.values.activeProfile), name: "" }),
+  );
   for (const field of channelFields) {
     field.maxLength = settings.LIMITS.MAX_CHANNEL_TEXT_LENGTH;
     field.addEventListener("input", () => showLine(channelsError, channelNote()));
@@ -197,7 +285,7 @@
   tryTitle.maxLength = MAX_TITLE_LENGTH;
   threshold.min = settings.LIMITS.MIN_THRESHOLD;
   threshold.max = settings.LIMITS.MAX_THRESHOLD;
-  for (const field of [tryTitle, topicsField, avoidField]) field.addEventListener("input", scheduleTry);
+  for (const field of [tryTitle, ...topicFields]) field.addEventListener("input", scheduleTry);
   // Enter in the title box would submit the form and reload the page.
   form.addEventListener("submit", (event) => event.preventDefault());
   document.getElementById("change-shortcuts").addEventListener("click", () => chrome.tabs.create({ url: SHORTCUTS_PAGE }));
@@ -206,6 +294,7 @@
     if (!document.hidden) renderShortcuts();
   });
 
-  ui.startPage({ form, render, display, changesFor, onSaved, onError });
+  // page is used by the functions above, which only run once the page has started.
+  const page = ui.startPage({ form, render, display, changesFor, onSaved, onError });
   renderShortcuts();
 })();

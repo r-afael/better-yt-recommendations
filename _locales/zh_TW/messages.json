@@ -263,5 +263,38 @@
   },
   "changeShortcuts": {
     "message": "變更快速鍵"
+  },
+  "profilesSection": {
+    "message": "方案"
+  },
+  "profile": {
+    "message": "方案"
+  },
+  "noProfile": {
+    "message": "不使用方案"
+  },
+  "profileName": {
+    "message": "方案名稱"
+  },
+  "profileNamePlaceholder": {
+    "message": "工作"
+  },
+  "saveProfile": {
+    "message": "另存為新方案"
+  },
+  "renameProfile": {
+    "message": "重新命名"
+  },
+  "deleteProfile": {
+    "message": "刪除"
+  },
+  "profilesHint": {
+    "message": "方案會以一個名稱儲存上方的主題。你可以在這裡或透過工具列中的擴充功能彈出式視窗切換方案。從「不使用方案」切換到某個方案會取代目前的主題，因此請先將它們另存為方案以便保留。"
+  },
+  "profileNameTaken": {
+    "message": "已有同名的方案。"
+  },
+  "profilesFull": {
+    "message": "沒有空間再新增方案了。請刪除一個方案，或縮短其他方案的主題。"
   }
 }

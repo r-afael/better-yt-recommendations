@@ -263,5 +263,38 @@
   },
   "changeShortcuts": {
     "message": "Cambiar atajos"
+  },
+  "profilesSection": {
+    "message": "Perfiles"
+  },
+  "profile": {
+    "message": "Perfil"
+  },
+  "noProfile": {
+    "message": "Sin perfil"
+  },
+  "profileName": {
+    "message": "Nombre del perfil"
+  },
+  "profileNamePlaceholder": {
+    "message": "Trabajo"
+  },
+  "saveProfile": {
+    "message": "Guardar como perfil nuevo"
+  },
+  "renameProfile": {
+    "message": "Cambiar nombre"
+  },
+  "deleteProfile": {
+    "message": "Eliminar"
+  },
+  "profilesHint": {
+    "message": "Un perfil guarda los temas de arriba con un nombre. Cambia de perfil aquí o desde la ventana de la extensión en la barra de herramientas. Pasar de Sin perfil a un perfil reemplaza los temas, así que guárdalos antes como perfil para conservarlos."
+  },
+  "profileNameTaken": {
+    "message": "Ya existe un perfil con ese nombre."
+  },
+  "profilesFull": {
+    "message": "No hay espacio para otro perfil. Elimina uno o acorta los temas de los demás."
   }
 }

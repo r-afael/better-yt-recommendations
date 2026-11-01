@@ -263,5 +263,38 @@
   },
   "changeShortcuts": {
     "message": "Ubah pintasan"
+  },
+  "profilesSection": {
+    "message": "Profil"
+  },
+  "profile": {
+    "message": "Profil"
+  },
+  "noProfile": {
+    "message": "Tanpa profil"
+  },
+  "profileName": {
+    "message": "Nama profil"
+  },
+  "profileNamePlaceholder": {
+    "message": "Kerja"
+  },
+  "saveProfile": {
+    "message": "Simpan sebagai profil baru"
+  },
+  "renameProfile": {
+    "message": "Ganti nama"
+  },
+  "deleteProfile": {
+    "message": "Hapus"
+  },
+  "profilesHint": {
+    "message": "Profil menyimpan topik di atas dengan sebuah nama. Ganti profil di sini atau dari pop-up ekstensi di toolbar. Beralih dari Tanpa profil ke sebuah profil akan mengganti topik, jadi simpan dulu sebagai profil agar tidak hilang."
+  },
+  "profileNameTaken": {
+    "message": "Profil dengan nama itu sudah ada."
+  },
+  "profilesFull": {
+    "message": "Tidak ada ruang untuk profil lain. Hapus satu, atau persingkat topik profil lainnya."
   }
 }

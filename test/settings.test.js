@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import vm from "node:vm";
-import { channelNames, fakeChrome, flush, runScripts } from "./helpers.js";
+import { WORK, channelNames, fakeChrome, flush, manyProfiles, runScripts } from "./helpers.js";
 
 // Loads settings.js the way every part of the extension does, over a sync store holding stored.
 // settings.save measures values in bytes, and a bare context has no TextEncoder.
@@ -88,4 +88,32 @@ test("every read gets its own list", async () => {
     (await settings.load()).blockedChannels.push("MrBeast");
     assert.deepEqual(structuredClone((await settings.load()).blockedChannels), []);
   }
+});
+
+test("drops malformed profiles from another device", async () => {
+  const { settings } = loadSettings({
+    profiles: [
+      null,
+      "Work",
+      { name: "  ", topics: "", avoidTopics: "" },
+      { name: `${" ".repeat(30)}x`, topics: "", avoidTopics: "" },
+      { name: "Evening", topics: 42, avoidTopics: "" },
+      { name: "w".repeat(40), topics: "t".repeat(600), avoidTopics: "", extra: true },
+      WORK,
+      ...manyProfiles(8),
+    ],
+  });
+  const { profiles } = await settings.load();
+  assert.equal(profiles.length, 8);
+  assert.deepEqual(structuredClone(profiles.slice(0, 2)), [{ name: "w".repeat(30), topics: "t".repeat(500), avoidTopics: "" }, WORK]);
+});
+
+test("forgets a selected profile that no longer exists", async () => {
+  const { settings } = loadSettings({ profiles: [WORK], activeProfile: "Evening" });
+  assert.equal((await settings.load()).activeProfile, "");
+});
+
+test("keeps a selected profile whose name differs only in case or spacing", async () => {
+  const { settings } = loadSettings({ profiles: [WORK], activeProfile: "work " });
+  assert.equal((await settings.load()).activeProfile, "work ");
 });

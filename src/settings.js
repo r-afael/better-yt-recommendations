@@ -9,6 +9,8 @@
     MAX_CHANNELS: 50, // Names per channel list.
     MAX_CHANNEL_LENGTH: 100, // Characters per channel name.
     MAX_CHANNEL_TEXT_LENGTH: 2500, // A channel list as typed, which fits in one sync item even at 3 bytes a character.
+    MAX_PROFILES: 8, // Saved topic profiles. Long topics fit fewer, since they all share one sync item.
+    MAX_PROFILE_NAME_LENGTH: 30, // Characters per profile name.
     ITEM_BUDGET: 8000, // Bytes per synced setting, under Chrome's 8,192 so a save never fails at the edge.
   });
 
@@ -27,23 +29,35 @@
   // Each setting's default and how a stored value is read: a value synced from another computer,
   // or edited by hand, reads as the nearest valid value or as the default.
   const flag = (fallback) => ({ fallback, check: (value) => (typeof value === "boolean" ? value : fallback) });
-  const text = (fallback = "") => ({
+  const text = (fallback = "", maxLength = LIMITS.MAX_TEXT_LENGTH) => ({
     fallback,
-    check: (value) => (typeof value === "string" ? cut(value, LIMITS.MAX_TEXT_LENGTH) : fallback),
+    check: (value) => (typeof value === "string" ? cut(value, maxLength) : fallback),
   });
   const range = (fallback, min, max) => ({
     fallback,
     check: (value) => (Number.isFinite(value) ? toSliderStep(clamp(value, min, max)) : fallback),
   });
-  // Every read builds a new list, so no two readers share one they could change.
-  const strings = (maxCount, maxLength) => ({
+  // A list of entries that pass isEntry, each read with readEntry. Every read builds a new list,
+  // so no two readers share one they could change.
+  const list = (maxCount, isEntry, readEntry) => ({
     fallback: Object.freeze([]),
-    check(value) {
-      if (!Array.isArray(value)) return [];
-      return value.filter((entry) => typeof entry === "string").map((entry) => cut(entry, maxLength)).slice(0, maxCount);
-    },
+    check: (value) => (Array.isArray(value) ? value.filter(isEntry).map(readEntry).slice(0, maxCount) : []),
   });
-  const channelList = () => strings(LIMITS.MAX_CHANNELS, LIMITS.MAX_CHANNEL_LENGTH);
+  const channelList = () =>
+    list(LIMITS.MAX_CHANNELS, (entry) => typeof entry === "string", (entry) => cut(entry, LIMITS.MAX_CHANNEL_LENGTH));
+  // A profile the popup can list: a name to show once cut to its length, and the two topic texts
+  // it switches to.
+  const isProfile = (value) =>
+    typeof value?.name === "string" &&
+    cut(value.name, LIMITS.MAX_PROFILE_NAME_LENGTH).trim() !== "" &&
+    typeof value.topics === "string" &&
+    typeof value.avoidTopics === "string";
+  const trimProfile = ({ name, topics, avoidTopics }) => ({
+    name: cut(name, LIMITS.MAX_PROFILE_NAME_LENGTH),
+    topics: cut(topics, LIMITS.MAX_TEXT_LENGTH),
+    avoidTopics: cut(avoidTopics, LIMITS.MAX_TEXT_LENGTH),
+  });
+  const profileList = () => list(LIMITS.MAX_PROFILES, isProfile, trimProfile);
 
   const SCHEMA = Object.freeze({
     enabled: flag(true), // Open Your custom feed when Home opens.
@@ -61,6 +75,8 @@
     filterSearch: flag(false), // Filter search results. Off: they show what the user asked for.
     allowedChannels: channelList(), // Channels whose videos are never hidden.
     blockedChannels: channelList(), // Channels whose videos are always hidden where the filter works.
+    profiles: profileList(), // Named copies of the topics, which the popup switches between.
+    activeProfile: text("", LIMITS.MAX_PROFILE_NAME_LENGTH), // The selected profile, which topic edits update, or "" for none.
   });
 
   const DEFAULTS = Object.freeze(Object.fromEntries(Object.entries(SCHEMA).map(([key, { fallback }]) => [key, fallback])));
@@ -70,7 +86,7 @@
 
   const readAll = (stored) => Object.fromEntries(Object.keys(SCHEMA).map((key) => [key, sanitize(key, stored[key])]));
 
-  async function load() {
+  async function readStored() {
     try {
       return readAll(await chrome.storage.sync.get(Object.keys(SCHEMA)));
     } catch {
@@ -80,6 +96,14 @@
 
   // Names typed in different ways, such as "Chess  Club" and "chess club", compare as the same.
   const nameKey = (name) => collapseSpaces(String(name ?? "").normalize("NFKC")).toLocaleLowerCase();
+  const sameName = (a, b) => nameKey(a) === nameKey(b);
+
+  // A selected profile that another computer deleted reads as no profile.
+  async function load() {
+    const values = await readStored();
+    if (!values.profiles.some((profile) => sameName(profile.name, values.activeProfile))) values.activeProfile = "";
+    return values;
+  }
 
   // Whether a setting fits in one Chrome sync item, measured the way Chrome measures it.
   const fits = (key, value) => key.length + new TextEncoder().encode(JSON.stringify(value)).length <= LIMITS.ITEM_BUDGET;
@@ -104,5 +128,5 @@
   }
 
   globalThis.BetterYT ??= {};
-  globalThis.BetterYT.settings = { DEFAULTS, LIMITS, QUOTA_ERROR, load, save, subscribe, sanitize, fits, nameKey, clip };
+  globalThis.BetterYT.settings = { DEFAULTS, LIMITS, QUOTA_ERROR, load, save, subscribe, sanitize, fits, nameKey, sameName, clip };
 })();
