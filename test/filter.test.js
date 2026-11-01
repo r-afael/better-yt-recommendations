@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { HIDDEN_COUNT, MATCH, SCAN_MS, fakeChrome, flush, holdMessages, openYouTube, read, score } from "./helpers.js";
+import { HIDDEN_COUNT, MATCH, SCAN_MS, fakeChrome, flush, holdMessages, openYouTube, read, readJson, score } from "./helpers.js";
 
 const watchFixture = read("test/fixtures/watch-sidebar.html");
 const homeFixture = read("test/fixtures/home-grid.html");
@@ -29,8 +29,8 @@ function showVideo(item, id, title = `Video ${id}`) {
   item.querySelector("h3").setAttribute("title", title);
 }
 
-async function setup(t, { fixture = watchFixture, path = WATCH_PATH, stored = { topics: "programming" } } = {}) {
-  const chrome = fakeChrome({ stored });
+async function setup(t, { fixture = watchFixture, path = WATCH_PATH, stored = { topics: "programming" }, locale = "en" } = {}) {
+  const chrome = fakeChrome({ stored, locale });
   // MATCH requests wait for the test to answer them; the hidden counts sent for the badge are recorded.
   const reports = [];
   const requests = holdMessages(chrome, (message) => message.type !== HIDDEN_COUNT, async (message) => {
@@ -421,6 +421,13 @@ test("says 1 video hidden for a single one", async (t) => {
   const { rowText, answer } = await setup(t);
   await answer(["RphIVv0uWrM"]);
   assert.equal(rowText(), "1 video hidden");
+});
+
+test("counts the hidden videos in the browser's language, with its digits", async (t) => {
+  const { rowText, answer } = await setup(t, { locale: "bn" });
+  await answer(["RphIVv0uWrM", "C4dGVTl6ry8"]);
+  const { hiddenRowMany } = readJson("_locales/bn/messages.json");
+  assert.equal(rowText(), hiddenRowMany.message.replace("$COUNT$", (2).toLocaleString("bn")));
 });
 
 test("Show them shows the hidden videos until Hide them again", async (t) => {
