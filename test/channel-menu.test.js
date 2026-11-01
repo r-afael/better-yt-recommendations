@@ -63,10 +63,11 @@ test("Never hide this channel moves a channel from the block list to the allow l
 test("finds the video from the clicked link when the right-click landed outside its card", async (t) => {
   const { document, titleLink, rightClick, list, storedList } = await setup(t);
   // Stands in for the preview player YouTube shows over a hovered card, outside the card itself.
+  // Its link carries parameters, such as the playback time, that the card's own link doesn't.
   const preview = document.createElement("div");
   preview.id = "video-preview";
   const link = document.createElement("a");
-  link.href = titleLink(1).getAttribute("href");
+  link.href = `${titleLink(1).getAttribute("href")}&t=42s&pp=abc`;
   preview.append(link);
   document.body.append(preview);
 
