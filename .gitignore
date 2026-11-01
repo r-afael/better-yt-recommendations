@@ -6,3 +6,4 @@ coverage/
 *.pem
 .idea/
 *.iml
+_metadata/
