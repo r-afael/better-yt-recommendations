@@ -1,16 +1,19 @@
 // Options page with the settings that don't fit in the popup: the topics to see and to avoid,
-// the filter sensitivity, a box to try a title against them, the pages to filter and the channel
-// lists. Open YouTube tabs pick up changes right away.
+// the filter sensitivity, a box to try a title against them, the pages to filter, the channel
+// lists and the keyboard shortcuts. Open YouTube tabs pick up changes right away.
 (() => {
   "use strict";
 
   const { channels, protocol, settings, ui, verdict } = globalThis.BetterYT;
-  const { MATCH, MODEL_STATES } = protocol;
+  const { COMMAND_TOGGLE_FILTER, COMMAND_TOGGLE_SHORTS, MATCH, MODEL_STATES } = protocol;
   const { setText } = ui;
 
   const TRY_ID = "try"; // The id of the one video a try asks the model to score.
   const TRY_DELAY_MS = 400; // A try waits for typing to pause, like saving does.
   const MAX_TITLE_LENGTH = 200; // About twice YouTube's 100-character limit on titles.
+  const COMMANDS = Object.freeze([COMMAND_TOGGLE_FILTER, COMMAND_TOGGLE_SHORTS]); // In the manifest's order.
+  // Extension pages can't link to chrome:// pages, so the button opens it in a new tab.
+  const SHORTCUTS_PAGE = "chrome://extensions/shortcuts";
 
   const form = document.getElementById("settings");
   const { topicFilter, topics: topicsField, avoidTopics: avoidField, threshold, allowedChannels, blockedChannels } = form.elements;
@@ -22,6 +25,7 @@
   const tryScores = document.getElementById("try-scores");
   const pageSwitches = [...document.querySelectorAll('section[aria-labelledby="pages-section"] input')];
   const channelsError = document.getElementById("channels-error");
+  const shortcutList = document.getElementById("shortcut-list");
   const filterControls = [topicsField, avoidField, threshold, tryTitle, ...pageSwitches, ...channelFields];
 
   let tryTimer = null;
@@ -167,6 +171,23 @@
     else ui.reportSaveError(error);
   }
 
+  // A shortcut's description, then its keys, or Not set when Chrome left it unset.
+  function shortcutRow({ description, shortcut }) {
+    const row = document.createElement("li");
+    const name = document.createElement("span");
+    const keys = document.createElement("kbd");
+    name.textContent = description;
+    keys.textContent = shortcut || ui.message("shortcutUnset");
+    row.append(name, " ", keys);
+    return row;
+  }
+
+  async function renderShortcuts() {
+    const commands = await chrome.commands.getAll();
+    const ours = COMMANDS.map((name) => commands.find((command) => command.name === name)).filter(Boolean);
+    shortcutList.replaceChildren(...ours.map(shortcutRow));
+  }
+
   // The fields' limits are set here rather than in the HTML, so the page allows what settings.js reads.
   for (const field of [topicsField, avoidField]) field.maxLength = settings.LIMITS.MAX_TEXT_LENGTH;
   for (const field of channelFields) {
@@ -179,6 +200,12 @@
   for (const field of [tryTitle, topicsField, avoidField]) field.addEventListener("input", scheduleTry);
   // Enter in the title box would submit the form and reload the page.
   form.addEventListener("submit", (event) => event.preventDefault());
+  document.getElementById("change-shortcuts").addEventListener("click", () => chrome.tabs.create({ url: SHORTCUTS_PAGE }));
+  // The shortcuts may have changed on Chrome's page by the time the user comes back to this tab.
+  document.addEventListener("visibilitychange", () => {
+    if (!document.hidden) renderShortcuts();
+  });
 
   ui.startPage({ form, render, display, changesFor, onSaved, onError });
+  renderShortcuts();
 })();

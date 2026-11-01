@@ -66,7 +66,10 @@ function setup({ stored = { topics: "programming" }, answer = answerMatches } = 
 
   const match = () => send({ type: protocol.MATCH, topics: ["programming"], avoidTopics: [], videos: VIDEOS });
   const status = () => plain(chrome.storage.session.data[protocol.STATUS_KEY]);
-  return { chrome, offscreen, protocol, send, match, status };
+  // Delivers a keyboard shortcut the way Chrome does, with the tab it was pressed in, and waits
+  // for what it does. Leaving the tab out presses in tab 1; an undefined tab is no tab at all.
+  const press = (command, ...tab) => chrome.commands.onCommand.dispatch(command, ...(tab.length > 0 ? tab : [{ id: 1 }]))[0];
+  return { chrome, offscreen, protocol, send, match, status, press };
 }
 
 test("forwards matching requests to the offscreen document and relays its answer", async () => {
@@ -449,4 +452,124 @@ test("a menu click on a tab without the content script fails quietly", async () 
   await flush();
 
   assert.deepEqual(tried, [7]);
+});
+
+// The notices the background sent each tab, outside the vm's realm.
+const notices = (chrome) => plain(chrome.tabMessages);
+
+test("the filter shortcut turns Filter recommendations off and back on", async () => {
+  const { chrome, protocol, press } = setup();
+
+  await press(protocol.COMMAND_TOGGLE_FILTER);
+  assert.equal(chrome.data.topicFilter, false);
+
+  await press(protocol.COMMAND_TOGGLE_FILTER);
+  assert.equal(chrome.data.topicFilter, true);
+});
+
+test("the Shorts shortcut turns Hide Shorts on", async () => {
+  const { chrome, protocol, press } = setup();
+
+  await press(protocol.COMMAND_TOGGLE_SHORTS);
+
+  assert.equal(chrome.data.hideShorts, true);
+});
+
+test("two presses in a row end where they started", async () => {
+  const { chrome, protocol, press } = setup();
+
+  await Promise.all([press(protocol.COMMAND_TOGGLE_SHORTS), press(protocol.COMMAND_TOGGLE_SHORTS)]);
+
+  assert.equal(chrome.data.hideShorts, false);
+  assert.deepEqual(notices(chrome).map(({ message }) => message.value), [true, false]);
+});
+
+test("a shortcut tells the tab it was pressed in what changed", async () => {
+  const { chrome, protocol, press } = setup();
+
+  await press(protocol.COMMAND_TOGGLE_SHORTS);
+  await press(protocol.COMMAND_TOGGLE_FILTER, { id: 2 });
+
+  assert.deepEqual(notices(chrome), [
+    { tabId: 1, message: { type: protocol.NOTICE, key: "hideShorts", value: true } },
+    { tabId: 2, message: { type: protocol.NOTICE, key: "topicFilter", value: false } },
+  ]);
+});
+
+// Chrome passes no tab when no browser window has focus.
+test("a shortcut still works without a tab", async () => {
+  const { chrome, protocol, press } = setup();
+
+  await press(protocol.COMMAND_TOGGLE_SHORTS, undefined);
+
+  assert.equal(chrome.data.hideShorts, true);
+  assert.deepEqual(chrome.tabMessages, []);
+});
+
+// Chrome refuses a message to a tab without the content script, such as one that isn't YouTube.
+// node:test fails a test that leaves the rejection unhandled.
+test("a shortcut pressed on a page that isn't YouTube fails quietly", async () => {
+  const { chrome, protocol, press } = setup();
+  chrome.tabs.sendMessage = async () => {
+    throw new Error(MISSING_RECEIVER);
+  };
+
+  await press(protocol.COMMAND_TOGGLE_SHORTS);
+  await flush();
+
+  assert.equal(chrome.data.hideShorts, true);
+});
+
+test("a shortcut whose save fails tells the tab nothing", async () => {
+  const { chrome, protocol, press } = setup();
+  chrome.storage.sync.set = async () => {
+    throw new Error("MAX_WRITE_OPERATIONS_PER_MINUTE quota exceeded");
+  };
+
+  await press(protocol.COMMAND_TOGGLE_SHORTS);
+
+  assert.equal("hideShorts" in chrome.data, false);
+  assert.deepEqual(chrome.tabMessages, []);
+});
+
+test("turning the filter on by shortcut with topics set loads the model", async () => {
+  const { offscreen, protocol, press } = setup({
+    stored: { topics: "programming", topicFilter: false },
+    answer: () => ({ ok: true }),
+  });
+
+  await press(protocol.COMMAND_TOGGLE_FILTER);
+  await flush();
+
+  assert.deepEqual(offscreen.forwarded, [{ type: protocol.PRELOAD, target: protocol.OFFSCREEN }]);
+});
+
+test("turning the filter on by shortcut without topics doesn't load the model", async () => {
+  const { offscreen, protocol, press } = setup({ stored: { topics: "", topicFilter: false } });
+
+  await press(protocol.COMMAND_TOGGLE_FILTER);
+  await flush();
+
+  assert.equal(offscreen.created.length, 0);
+  assert.deepEqual(offscreen.forwarded, []);
+});
+
+test("turning Hide Shorts on doesn't", async () => {
+  const { offscreen, protocol, press } = setup();
+
+  await press(protocol.COMMAND_TOGGLE_SHORTS);
+  await flush();
+
+  assert.equal(offscreen.created.length, 0);
+  assert.deepEqual(offscreen.forwarded, []);
+});
+
+test("ignores unknown commands", async () => {
+  const { chrome, press } = setup();
+
+  await press("another-command");
+
+  assert.equal("topicFilter" in chrome.data, false);
+  assert.equal("hideShorts" in chrome.data, false);
+  assert.deepEqual(chrome.tabMessages, []);
 });

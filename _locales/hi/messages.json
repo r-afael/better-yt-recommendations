@@ -233,5 +233,35 @@
   },
   "channelsMenuHint": {
     "message": "आप YouTube पर किसी वीडियो के थंबनेल या टाइटल पर राइट-क्लिक करके भी उसका चैनल जोड़ सकते हैं।"
+  },
+  "commandToggleFilter": {
+    "message": "\"सुझाव फ़िल्टर करें\" चालू या बंद करें"
+  },
+  "commandToggleShorts": {
+    "message": "\"Shorts छिपाएं\" चालू या बंद करें"
+  },
+  "topicFilterOn": {
+    "message": "\"सुझाव फ़िल्टर करें\" चालू है"
+  },
+  "topicFilterOff": {
+    "message": "\"सुझाव फ़िल्टर करें\" बंद है"
+  },
+  "hideShortsOn": {
+    "message": "\"Shorts छिपाएं\" चालू है"
+  },
+  "hideShortsOff": {
+    "message": "\"Shorts छिपाएं\" बंद है"
+  },
+  "shortcuts": {
+    "message": "कीबोर्ड शॉर्टकट"
+  },
+  "shortcutsHint": {
+    "message": "अगर कोई दूसरा एक्सटेंशन पहले से किसी शॉर्टकट का इस्तेमाल कर रहा है, तो Chrome उसे सेट नहीं करता।"
+  },
+  "shortcutUnset": {
+    "message": "सेट नहीं है"
+  },
+  "changeShortcuts": {
+    "message": "शॉर्टकट बदलें"
   }
 }

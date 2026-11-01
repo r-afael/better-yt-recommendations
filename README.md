@@ -104,6 +104,14 @@ answer. After a failure, it tries again a little later.
 
 ![The settings popup, with all three toggles on, the topics programming, software engineering and chess, the filter sensitivity at 0.25, and the status The model is ready](docs/settings-popup.png)
 
+### Keyboard shortcuts
+
+**Alt+Shift+F** turns Filter recommendations on or off, and **Alt+Shift+S** turns Hide
+Shorts on or off. On a Mac they are **Control+Shift+F** and **Control+Shift+S**, and on
+ChromeOS **Alt+Shift+F** and **Alt+Shift+H**. On YouTube, a message confirms the change. If
+another extension already uses a combination, Chrome leaves it unset; **Change shortcuts**
+on the options page opens `chrome://extensions/shortcuts`, where you can pick your own.
+
 ## Performance
 
 The topic filter costs nothing until you type some topics to see or to avoid. The
@@ -205,6 +213,7 @@ refresh YouTube.
 - `src/channel-menu.js` remembers the video you right-clicked and adds its channel to a
   list. `src/menus.js` adds the right-click menu entries. `src/toast.js` shows short
   messages on YouTube.
+- `src/shortcuts.js` handles the keyboard shortcuts.
 - `src/filter.js` decides which videos to check, asks for verdicts and applies them.
   `src/filter.css` hides the filtered videos, or dims them while they're shown, and
   styles the row and the messages.

@@ -233,5 +233,35 @@
   },
   "channelsMenuHint": {
     "message": "Você também pode clicar com o botão direito na miniatura ou no título de um vídeo no YouTube para adicionar o canal dele."
+  },
+  "commandToggleFilter": {
+    "message": "Ativar ou desativar Filtrar recomendações"
+  },
+  "commandToggleShorts": {
+    "message": "Ativar ou desativar Ocultar Shorts"
+  },
+  "topicFilterOn": {
+    "message": "Filtrar recomendações está ativado"
+  },
+  "topicFilterOff": {
+    "message": "Filtrar recomendações está desativado"
+  },
+  "hideShortsOn": {
+    "message": "Ocultar Shorts está ativado"
+  },
+  "hideShortsOff": {
+    "message": "Ocultar Shorts está desativado"
+  },
+  "shortcuts": {
+    "message": "Atalhos de teclado"
+  },
+  "shortcutsHint": {
+    "message": "O Chrome deixa um atalho sem definir quando outra extensão já o usa."
+  },
+  "shortcutUnset": {
+    "message": "Não definido"
+  },
+  "changeShortcuts": {
+    "message": "Alterar atalhos"
   }
 }

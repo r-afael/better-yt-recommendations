@@ -233,5 +233,35 @@
   },
   "channelsMenuHint": {
     "message": "你也可以在 YouTube 上對影片的縮圖或標題按右鍵，新增該影片的頻道。"
+  },
+  "commandToggleFilter": {
+    "message": "開啟或關閉「篩選推薦內容」"
+  },
+  "commandToggleShorts": {
+    "message": "開啟或關閉「隱藏 Shorts」"
+  },
+  "topicFilterOn": {
+    "message": "「篩選推薦內容」已開啟"
+  },
+  "topicFilterOff": {
+    "message": "「篩選推薦內容」已關閉"
+  },
+  "hideShortsOn": {
+    "message": "「隱藏 Shorts」已開啟"
+  },
+  "hideShortsOff": {
+    "message": "「隱藏 Shorts」已關閉"
+  },
+  "shortcuts": {
+    "message": "鍵盤快速鍵"
+  },
+  "shortcutsHint": {
+    "message": "如果其他擴充功能已在使用某個快速鍵，Chrome 會將其保留為未設定。"
+  },
+  "shortcutUnset": {
+    "message": "未設定"
+  },
+  "changeShortcuts": {
+    "message": "變更快速鍵"
   }
 }

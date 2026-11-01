@@ -233,5 +233,35 @@
   },
   "channelsMenuHint": {
     "message": "Vous pouvez aussi faire un clic droit sur la miniature ou le titre d'une vidéo sur YouTube pour ajouter sa chaîne."
+  },
+  "commandToggleFilter": {
+    "message": "Activer ou désactiver Filtrer les recommandations"
+  },
+  "commandToggleShorts": {
+    "message": "Activer ou désactiver Masquer les Shorts"
+  },
+  "topicFilterOn": {
+    "message": "Filtrer les recommandations est activé"
+  },
+  "topicFilterOff": {
+    "message": "Filtrer les recommandations est désactivé"
+  },
+  "hideShortsOn": {
+    "message": "Masquer les Shorts est activé"
+  },
+  "hideShortsOff": {
+    "message": "Masquer les Shorts est désactivé"
+  },
+  "shortcuts": {
+    "message": "Raccourcis clavier"
+  },
+  "shortcutsHint": {
+    "message": "Chrome laisse un raccourci non défini lorsqu'une autre extension l'utilise déjà."
+  },
+  "shortcutUnset": {
+    "message": "Non défini"
+  },
+  "changeShortcuts": {
+    "message": "Modifier les raccourcis"
   }
 }

@@ -611,3 +611,40 @@ test("a refused save in a section without an error line is still reported", asyn
   await flush();
   assert.deepEqual(logged.mock.calls.map((call) => call.arguments.at(-1)), [refusal]);
 });
+
+// The keyboard shortcuts as the page lists them: each one's description and keys.
+const shortcutRows = (document) =>
+  [...document.querySelectorAll("#shortcut-list li")].map((row) => [row.querySelector("span").textContent, row.querySelector("kbd").textContent]);
+
+test("lists the shortcuts Chrome assigned, or Not set", async (t) => {
+  const { document } = await setup(t, {
+    commandList: [
+      { name: "_execute_action", description: "", shortcut: "" },
+      { name: "toggle-hide-shorts", description: "Turn Hide Shorts on or off", shortcut: "Ctrl+Shift+Y" },
+      { name: "toggle-topic-filter", description: "Turn Filter recommendations on or off", shortcut: "" },
+    ],
+  });
+  assert.deepEqual(shortcutRows(document), [
+    ["Turn Filter recommendations on or off", "Not set"],
+    ["Turn Hide Shorts on or off", "Ctrl+Shift+Y"],
+  ]);
+});
+
+test("lists the shortcuts again when the user comes back from changing them", async (t) => {
+  const { window, document, chrome } = await setup(t);
+  assert.deepEqual(shortcutRows(document), [
+    ["Turn Filter recommendations on or off", "Alt+Shift+F"],
+    ["Turn Hide Shorts on or off", "Alt+Shift+S"],
+  ]);
+  chrome.commandList[1].shortcut = "";
+  Object.defineProperty(document, "hidden", { value: false }); // jsdom's page is never shown.
+  document.dispatchEvent(new window.Event("visibilitychange"));
+  await flush();
+  assert.deepEqual(shortcutRows(document).map(([, keys]) => keys), ["Alt+Shift+F", "Not set"]);
+});
+
+test("Change shortcuts opens Chrome's shortcuts page", async (t) => {
+  const { document, chrome } = await setup(t);
+  document.querySelector("#change-shortcuts").click();
+  assert.deepEqual(structuredClone(chrome.createdTabs), [{ url: "chrome://extensions/shortcuts" }]);
+});

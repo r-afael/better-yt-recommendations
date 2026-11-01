@@ -145,7 +145,7 @@
     // the time the user opens YouTube. Only this computer loads it: the background never loads
     // the model for a change synced in from another one.
     async function save(changes) {
-      const neededModel = verdict.needsModel(values);
+      const before = { ...values };
       const previous = Object.fromEntries(Object.keys(changes).map((key) => [key, values[key]]));
       Object.assign(values, changes);
       try {
@@ -154,7 +154,7 @@
         Object.assign(values, previous);
         throw error;
       }
-      if (!neededModel && verdict.needsModel(values)) preload().catch(noop);
+      if (verdict.startsNeedingModel(before, values)) preload().catch(noop);
     }
 
     translatePage();

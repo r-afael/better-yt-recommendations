@@ -233,5 +233,35 @@
   },
   "channelsMenuHint": {
     "message": "Можно также щёлкнуть правой кнопкой мыши по значку или названию видео на YouTube, чтобы добавить его канал."
+  },
+  "commandToggleFilter": {
+    "message": "Включить или выключить «Фильтровать рекомендации»"
+  },
+  "commandToggleShorts": {
+    "message": "Включить или выключить «Скрывать Shorts»"
+  },
+  "topicFilterOn": {
+    "message": "«Фильтровать рекомендации» включено"
+  },
+  "topicFilterOff": {
+    "message": "«Фильтровать рекомендации» выключено"
+  },
+  "hideShortsOn": {
+    "message": "«Скрывать Shorts» включено"
+  },
+  "hideShortsOff": {
+    "message": "«Скрывать Shorts» выключено"
+  },
+  "shortcuts": {
+    "message": "Быстрые клавиши"
+  },
+  "shortcutsHint": {
+    "message": "Chrome не назначает сочетание клавиш, если его уже использует другое расширение."
+  },
+  "shortcutUnset": {
+    "message": "Не назначено"
+  },
+  "changeShortcuts": {
+    "message": "Изменить быстрые клавиши"
   }
 }

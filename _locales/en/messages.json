@@ -298,5 +298,45 @@
   "channelsMenuHint": {
     "message": "You can also right-click a video's thumbnail or title on YouTube to add its channel.",
     "description": "Hint under the channel lists on the options page."
+  },
+  "commandToggleFilter": {
+    "message": "Turn Filter recommendations on or off",
+    "description": "Keyboard shortcut description shown on chrome://extensions/shortcuts and on the options page."
+  },
+  "commandToggleShorts": {
+    "message": "Turn Hide Shorts on or off",
+    "description": "Keyboard shortcut description shown on chrome://extensions/shortcuts and on the options page."
+  },
+  "topicFilterOn": {
+    "message": "Filter recommendations is on",
+    "description": "Message shown on YouTube after the shortcut turned the filter on."
+  },
+  "topicFilterOff": {
+    "message": "Filter recommendations is off",
+    "description": "Message shown on YouTube after the shortcut turned the filter off."
+  },
+  "hideShortsOn": {
+    "message": "Hide Shorts is on",
+    "description": "Message shown on YouTube after the shortcut turned Hide Shorts on."
+  },
+  "hideShortsOff": {
+    "message": "Hide Shorts is off",
+    "description": "Message shown on YouTube after the shortcut turned Hide Shorts off."
+  },
+  "shortcuts": {
+    "message": "Keyboard shortcuts",
+    "description": "Heading of the options section that lists the shortcuts."
+  },
+  "shortcutsHint": {
+    "message": "Chrome leaves a shortcut unset when another extension already uses it.",
+    "description": "Explains why a shortcut can show Not set."
+  },
+  "shortcutUnset": {
+    "message": "Not set",
+    "description": "Shown instead of a key combination when a shortcut has none."
+  },
+  "changeShortcuts": {
+    "message": "Change shortcuts",
+    "description": "Button that opens Chrome's keyboard shortcuts page."
   }
 }

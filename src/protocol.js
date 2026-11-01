@@ -29,11 +29,19 @@ globalThis.BetterYT.protocol = Object.freeze({
   // opened on, if any. The content script saves the channel of the card that link belongs to and
   // says so on the page. No answer.
   LIST_CHANNEL: "better-yt:list-channel",
+  // Background to the tab where a keyboard shortcut was pressed, once the setting it turned on or
+  // off is saved: { type, key, value }, where key is "topicFilter" or "hideShorts" and value is
+  // its new state. The content script says so on the page. No answer.
+  NOTICE: "better-yt:notice",
   // The settings that hold the channel lists, the only lists LIST_CHANNEL may name.
   CHANNEL_LISTS: Object.freeze(["allowedChannels", "blockedChannels"]),
   // The ids of the right-click menu entries Never hide this channel and Always hide this channel.
   MENU_ALLOW_CHANNEL: "better-yt:allow-channel",
   MENU_BLOCK_CHANNEL: "better-yt:block-channel",
+  // The keyboard shortcuts that turn Filter recommendations and Hide Shorts on or off, as the
+  // manifest's commands name them.
+  COMMAND_TOGGLE_FILTER: "toggle-topic-filter",
+  COMMAND_TOGGLE_SHORTS: "toggle-hide-shorts",
   // The target of messages that only the offscreen document handles.
   OFFSCREEN: "offscreen",
   // Where the background keeps the latest model status, in chrome.storage.session.

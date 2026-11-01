@@ -233,5 +233,35 @@
   },
   "channelsMenuHint": {
     "message": "YouTube-এ কোনো ভিডিওর থাম্বনেইল বা শিরোনামে রাইট-ক্লিক করেও তার চ্যানেল যোগ করতে পারেন।"
+  },
+  "commandToggleFilter": {
+    "message": "\"সুপারিশ ফিল্টার করুন\" চালু বা বন্ধ করুন"
+  },
+  "commandToggleShorts": {
+    "message": "\"Shorts লুকান\" চালু বা বন্ধ করুন"
+  },
+  "topicFilterOn": {
+    "message": "\"সুপারিশ ফিল্টার করুন\" চালু আছে"
+  },
+  "topicFilterOff": {
+    "message": "\"সুপারিশ ফিল্টার করুন\" বন্ধ আছে"
+  },
+  "hideShortsOn": {
+    "message": "\"Shorts লুকান\" চালু আছে"
+  },
+  "hideShortsOff": {
+    "message": "\"Shorts লুকান\" বন্ধ আছে"
+  },
+  "shortcuts": {
+    "message": "কীবোর্ড শর্টকাট"
+  },
+  "shortcutsHint": {
+    "message": "অন্য কোনো এক্সটেনশন আগে থেকেই কোনো শর্টকাট ব্যবহার করলে Chrome সেটি সেট করে না।"
+  },
+  "shortcutUnset": {
+    "message": "সেট করা নেই"
+  },
+  "changeShortcuts": {
+    "message": "শর্টকাট পরিবর্তন করুন"
   }
 }

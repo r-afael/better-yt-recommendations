@@ -1,11 +1,13 @@
 // Wires the service worker's events to the modules that handle them.
 // Every listener is registered here, so this file shows what runs on each event.
-importScripts("protocol.js", "settings.js", "topics.js", "verdict.js", "model-host.js", "badge.js", "menus.js");
+importScripts(
+  "protocol.js", "settings.js", "topics.js", "verdict.js", "model-host.js", "badge.js", "menus.js", "shortcuts.js",
+);
 
 (() => {
   "use strict";
 
-  const { badge, menus, protocol, modelHost } = globalThis.BetterYT;
+  const { badge, menus, protocol, modelHost, shortcuts } = globalThis.BetterYT;
   const { MATCH, PRELOAD, STATUS, IDLE, HIDDEN_COUNT, OFFSCREEN } = protocol;
 
   function onMessage(message, sender, sendResponse) {
@@ -41,4 +43,5 @@ importScripts("protocol.js", "settings.js", "topics.js", "verdict.js", "model-ho
     menus.create();
   });
   chrome.contextMenus.onClicked.addListener(menus.onClicked);
+  chrome.commands.onCommand.addListener(shortcuts.run);
 })();

@@ -61,3 +61,35 @@ section > .hint {
 .error {
   color: var(--accent);
 }
+
+/* Each keyboard shortcut's description, with its keys at the end of the row. */
+.shortcuts {
+  margin: 0;
+  padding: 4px 16px 8px;
+  list-style: none;
+}
+
+.shortcuts li {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  justify-content: space-between;
+  padding-block: 4px;
+}
+
+/* Key combinations read left to right in every language, so Mac symbols such as ⌃⇧F keep their order. */
+.shortcuts kbd {
+  direction: ltr;
+  unicode-bidi: isolate;
+  padding: 1px 6px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--field);
+  font: 12px/1.4 ui-monospace, monospace;
+  white-space: nowrap;
+}
+
+/* A button for a whole section, after its rows. */
+section > .secondary {
+  margin: 0 16px 12px;
+}

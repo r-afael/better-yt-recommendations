@@ -233,5 +233,35 @@
   },
   "channelsMenuHint": {
     "message": "Anda juga dapat mengklik kanan thumbnail atau judul video di YouTube untuk menambahkan salurannya."
+  },
+  "commandToggleFilter": {
+    "message": "Aktifkan atau nonaktifkan Filter rekomendasi"
+  },
+  "commandToggleShorts": {
+    "message": "Aktifkan atau nonaktifkan Sembunyikan Shorts"
+  },
+  "topicFilterOn": {
+    "message": "Filter rekomendasi aktif"
+  },
+  "topicFilterOff": {
+    "message": "Filter rekomendasi nonaktif"
+  },
+  "hideShortsOn": {
+    "message": "Sembunyikan Shorts aktif"
+  },
+  "hideShortsOff": {
+    "message": "Sembunyikan Shorts nonaktif"
+  },
+  "shortcuts": {
+    "message": "Pintasan keyboard"
+  },
+  "shortcutsHint": {
+    "message": "Chrome membiarkan pintasan tidak disetel jika ekstensi lain sudah menggunakannya."
+  },
+  "shortcutUnset": {
+    "message": "Belum disetel"
+  },
+  "changeShortcuts": {
+    "message": "Ubah pintasan"
   }
 }

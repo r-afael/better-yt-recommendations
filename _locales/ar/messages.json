@@ -233,5 +233,35 @@
   },
   "channelsMenuHint": {
     "message": "يمكنك أيضًا النقر بزر الماوس الأيمن على الصورة المصغّرة لفيديو أو على عنوانه في YouTube لإضافة قناته."
+  },
+  "commandToggleFilter": {
+    "message": "تفعيل «تصفية المقترحات» أو إيقافه"
+  },
+  "commandToggleShorts": {
+    "message": "تفعيل «إخفاء Shorts» أو إيقافه"
+  },
+  "topicFilterOn": {
+    "message": "«تصفية المقترحات» مفعّل"
+  },
+  "topicFilterOff": {
+    "message": "«تصفية المقترحات» متوقف"
+  },
+  "hideShortsOn": {
+    "message": "«إخفاء Shorts» مفعّل"
+  },
+  "hideShortsOff": {
+    "message": "«إخفاء Shorts» متوقف"
+  },
+  "shortcuts": {
+    "message": "اختصارات لوحة المفاتيح"
+  },
+  "shortcutsHint": {
+    "message": "يترك Chrome الاختصار بلا تعيين عندما تستخدمه إضافة أخرى بالفعل."
+  },
+  "shortcutUnset": {
+    "message": "غير معيّن"
+  },
+  "changeShortcuts": {
+    "message": "تغيير الاختصارات"
   }
 }

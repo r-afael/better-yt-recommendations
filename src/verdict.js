@@ -22,6 +22,10 @@
     return hasTopics(lists(values));
   }
 
+  // Whether a change takes the filter from not needing the model to needing it, which is when
+  // the code that saved the change starts loading it.
+  const startsNeedingModel = (before, after) => !needsModel(before) && needsModel(after);
+
   // Returns why a video with these similarities is hidden, "off-topic" or "avoided", or null to show it.
   function decide({ want, avoid }, threshold) {
     const closest = want ?? threshold; // No wanted topics: every video sits exactly on the line.
@@ -31,5 +35,5 @@
     return null; // Visible. Ties keep the video.
   }
 
-  globalThis.BetterYT.verdict = Object.freeze({ NO_SCORE, lists, hasTopics, needsModel, decide });
+  globalThis.BetterYT.verdict = Object.freeze({ NO_SCORE, lists, hasTopics, needsModel, startsNeedingModel, decide });
 })();

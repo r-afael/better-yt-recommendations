@@ -28,6 +28,24 @@
     "page": "src/options.html",
     "open_in_tab": true
   },
+  "commands": {
+    "toggle-topic-filter": {
+      "suggested_key": {
+        "default": "Alt+Shift+F",
+        "mac": "MacCtrl+Shift+F",
+        "chromeos": "Alt+Shift+F"
+      },
+      "description": "__MSG_commandToggleFilter__"
+    },
+    "toggle-hide-shorts": {
+      "suggested_key": {
+        "default": "Alt+Shift+S",
+        "mac": "MacCtrl+Shift+S",
+        "chromeos": "Alt+Shift+H"
+      },
+      "description": "__MSG_commandToggleShorts__"
+    }
+  },
   "content_security_policy": {
     "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'"
   },

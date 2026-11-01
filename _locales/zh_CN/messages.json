@@ -233,5 +233,35 @@
   },
   "channelsMenuHint": {
     "message": "你也可以在 YouTube 上右键点击视频的缩略图或标题，添加其频道。"
+  },
+  "commandToggleFilter": {
+    "message": "开启或关闭“筛选推荐”"
+  },
+  "commandToggleShorts": {
+    "message": "开启或关闭“隐藏 Shorts”"
+  },
+  "topicFilterOn": {
+    "message": "“筛选推荐”已开启"
+  },
+  "topicFilterOff": {
+    "message": "“筛选推荐”已关闭"
+  },
+  "hideShortsOn": {
+    "message": "“隐藏 Shorts”已开启"
+  },
+  "hideShortsOff": {
+    "message": "“隐藏 Shorts”已关闭"
+  },
+  "shortcuts": {
+    "message": "键盘快捷键"
+  },
+  "shortcutsHint": {
+    "message": "如果其他扩展程序已在使用某个快捷键，Chrome 会将其保留为未设置。"
+  },
+  "shortcutUnset": {
+    "message": "未设置"
+  },
+  "changeShortcuts": {
+    "message": "更改快捷键"
   }
 }

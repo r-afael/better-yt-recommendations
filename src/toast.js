@@ -1,9 +1,17 @@
 // Shows a short message at the bottom of YouTube pages, such as the one that confirms a channel
-// was added to a list. A new message replaces the one shown.
+// was added to a list or what a keyboard shortcut turned on or off. A new message replaces the
+// one shown.
 (() => {
   "use strict";
 
+  const { NOTICE } = globalThis.BetterYT.protocol;
+
   const DURATION_MS = 3000;
+  // The messages for each setting a shortcut changes, when it is off and when it is on.
+  const NOTICES = Object.freeze({
+    topicFilter: ["topicFilterOff", "topicFilterOn"],
+    hideShorts: ["hideShortsOff", "hideShortsOn"],
+  });
 
   let toast = null; // Made on first use.
   let timer;
@@ -29,6 +37,13 @@
     }, DURATION_MS);
   }
 
-  globalThis.BetterYT ??= {};
+  const isNotice = (message) =>
+    message?.type === NOTICE && Object.hasOwn(NOTICES, message.key) && typeof message.value === "boolean";
+
+  // Answers nothing, so the message channel is never held open.
+  chrome.runtime.onMessage.addListener((message) => {
+    if (isNotice(message)) show(chrome.i18n.getMessage(NOTICES[message.key][Number(message.value)]));
+  });
+
   globalThis.BetterYT.toast = Object.freeze({ show });
 })();

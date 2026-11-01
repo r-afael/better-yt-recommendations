@@ -233,5 +233,35 @@
   },
   "channelsMenuHint": {
     "message": "También puedes hacer clic con el botón derecho en la miniatura o el título de un video en YouTube para añadir su canal."
+  },
+  "commandToggleFilter": {
+    "message": "Activar o desactivar Filtrar recomendaciones"
+  },
+  "commandToggleShorts": {
+    "message": "Activar o desactivar Ocultar Shorts"
+  },
+  "topicFilterOn": {
+    "message": "Filtrar recomendaciones está activado"
+  },
+  "topicFilterOff": {
+    "message": "Filtrar recomendaciones está desactivado"
+  },
+  "hideShortsOn": {
+    "message": "Ocultar Shorts está activado"
+  },
+  "hideShortsOff": {
+    "message": "Ocultar Shorts está desactivado"
+  },
+  "shortcuts": {
+    "message": "Atajos de teclado"
+  },
+  "shortcutsHint": {
+    "message": "Chrome deja un atajo sin asignar cuando otra extensión ya lo usa."
+  },
+  "shortcutUnset": {
+    "message": "Sin asignar"
+  },
+  "changeShortcuts": {
+    "message": "Cambiar atajos"
   }
 }

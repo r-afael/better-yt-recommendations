@@ -7,6 +7,7 @@ const root = new URL("../", import.meta.url);
 
 export const read = (path) => readFileSync(new URL(path, root), "utf8");
 export const readJson = (path) => JSON.parse(read(path));
+const manifest = readJson("manifest.json");
 
 // A video's similarities to the closest wanted topic and topic to avoid, as the offscreen
 // document answers them, null for an empty list.
@@ -154,15 +155,27 @@ function fakeContextMenus(chrome) {
   };
 }
 
+// The manifest's keyboard shortcuts as chrome.commands.getAll() lists them, bound to their
+// default keys and described in the browser's language.
+function defaultCommands(messages) {
+  return Object.entries(manifest.commands).map(([name, { suggested_key: keys, description }]) => ({
+    name,
+    description: messages[description.slice("__MSG_".length, -"__".length)].message,
+    shortcut: keys.default,
+  }));
+}
+
 // The parts of the extension APIs the scripts use, backed by memory.
 // Tests replace runtime.sendMessage and other functions to script their own answers.
-export function fakeChrome({ stored = {}, session = {}, locale = "en" } = {}) {
+export function fakeChrome({ stored = {}, session = {}, locale = "en", commandList } = {}) {
   const messages = readJson(`_locales/${locale}/messages.json`);
   const onChanged = fakeEvent();
   const sync = fakeStorageArea("sync", stored, onChanged);
 
   const chrome = {
     data: sync.data,
+    commandList: commandList ?? defaultCommands(messages),
+    createdTabs: [],
     openedOptions: 0,
     badges: {},
     menus: new Map(),
@@ -188,6 +201,15 @@ export function fakeChrome({ stored = {}, session = {}, locale = "en" } = {}) {
     tabs: {
       async sendMessage(tabId, message, options) {
         chrome.tabMessages.push({ tabId, message, options });
+      },
+      async create(properties) {
+        chrome.createdTabs.push(properties);
+      },
+    },
+    commands: {
+      onCommand: fakeEvent(),
+      async getAll() {
+        return chrome.commandList;
       },
     },
     action: {
@@ -253,9 +275,8 @@ export async function openPage(t, path, options) {
 
 // The scripts and styles the manifest adds to YouTube pages, in its order, so a missing or
 // misordered one fails the tests that load them.
-const contentScripts = readJson("manifest.json").content_scripts;
-const CONTENT_JS = contentScripts.flatMap((entry) => entry.js);
-const CONTENT_CSS = contentScripts.flatMap((entry) => entry.css).map(read).join("\n");
+const CONTENT_JS = manifest.content_scripts.flatMap((entry) => entry.js);
+const CONTENT_CSS = manifest.content_scripts.flatMap((entry) => entry.css).map(read).join("\n");
 
 // How long the filter lets a burst of list changes settle before it scans.
 export const SCAN_MS = 150;
