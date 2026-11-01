@@ -176,5 +176,27 @@
   "tryError": {
     "message": "Couldn't check the title. Try again shortly.",
     "description": "Shown in the try box when the model failed to answer."
+  },
+  "hiddenRowOne": {
+    "message": "1 video hidden",
+    "description": "Shown above a YouTube list when the filter hid exactly one video."
+  },
+  "hiddenRowMany": {
+    "message": "$COUNT$ videos hidden",
+    "description": "Shown above a YouTube list for any other number of hidden videos. If your language has several plural forms, use a wording that is correct for every number, such as \"Videos hidden: $COUNT$\".",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "12"
+      }
+    }
+  },
+  "showHidden": {
+    "message": "Show them",
+    "description": "Button that reveals the hidden videos on the current page."
+  },
+  "hideHidden": {
+    "message": "Hide them again",
+    "description": "Button that hides the revealed videos again."
   }
 }

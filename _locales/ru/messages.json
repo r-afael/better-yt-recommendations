@@ -137,5 +137,23 @@
   },
   "tryError": {
     "message": "Не удалось проверить название. Попробуйте ещё раз чуть позже."
+  },
+  "hiddenRowOne": {
+    "message": "Скрыто 1 видео"
+  },
+  "hiddenRowMany": {
+    "message": "Скрыто видео: $COUNT$",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "12"
+      }
+    }
+  },
+  "showHidden": {
+    "message": "Показать"
+  },
+  "hideHidden": {
+    "message": "Снова скрыть"
   }
 }

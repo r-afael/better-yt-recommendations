@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import FakeTimers from "@sinonjs/fake-timers";
 import { JSDOM } from "jsdom";
-import { MATCH, fakeChrome, flush, holdMessages, read, readJson, runScripts, score } from "./helpers.js";
+import { HIDDEN_COUNT, MATCH, fakeChrome, flush, holdMessages, read, readJson, runScripts, score } from "./helpers.js";
 
 // Loads what the browser loads, in the manifest's order, so a misordered or missing script fails here.
 const contentScripts = readJson("manifest.json").content_scripts;
@@ -11,6 +11,9 @@ const css = contentScripts.flatMap((entry) => entry.css);
 const fixture = read("test/fixtures/watch-sidebar.html");
 const styles = css.map(read).join("\n");
 const FIXTURE_IDS = ["PFmuCDHHpwk", "PkZNo7MFNFg", "RphIVv0uWrM", "C4dGVTl6ry8"];
+const ON_TOPIC_IDS = FIXTURE_IDS.filter((id) => id !== "RphIVv0uWrM"); // Once RphIVv0uWrM is hidden.
+const COLLAPSED = { text: "Show them", expanded: "false" };
+const REVEALED = { text: "Hide them again", expanded: "true" };
 const SCAN_MS = 150;
 const RETRY_MS = 30_000;
 const REQUEST_TIMEOUT_MS = 60_000;
@@ -34,7 +37,11 @@ async function setup(t, { path = "/watch?v=W6NZfCO5SIk", stored = { topics: "pro
     toFake: ["setTimeout", "clearTimeout", "Date", "performance"],
   });
   const chrome = fakeChrome({ stored });
-  const requests = holdMessages(chrome);
+  // MATCH requests wait for the test to answer them; the hidden counts sent for the badge are recorded.
+  const reports = [];
+  const requests = holdMessages(chrome, (message) => message.type !== HIDDEN_COUNT, async (message) => {
+    reports.push(message.count);
+  });
   const warnings = [];
   window.console.warn = (...args) => warnings.push(args);
 
@@ -52,6 +59,15 @@ async function setup(t, { path = "/watch?v=W6NZfCO5SIk", stored = { topics: "pro
   const visibleIds = () => items()
     .filter((item) => window.getComputedStyle(item).display !== "none")
     .map((item) => /content-id-(\S+)/u.exec(item.querySelector(".ytLockupViewModelHost").className)[1]);
+  const hiddenRow = () => document.querySelector(".better-yt-hidden-row");
+  const rowShown = () => {
+    const row = hiddenRow();
+    return Boolean(row) && window.getComputedStyle(row).display !== "none";
+  };
+  const rowText = () => hiddenRow().querySelector(".better-yt-hidden-row__text").textContent;
+  const toggle = () => hiddenRow().querySelector("button");
+  const toggleState = () => ({ text: toggle().textContent, expanded: toggle().getAttribute("aria-expanded") });
+  const list = () => document.querySelector("ytd-watch-next-secondary-results-renderer");
   const requestedIds = (request = requests.at(-1)) => request.message.videos.map((video) => video.id);
   // Answers the latest request, scoring the listed ids 0 and the others 1.
   const answer = async (offTopic = [], request = requests.at(-1)) => {
@@ -71,7 +87,10 @@ async function setup(t, { path = "/watch?v=W6NZfCO5SIk", stored = { topics: "pro
     await clock.tickAsync(SCAN_MS);
   };
 
-  return { window, document, clock, requests, warnings, items, visibleIds, requestedIds, answer, changeSettings, addVideo };
+  return {
+    window, document, clock, requests, reports, warnings, items, visibleIds, requestedIds, answer, changeSettings, addVideo,
+    hiddenRow, rowShown, rowText, toggle, toggleState, list,
+  };
 }
 
 test("hides off-topic videos once the model answers", async (t) => {
@@ -158,7 +177,7 @@ test("with only topics to avoid, hides videos closer to them than the sensitivit
 test("changing the topics to avoid clears the verdicts", async (t) => {
   const { requests, visibleIds, requestedIds, answer, changeSettings } = await setup(t, { stored: { topics: "programming", avoidTopics: "gaming" } });
   await answer(["RphIVv0uWrM"]);
-  assert.deepEqual(visibleIds(), ["PFmuCDHHpwk", "PkZNo7MFNFg", "C4dGVTl6ry8"]);
+  assert.deepEqual(visibleIds(), ON_TOPIC_IDS);
 
   await changeSettings({ avoidTopics: "gossip" });
   assert.deepEqual(visibleIds(), FIXTURE_IDS);
@@ -209,7 +228,7 @@ test("ignores a late answer to a request that timed out", async (t) => {
   await answer(["C4dGVTl6ry8"], requests[0]);
   assert.deepEqual(visibleIds(), FIXTURE_IDS);
   await answer(["RphIVv0uWrM"]);
-  assert.deepEqual(visibleIds(), ["PFmuCDHHpwk", "PkZNo7MFNFg", "C4dGVTl6ry8"]);
+  assert.deepEqual(visibleIds(), ON_TOPIC_IDS);
 });
 
 test("sends nothing without topics", async (t) => {
@@ -247,7 +266,7 @@ test("turning the toggle back on reuses the verdicts for the same topics", async
   await answer(["RphIVv0uWrM"]);
   await changeSettings({ topicFilter: false });
   await changeSettings({ topicFilter: true });
-  assert.deepEqual(visibleIds(), ["PFmuCDHHpwk", "PkZNo7MFNFg", "C4dGVTl6ry8"]);
+  assert.deepEqual(visibleIds(), ON_TOPIC_IDS);
   assert.equal(requests.length, 1);
 });
 
@@ -294,7 +313,7 @@ test("keeps filtering when a narrow window moves the recommendations under the v
   await answer(["RphIVv0uWrM"]);
   document.querySelector("#primary").append(document.querySelector("#related"));
   await clock.tickAsync(SCAN_MS);
-  assert.deepEqual(visibleIds(), ["PFmuCDHHpwk", "PkZNo7MFNFg", "C4dGVTl6ry8"]);
+  assert.deepEqual(visibleIds(), ON_TOPIC_IDS);
 
   // The next video reuses the hidden item for a video known to be on topic.
   showVideo(items()[2], "PFmuCDHHpwk");
@@ -364,4 +383,114 @@ test("waits for the sidebar when a watch page renders it late", async (t) => {
   document.querySelector("ytd-page-manager").append(sidebar);
   await clock.tickAsync(SCAN_MS);
   assert.equal(requests.length, 1);
+});
+
+test("starts the list with a row that counts the hidden videos", async (t) => {
+  const { hiddenRow, rowShown, rowText, list, answer } = await setup(t);
+  assert.equal(rowShown(), false, "no row while nothing is hidden");
+
+  await answer(["RphIVv0uWrM", "C4dGVTl6ry8"]);
+  assert.equal(rowShown(), true);
+  assert.equal(rowText(), "2 videos hidden");
+  assert.equal(hiddenRow().nextElementSibling, list());
+});
+
+test("says 1 video hidden for a single one", async (t) => {
+  const { rowText, answer } = await setup(t);
+  await answer(["RphIVv0uWrM"]);
+  assert.equal(rowText(), "1 video hidden");
+});
+
+test("Show them shows the hidden videos until Hide them again", async (t) => {
+  const { visibleIds, toggle, toggleState, answer } = await setup(t);
+  await answer(["RphIVv0uWrM"]);
+  assert.deepEqual(toggleState(), COLLAPSED);
+
+  toggle().click();
+  assert.deepEqual(visibleIds(), FIXTURE_IDS);
+  assert.deepEqual(toggleState(), REVEALED);
+
+  toggle().click();
+  assert.deepEqual(visibleIds(), ON_TOPIC_IDS);
+  assert.deepEqual(toggleState(), COLLAPSED);
+});
+
+test("every new page starts with the hidden videos collapsed", async (t) => {
+  const { window, document, clock, visibleIds, toggle, toggleState, answer } = await setup(t);
+  await answer(["RphIVv0uWrM"]);
+  toggle().click();
+
+  window.history.pushState({}, "", "/watch?v=PFmuCDHHpwk");
+  document.dispatchEvent(new window.Event("yt-navigate-finish"));
+  await clock.tickAsync(SCAN_MS);
+  assert.deepEqual(visibleIds(), ON_TOPIC_IDS);
+  assert.deepEqual(toggleState(), COLLAPSED);
+});
+
+test("turning the filter off takes the row away, and turning it back on starts collapsed", async (t) => {
+  const { requests, visibleIds, rowShown, toggle, toggleState, answer, changeSettings } = await setup(t);
+  await answer(["RphIVv0uWrM"]);
+  toggle().click();
+
+  await changeSettings({ topicFilter: false });
+  assert.equal(rowShown(), false);
+
+  await changeSettings({ topicFilter: true });
+  assert.equal(requests.length, 1, "the verdicts are reused");
+  assert.deepEqual(visibleIds(), ON_TOPIC_IDS);
+  assert.equal(rowShown(), true);
+  assert.deepEqual(toggleState(), COLLAPSED);
+});
+
+test("puts the row back when YouTube re-renders the list", async (t) => {
+  const { hiddenRow, list, answer, addVideo } = await setup(t);
+  await answer(["RphIVv0uWrM"]);
+  const row = hiddenRow();
+  row.remove();
+
+  await addVideo("added00001A");
+  assert.equal(list().previousElementSibling, row);
+});
+
+test("reports the hidden count when it changes, and 0 when filtering stops", async (t) => {
+  const { reports, answer, addVideo, changeSettings } = await setup(t);
+  assert.deepEqual(reports, [], "a new page's badge is already empty");
+
+  await answer(["RphIVv0uWrM", "C4dGVTl6ry8"]);
+  assert.deepEqual(reports, [2]);
+  await addVideo("added00001A");
+  assert.deepEqual(reports, [2], "a rescan with the same count sends nothing");
+
+  await changeSettings({ topicFilter: false });
+  assert.deepEqual(reports, [2, 0]);
+});
+
+test("reports the hidden count again when the page returns from the back/forward cache", async (t) => {
+  const { window, clock, reports, answer } = await setup(t);
+  await answer(["RphIVv0uWrM", "C4dGVTl6ry8"]);
+
+  window.dispatchEvent(new window.PageTransitionEvent("pagehide", { persisted: true }));
+  assert.deepEqual(reports, [2, 0]);
+  window.dispatchEvent(new window.PageTransitionEvent("pageshow", { persisted: true }));
+  await clock.tickAsync(SCAN_MS);
+  assert.deepEqual(reports, [2, 0, 2]);
+});
+
+// content.js watches `hidden` across the whole page in enforcement mode, so an unchanged row
+// must not wake it after every scan.
+test("a rescan with the same count leaves the row untouched", async (t) => {
+  const { window, requests, hiddenRow, rowText, answer, addVideo } = await setup(t);
+  await answer(["RphIVv0uWrM"]);
+  const records = [];
+  const observer = new window.MutationObserver((changes) => records.push(...changes));
+  observer.observe(hiddenRow(), { subtree: true, childList: true, attributes: true, characterData: true });
+  // Moving the row is a change to its parent's children.
+  observer.observe(hiddenRow().parentElement, { childList: true });
+
+  await addVideo("added00001A");
+  await flush();
+  assert.equal(requests.length, 2, "rescanned");
+  assert.equal(rowText(), "1 video hidden");
+  assert.deepEqual([...records, ...observer.takeRecords()], []);
+  observer.disconnect();
 });

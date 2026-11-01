@@ -137,5 +137,23 @@
   },
   "tryError": {
     "message": "Tidak dapat memeriksa judul. Coba lagi sebentar lagi."
+  },
+  "hiddenRowOne": {
+    "message": "1 video disembunyikan"
+  },
+  "hiddenRowMany": {
+    "message": "$COUNT$ video disembunyikan",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "12"
+      }
+    }
+  },
+  "showHidden": {
+    "message": "Tampilkan"
+  },
+  "hideHidden": {
+    "message": "Sembunyikan lagi"
   }
 }

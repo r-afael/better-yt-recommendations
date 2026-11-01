@@ -354,3 +354,27 @@ test("ignores messages meant for the offscreen document", async () => {
   assert.deepEqual(offscreen.forwarded, []);
   assert.equal(offscreen.created.length, 0);
 });
+
+test("shows the hidden count on the badge of the tab that reports it", async () => {
+  const { chrome, protocol, send } = setup();
+
+  await send({ type: protocol.HIDDEN_COUNT, count: 7 }, { tab: { id: 1 } });
+  await send({ type: protocol.HIDDEN_COUNT, count: 0 }, { tab: { id: 2 } });
+  await send({ type: protocol.HIDDEN_COUNT, count: 120 }, { tab: { id: 3 } });
+  await flush();
+
+  assert.deepEqual(plain(chrome.badges), {
+    1: { text: "7", color: "#606060" },
+    2: { text: "", color: "#606060" },
+    3: { text: "99+", color: "#606060" },
+  });
+});
+
+test("ignores hidden counts from pages without a tab", async () => {
+  const { chrome, protocol, send } = setup();
+
+  await send({ type: protocol.HIDDEN_COUNT, count: 7 }, {});
+  await flush();
+
+  assert.deepEqual(chrome.badges, {});
+});

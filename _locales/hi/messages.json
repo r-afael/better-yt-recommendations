@@ -137,5 +137,23 @@
   },
   "tryError": {
     "message": "शीर्षक की जाँच नहीं हो सकी। थोड़ी देर में फिर से कोशिश करें।"
+  },
+  "hiddenRowOne": {
+    "message": "1 वीडियो छिपाया गया"
+  },
+  "hiddenRowMany": {
+    "message": "$COUNT$ वीडियो छिपाए गए",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "12"
+      }
+    }
+  },
+  "showHidden": {
+    "message": "दिखाएं"
+  },
+  "hideHidden": {
+    "message": "फिर से छिपाएं"
   }
 }

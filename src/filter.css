@@ -1,4 +1,34 @@
-/* Videos the filter hides. See src/cards.js. */
-[data-better-yt-hidden] {
+/* Videos the filter hides, unless the hidden row shows them. See src/cards.js and src/hidden-row.js. */
+:root:not([data-better-yt-reveal]) [data-better-yt-hidden] {
   display: none !important;
+}
+
+/* Revealed videos keep YouTube's own layout, dimmed and outlined so they read as "would be hidden". */
+:root[data-better-yt-reveal] [data-better-yt-hidden] {
+  opacity: 0.55;
+  outline: 2px dashed var(--yt-spec-text-secondary, #606060);
+  outline-offset: -2px;
+}
+
+.better-yt-hidden-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin: 8px 0;
+  font: 1.4rem/2rem "Roboto", "Arial", sans-serif;
+  color: var(--yt-spec-text-secondary, #606060);
+}
+
+.better-yt-hidden-row[hidden] {
+  display: none;
+}
+
+.better-yt-hidden-row__toggle {
+  padding: 4px 12px;
+  border: 1px solid currentColor;
+  border-radius: 18px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
 }

@@ -48,6 +48,7 @@
         "src/topics.js",
         "src/verdict.js",
         "src/cards.js",
+        "src/hidden-row.js",
         "src/filter.js"
       ],
       "css": ["src/filter.css"],

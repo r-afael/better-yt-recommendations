@@ -137,5 +137,23 @@
   },
   "tryError": {
     "message": "تعذّر فحص العنوان. حاول مجددًا بعد قليل."
+  },
+  "hiddenRowOne": {
+    "message": "تم إخفاء فيديو واحد"
+  },
+  "hiddenRowMany": {
+    "message": "الفيديوهات المخفية: $COUNT$",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "12"
+      }
+    }
+  },
+  "showHidden": {
+    "message": "إظهارها"
+  },
+  "hideHidden": {
+    "message": "إخفاؤها مجددًا"
   }
 }

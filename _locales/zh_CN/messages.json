@@ -137,5 +137,23 @@
   },
   "tryError": {
     "message": "无法检查该标题。请稍后重试。"
+  },
+  "hiddenRowOne": {
+    "message": "已隐藏 1 个视频"
+  },
+  "hiddenRowMany": {
+    "message": "已隐藏 $COUNT$ 个视频",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "12"
+      }
+    }
+  },
+  "showHidden": {
+    "message": "显示"
+  },
+  "hideHidden": {
+    "message": "重新隐藏"
   }
 }

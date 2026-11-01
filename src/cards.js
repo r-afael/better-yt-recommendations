@@ -143,6 +143,11 @@
     for (const item of root.querySelectorAll(`[${HIDDEN_ATTRIBUTE}]`)) unhide(item);
   }
 
+  // Counts the hidden cards in a surface's list, or 0 when the page has no list yet.
+  function hiddenCount(surface, root = document) {
+    return container(surface, root)?.querySelectorAll(`[${HIDDEN_ATTRIBUTE}]`).length ?? 0;
+  }
+
   globalThis.BetterYT ??= {};
   globalThis.BetterYT.cards = Object.freeze({
     SURFACES,
@@ -156,5 +161,6 @@
     hiddenId,
     hiddenReason,
     unhideAll,
+    hiddenCount,
   });
 })();

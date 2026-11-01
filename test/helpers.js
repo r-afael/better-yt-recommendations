@@ -24,6 +24,9 @@ export const PRELOAD = "better-yt:preload";
 // The message type the content script and the options page send the background to score videos.
 export const MATCH = "better-yt:match";
 
+// The message type the content script sends the background with the number of hidden videos.
+export const HIDDEN_COUNT = "better-yt:hidden-count";
+
 // Lets pending promises, storage events and mutation observers run.
 export const flush = () => new Promise((resolve) => setImmediate(resolve));
 
@@ -121,6 +124,7 @@ export function fakeChrome({ stored = {}, session = {}, locale = "en" } = {}) {
   const chrome = {
     data: sync.data,
     openedOptions: 0,
+    badges: {},
     storage: {
       sync,
       session: fakeStorageArea("session", session, onChanged),
@@ -134,6 +138,14 @@ export function fakeChrome({ stored = {}, session = {}, locale = "en" } = {}) {
       getURL: (path) => `chrome-extension://better-yt/${path}`,
       async openOptionsPage() {
         chrome.openedOptions += 1;
+      },
+    },
+    action: {
+      async setBadgeText({ tabId, text }) {
+        chrome.badges[tabId] = { ...chrome.badges[tabId], text };
+      },
+      async setBadgeBackgroundColor({ tabId, color }) {
+        chrome.badges[tabId] = { ...chrome.badges[tabId], color };
       },
     },
     i18n: {
@@ -158,12 +170,12 @@ export function recordMessages(chrome, answer = async () => ({ ok: true })) {
 }
 
 // Keeps each message that holds(message) waiting until the test answers it with the recorded
-// resolve or reject, and answers the others with { ok: true }. Returns the held requests in the
-// order they were sent.
-export function holdMessages(chrome, holds = () => true) {
+// resolve or reject, and answers the others with answer(message), { ok: true } by default.
+// Returns the held requests in the order they were sent.
+export function holdMessages(chrome, holds = () => true, answer = async () => ({ ok: true })) {
   const requests = [];
   chrome.runtime.sendMessage = (message) => {
-    if (!holds(message)) return Promise.resolve({ ok: true });
+    if (!holds(message)) return answer(message);
     return new Promise((resolve, reject) => requests.push({ message: structuredClone(message), resolve, reject }));
   };
   return requests;

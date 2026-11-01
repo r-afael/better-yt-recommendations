@@ -137,5 +137,23 @@
   },
   "tryError": {
     "message": "無法檢查該標題。請稍後再試。"
+  },
+  "hiddenRowOne": {
+    "message": "已隱藏 1 部影片"
+  },
+  "hiddenRowMany": {
+    "message": "已隱藏 $COUNT$ 部影片",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "12"
+      }
+    }
+  },
+  "showHidden": {
+    "message": "顯示"
+  },
+  "hideHidden": {
+    "message": "再次隱藏"
   }
 }

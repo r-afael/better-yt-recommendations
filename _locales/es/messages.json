@@ -137,5 +137,23 @@
   },
   "tryError": {
     "message": "No se pudo comprobar el título. Vuelve a intentarlo en breve."
+  },
+  "hiddenRowOne": {
+    "message": "1 video oculto"
+  },
+  "hiddenRowMany": {
+    "message": "$COUNT$ videos ocultos",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "12"
+      }
+    }
+  },
+  "showHidden": {
+    "message": "Mostrarlos"
+  },
+  "hideHidden": {
+    "message": "Volver a ocultarlos"
   }
 }

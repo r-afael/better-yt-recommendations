@@ -1,14 +1,14 @@
 // Wires the service worker's events to the modules that handle them.
 // Every listener is registered here, so this file shows what runs on each event.
-importScripts("protocol.js", "settings.js", "topics.js", "verdict.js", "model-host.js");
+importScripts("protocol.js", "settings.js", "topics.js", "verdict.js", "model-host.js", "badge.js");
 
 (() => {
   "use strict";
 
-  const { protocol, modelHost } = globalThis.BetterYT;
-  const { MATCH, PRELOAD, STATUS, IDLE, OFFSCREEN } = protocol;
+  const { badge, protocol, modelHost } = globalThis.BetterYT;
+  const { MATCH, PRELOAD, STATUS, IDLE, HIDDEN_COUNT, OFFSCREEN } = protocol;
 
-  function onMessage(message, _sender, sendResponse) {
+  function onMessage(message, sender, sendResponse) {
     if (message?.target === OFFSCREEN) return false;
     switch (message?.type) {
       case MATCH:
@@ -22,6 +22,9 @@ importScripts("protocol.js", "settings.js", "topics.js", "verdict.js", "model-ho
         return false;
       case IDLE:
         modelHost.release();
+        return false;
+      case HIDDEN_COUNT:
+        badge.show(sender?.tab?.id, message.count);
         return false;
       default:
         return false;

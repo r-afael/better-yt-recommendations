@@ -137,5 +137,23 @@
   },
   "tryError": {
     "message": "Impossible de vérifier le titre. Réessayez sous peu."
+  },
+  "hiddenRowOne": {
+    "message": "1 vidéo masquée"
+  },
+  "hiddenRowMany": {
+    "message": "$COUNT$ vidéos masquées",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "12"
+      }
+    }
+  },
+  "showHidden": {
+    "message": "Les afficher"
+  },
+  "hideHidden": {
+    "message": "Les masquer à nouveau"
   }
 }

@@ -20,6 +20,10 @@ globalThis.BetterYT.protocol = Object.freeze({
   // Offscreen document to background: nothing has been matched for a while,
   // so the document can close and free the model's memory.
   IDLE: "better-yt:idle",
+  // Content script to background: { type, count }, how many videos the filter hides on the
+  // tab's current page, 0 when it stops or the page goes away. The background shows it on the
+  // tab's badge and ignores it without a tab or a non-negative integer count. No answer.
+  HIDDEN_COUNT: "better-yt:hidden-count",
   // The target of messages that only the offscreen document handles.
   OFFSCREEN: "offscreen",
   // Where the background keeps the latest model status, in chrome.storage.session.

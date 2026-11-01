@@ -137,5 +137,23 @@
   },
   "tryError": {
     "message": "শিরোনামটি পরীক্ষা করা যায়নি। একটু পরে আবার চেষ্টা করুন।"
+  },
+  "hiddenRowOne": {
+    "message": "একটি ভিডিও লুকানো হয়েছে"
+  },
+  "hiddenRowMany": {
+    "message": "$COUNT$টি ভিডিও লুকানো হয়েছে",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "12"
+      }
+    }
+  },
+  "showHidden": {
+    "message": "দেখান"
+  },
+  "hideHidden": {
+    "message": "আবার লুকান"
   }
 }

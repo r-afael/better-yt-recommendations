@@ -66,6 +66,10 @@ The **Filter recommendations by topic** switch is on both pages.
   whether the filter would show or hide it. Move the sensitivity to see the verdict
   change. The first try loads the model if it isn't loaded yet.
 
+When the filter hides videos, the list starts with a row such as "12 videos hidden".
+**Show them** shows them, dimmed and outlined, until you go to another page. The
+extension's icon in the toolbar shows how many videos are hidden on the page you're on.
+
 The filter judges each video by its title and channel, so it makes mistakes: it may
 hide a few videos you'd want, or keep a few you wouldn't. A handful of specific
 topics works better than one broad word. For example, "programming, JavaScript, web
@@ -104,7 +108,8 @@ recommendations by topic**.
 The extension recognizes the custom feed tab when YouTube is in any of the ten most
 spoken languages: English, Mandarin Chinese (Simplified and Traditional), Hindi,
 Spanish, Arabic, French, Bengali, Portuguese, Russian, and Indonesian. The settings
-popup and the options page are translated into the same languages.
+popup, the options page and the messages the extension shows on YouTube are translated
+into the same languages.
 
 YouTube first launched the custom feed in English, so tab names in other languages
 are based on YouTube's Help Center. If the extension doesn't find the tab in your
@@ -159,15 +164,19 @@ refresh YouTube.
   `src/options.css` builds on `src/popup.css`.
 - `src/ui.js` holds the code the settings popup and the options page share: starting the
   page, translation, saving, and the model status.
-- `_locales/` has the translations of the popup and the options page.
+- `_locales/` has the translations of the popup, the options page and the messages the
+  extension shows on YouTube.
 - `src/protocol.js` names the messages the extension's parts send each other.
 - `src/topics.js` turns the topics field into a list of topics.
 - `src/verdict.js` decides from a video's scores whether it is hidden, and whether the
   filter needs the model.
 - `src/cards.js` finds the video cards on the watch page, Home, Subscriptions and
   search results, reads them, and hides or shows them.
+- `src/hidden-row.js` draws the row that counts the hidden videos and shows them.
+  `src/badge.js` shows that count on the toolbar icon.
 - `src/filter.js` decides which videos to check, asks for verdicts and applies them.
-  `src/filter.css` hides the filtered videos.
+  `src/filter.css` hides the filtered videos, or dims them while they're shown, and
+  styles the row.
 - `src/background.js` receives the extension's messages and events in the background
   and hands each one to the module that handles it.
 - `src/model-host.js` opens the hidden page that runs the model when a page needs it or
