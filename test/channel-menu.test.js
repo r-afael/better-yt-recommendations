@@ -76,6 +76,23 @@ test("finds the video from the clicked link when the right-click landed outside 
   assert.deepEqual(storedList("blockedChannels"), ["freeCodeCamp.org"]);
 });
 
+test("outside its card, the clicked link picks the video's card over a mix that starts with that video", async (t) => {
+  const { document, cards, titleLink, rightClick, list, storedList } = await setup(t);
+  const id = new URL(titleLink(1).href).searchParams.get("v");
+  const mix = cards()[0];
+  for (const link of mix.querySelectorAll("a[href]")) link.setAttribute("href", `/watch?v=${id}&list=RD${id}`);
+  const host = mix.querySelector("div.ytLockupViewModelHost");
+  host.className = host.className.replace(/content-id-\S+/u, `content-id-RD${id}`);
+  const outside = document.createElement("a");
+  outside.href = `/watch?v=${id}`;
+  document.body.append(outside);
+
+  rightClick(outside);
+  await list("blockedChannels", outside.href);
+
+  assert.deepEqual(storedList("blockedChannels"), ["freeCodeCamp.org"]);
+});
+
 test("uses the clicked link, not an earlier right-click", async (t) => {
   const { titleLink, rightClick, list, storedList } = await setup(t);
 

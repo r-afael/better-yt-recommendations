@@ -158,13 +158,15 @@
   }
 
   // Returns the card a right-clicked link belongs to, or null. The card under the last right-click
-  // wins when it holds that link; otherwise it's the first card that does, which also finds the
-  // card when the click landed outside it, such as on Home's preview player.
+  // wins when it holds that link. Otherwise, such as when the click landed on Home's preview
+  // player outside the card, the card showing that video wins over a mix or playlist that starts
+  // with it, and any other link goes to the first card that holds it.
   function itemForLink(linkUrl, last) {
     const destination = destinationOf(linkUrl);
     if (destination === null) return null;
     if (last?.isConnected && linksTo(last, destination)) return last;
-    return [...document.querySelectorAll(ALL_ITEMS)].find((item) => linksTo(item, destination)) ?? null;
+    const linking = [...document.querySelectorAll(ALL_ITEMS)].filter((item) => linksTo(item, destination));
+    return linking.find((item) => destination === `/watch?v=${readId(item)}`) ?? linking[0] ?? null;
   }
 
   // The id tells a hidden card apart from the same element recycled for another video.
