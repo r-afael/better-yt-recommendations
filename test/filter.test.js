@@ -118,7 +118,7 @@ test("keeps videos the answer leaves out visible without asking again", async (t
   assert.equal(requests.length, 1);
 });
 
-test("hides videos scored below the sensitivity, and re-filters without asking when it changes", async (t) => {
+test("hides videos that match the topics less than the match needed, and re-filters without asking when it changes", async (t) => {
   const { requests, visibleIds, clock, changeSettings } = await setup(t);
   requests[0].resolve({ scores: { PFmuCDHHpwk: score(0.4), PkZNo7MFNFg: score(0.25), RphIVv0uWrM: score(0.2), C4dGVTl6ry8: score(0.1) } });
   await clock.tickAsync(SCAN_MS);
@@ -131,7 +131,7 @@ test("hides videos scored below the sensitivity, and re-filters without asking w
   assert.equal(requests.length, 1);
 });
 
-test("uses the stored sensitivity", async (t) => {
+test("uses the stored match needed", async (t) => {
   const { requests, visibleIds, clock } = await setup(t, { stored: { topics: "programming", threshold: 0.15 } });
   requests[0].resolve({ scores: { PFmuCDHHpwk: score(0.4), PkZNo7MFNFg: score(0.25), RphIVv0uWrM: score(0.2), C4dGVTl6ry8: score(0.1) } });
   await clock.tickAsync(SCAN_MS);
@@ -144,19 +144,21 @@ test("sends both topic lists", async (t) => {
   assert.deepEqual(requests[0].message.avoidTopics, ["gaming", "gossip"]);
 });
 
-test("hides a video closer to a topic to avoid than to any wanted topic", async (t) => {
-  const { requests, visibleIds, clock } = await setup(t, { stored: { topics: "programming", avoidTopics: "gaming" } });
+test("hides a video that matches a topic to avoid as much as the match that hides, however well it matches the topics", async (t) => {
+  const { requests, visibleIds, clock } = await setup(t, {
+    stored: { topics: "programming", avoidTopics: "gaming", avoidThreshold: 0.24 },
+  });
   requests[0].resolve({ scores: {
-    PFmuCDHHpwk: score(0.4, 0.2),
-    PkZNo7MFNFg: score(0.31, 0.35),
-    RphIVv0uWrM: score(0.31, 0.2),
-    C4dGVTl6ry8: score(0.4, 0.4),
+    PFmuCDHHpwk: score(0.9, 0.24),
+    PkZNo7MFNFg: score(0.31, 0.23),
+    RphIVv0uWrM: score(0.2, 0.1),
+    C4dGVTl6ry8: score(0.2, 0.3),
   } });
   await clock.tickAsync(SCAN_MS);
-  assert.deepEqual(visibleIds(), ["PFmuCDHHpwk", "RphIVv0uWrM", "C4dGVTl6ry8"]);
+  assert.deepEqual(visibleIds(), ["PkZNo7MFNFg"]);
 });
 
-test("with only topics to avoid, hides videos closer to them than the sensitivity, and decides again when it moves without asking", async (t) => {
+test("with only topics to avoid, hides videos from the match that hides, and decides again when it moves without asking", async (t) => {
   const { requests, visibleIds, clock, changeSettings } = await setup(t, { stored: { topics: "", avoidTopics: "gaming" } });
   assert.deepEqual(requests[0].message.topics, []);
   requests[0].resolve({ scores: {
@@ -168,8 +170,10 @@ test("with only topics to avoid, hides videos closer to them than the sensitivit
   await clock.tickAsync(SCAN_MS);
   assert.deepEqual(visibleIds(), ["RphIVv0uWrM", "C4dGVTl6ry8"]);
 
-  await changeSettings({ threshold: 0.35 });
-  assert.deepEqual(visibleIds(), ["PkZNo7MFNFg", "RphIVv0uWrM", "C4dGVTl6ry8"], "a higher sensitivity hides fewer");
+  await changeSettings({ avoidThreshold: 0.35 });
+  assert.deepEqual(visibleIds(), ["PkZNo7MFNFg", "RphIVv0uWrM", "C4dGVTl6ry8"], "a higher line hides fewer");
+  await changeSettings({ avoidThreshold: 0.1 });
+  assert.deepEqual(visibleIds(), []);
   assert.equal(requests.length, 1);
 });
 

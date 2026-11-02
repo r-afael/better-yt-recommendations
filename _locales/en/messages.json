@@ -55,13 +55,17 @@
     "message": "Separate topics with commas.",
     "description": "Explains how to type several topics."
   },
-  "sensitivity": {
-    "message": "Filter sensitivity",
-    "description": "Label of the slider that sets how close a video must be to a topic to stay visible, or, with only topics to avoid, to be hidden."
+  "threshold": {
+    "message": "Match needed to show",
+    "description": "Label of the slider that sets how well a video must match one of the topics the user wants to see to stay visible. Its value, from 0.10 to 0.40, shows next to it."
   },
-  "sensitivityHint": {
-    "message": "How close a video must be to a topic you want. Higher hides more videos; lower keeps more.",
-    "description": "Explains the sensitivity slider."
+  "thresholdHint": {
+    "message": "A video must match one of your topics at least this much to stay. Higher hides more.",
+    "description": "Explains the threshold slider (\"Match needed to show\")."
+  },
+  "thresholdHintEmpty": {
+    "message": "Has no effect until you add a topic you want to see.",
+    "description": "Replaces the threshold slider's hint while there are no topics to see, since the slider then changes nothing."
   },
   "modelIdle": {
     "message": "The model loads when a page needs it, or when you click Load now.",
@@ -93,7 +97,7 @@
   },
   "topicsSection": {
     "message": "Topics",
-    "description": "Heading of the options page section with the Filter recommendations switch (topicFilter), the topics and the sensitivity."
+    "description": "Heading of the options page section with the Filter recommendations switch (topicFilter), the topics, their sliders and the try box."
   },
   "summaryTopics": {
     "message": "Topics: $TOPICS$",
@@ -118,12 +122,20 @@
     "description": "Example topics to avoid in the empty field. Use topics that make sense in this language, separated by commas."
   },
   "avoidTopicsHint": {
-    "message": "Videos closer to one of these than to any topic you want are hidden. Separate topics with commas.",
+    "message": "Videos that match one of these are hidden, even when they match your topics. Separate topics with commas.",
     "description": "Explains the topics-to-avoid field."
   },
-  "sensitivityHintAvoid": {
-    "message": "With only topics to avoid: how close a video must be to one of them to be hidden. Higher hides fewer videos; lower hides more.",
-    "description": "Replaces the sensitivity hint when only topics to avoid are set, because the slider then works the other way round."
+  "avoidThreshold": {
+    "message": "Match that hides",
+    "description": "Label of the slider that sets how well a video must match a topic to avoid to be hidden. Its value, from 0.10 to 0.40, shows next to it."
+  },
+  "avoidThresholdHint": {
+    "message": "A video that matches a topic to avoid this much or more is hidden. Lower hides more.",
+    "description": "Explains the avoidThreshold slider (\"Match that hides\")."
+  },
+  "avoidThresholdHintEmpty": {
+    "message": "Has no effect until you add a topic to avoid.",
+    "description": "Replaces the avoidThreshold slider's hint while there are no topics to avoid, since the slider then changes nothing."
   },
   "summaryAvoiding": {
     "message": "Avoiding: $TOPICS$",
@@ -148,12 +160,12 @@
     "description": "Example video title in the empty box. Use a title that makes sense in this language."
   },
   "tryTitleHint": {
-    "message": "Type a video title to see how the filter would judge it with the topics and sensitivity above.",
+    "message": "Type a video title to see whether the filter would show or hide it with the settings above.",
     "description": "Explains the try-a-title box."
   },
   "tryScores": {
-    "message": "Closest wanted topic: $WANT$ · Closest topic to avoid: $AVOID$",
-    "description": "Shows how similar the typed title is to the topics, from -1 to 1.",
+    "message": "Match with your topics: $WANT$ · Match with topics to avoid: $AVOID$",
+    "description": "Shows how well the typed title matches each list of topics, on the sliders' scale (the highest similarity, from -1 to 1). Use the words of the sliders' labels (threshold and avoidThreshold).",
     "placeholders": {
       "want": {
         "content": "$1",
@@ -171,11 +183,67 @@
   },
   "tryShown": {
     "message": "Shown",
-    "description": "Verdict: the filter would keep the typed title visible."
+    "description": "Read out by screen readers when the try box's verdict says the filter would keep the typed title visible, such as when moving a slider makes it shown. The verdict on screen (tryOnTopic or tryNotAvoided) says why."
   },
   "tryHidden": {
     "message": "Hidden",
-    "description": "Verdict: the filter would hide the typed title."
+    "description": "Read out by screen readers when the try box's verdict says the filter would hide the typed title, such as when moving a slider makes it hidden. The verdict on screen (tryAvoided or tryOffTopic) says why."
+  },
+  "tryAvoided": {
+    "message": "Hidden: matches a topic to avoid at $SCORE$, reaching the $LINE$ that hides.",
+    "description": "Verdict in the try box: the title would be hidden because it matches a topic to avoid at least as well as the avoidThreshold slider (\"Match that hides\") is set. Use the words of that slider's label.",
+    "placeholders": {
+      "score": {
+        "content": "$1",
+        "example": "0.31"
+      },
+      "line": {
+        "content": "$2",
+        "example": "0.25"
+      }
+    }
+  },
+  "tryOffTopic": {
+    "message": "Hidden: matches your topics at only $SCORE$, below the $LINE$ needed.",
+    "description": "Verdict in the try box: the title would be hidden because it matches the wanted topics less than the threshold slider (\"Match needed to show\") asks. Use the words of that slider's label.",
+    "placeholders": {
+      "score": {
+        "content": "$1",
+        "example": "0.18"
+      },
+      "line": {
+        "content": "$2",
+        "example": "0.25"
+      }
+    }
+  },
+  "tryOnTopic": {
+    "message": "Shown: matches your topics at $SCORE$, meeting the $LINE$ needed.",
+    "description": "Verdict in the try box: the title would be shown because it matches the wanted topics at least as well as the threshold slider (\"Match needed to show\") asks. Use the words of that slider's label.",
+    "placeholders": {
+      "score": {
+        "content": "$1",
+        "example": "0.31"
+      },
+      "line": {
+        "content": "$2",
+        "example": "0.25"
+      }
+    }
+  },
+  "tryNotAvoided": {
+    "message": "Shown: matches a topic to avoid at only $SCORE$, below the $LINE$ that hides.",
+    "description": "Verdict in the try box with only topics to avoid: the title would be shown because it matches them less than the avoidThreshold slider (\"Match that hides\") is set. Use the words of that slider's label.",
+    "placeholders": {
+      "score": {
+        "content": "$1",
+        "example": "0.18"
+      },
+      "line": {
+        "content": "$2",
+        "example": "0.25"
+      }
+    }
   },
   "tryNeedsTopics": {
     "message": "Add a topic above to try a title.",

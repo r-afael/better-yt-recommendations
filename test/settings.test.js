@@ -24,24 +24,23 @@ test("reads every default from an empty store", async () => {
   assert.deepEqual({ ...(await settings.load()) }, { ...settings.DEFAULTS });
 });
 
-test("reads a sensitivity as the nearest value the slider can show", async () => {
-  for (const [stored, expected] of [
-    [0.9, 0.4],
-    [0.01, 0.1],
-    [0.333, 0.33],
+test("reads each match line as the nearest value its slider can show", async () => {
+  for (const [key, stored, expected] of [
+    ["threshold", 0.9, 0.4],
+    ["threshold", 0.01, 0.1],
+    ["threshold", 0.333, 0.33],
+    ["avoidThreshold", 0.9, 0.4],
+    ["avoidThreshold", 0.287, 0.29],
   ]) {
-    const { settings } = loadSettings({ threshold: stored });
-    assert.equal((await settings.load()).threshold, expected, `threshold ${stored}`);
+    const { settings } = loadSettings({ [key]: stored });
+    assert.equal((await settings.load())[key], expected, `${key} ${stored}`);
   }
 });
 
 test("reads values of the wrong type as their defaults", async () => {
-  const { settings } = loadSettings({ threshold: "abc", topics: 42, hideShorts: "yes" });
-  const values = await settings.load();
-  assert.deepEqual(
-    { threshold: values.threshold, topics: values.topics, hideShorts: values.hideShorts },
-    { threshold: 0.25, topics: "", hideShorts: false },
-  );
+  const { settings } = loadSettings({ threshold: "abc", avoidThreshold: null, topics: 42, hideShorts: "yes" });
+  const { threshold, avoidThreshold, topics, hideShorts } = await settings.load();
+  assert.deepEqual({ threshold, avoidThreshold, topics, hideShorts }, { threshold: 0.25, avoidThreshold: 0.24, topics: "", hideShorts: false });
 });
 
 test("reports a change from another device within bounds", async () => {

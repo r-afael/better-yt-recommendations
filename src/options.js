@@ -1,8 +1,8 @@
 // Options page with every setting: the popup's switches for Home and Shorts and Filter
-// recommendations, then what doesn't fit in the popup: the topics to see and to avoid, the
-// filter sensitivity, a box to try a title against them, the topic profiles, the pages to
-// filter, the channel lists and the keyboard shortcuts. Open YouTube tabs pick up changes
-// right away.
+// recommendations, then what doesn't fit in the popup: the topics to see and to avoid, each with
+// the slider that sets how well a video must match them, a box to try a title against them, the
+// topic profiles, the pages to filter, the channel lists and the keyboard shortcuts. Open
+// YouTube tabs pick up changes right away.
 (() => {
   "use strict";
 
@@ -26,16 +26,26 @@
     topics: topicsField,
     avoidTopics: avoidField,
     threshold,
+    avoidThreshold,
     activeProfile: profileSelect,
     allowedChannels,
     blockedChannels,
   } = form.elements;
   const channelFields = [allowedChannels, blockedChannels];
   const topicFields = [topicsField, avoidField];
-  const thresholdValue = document.getElementById("threshold-value");
-  const thresholdHint = document.getElementById("threshold-hint");
+  // Each slider sets the line for one list of topics. Its hint says what it does, or that it does
+  // nothing until that list has a topic; it stays enabled, so it can be set ahead.
+  const sliders = [
+    { input: threshold, list: "want", hint: "thresholdHint", emptyHint: "thresholdHintEmpty" },
+    { input: avoidThreshold, list: "avoid", hint: "avoidThresholdHint", emptyHint: "avoidThresholdHintEmpty" },
+  ].map((slider) => ({
+    ...slider,
+    value: document.getElementById(`${slider.input.id}-value`),
+    hintLine: document.getElementById(`${slider.input.id}-hint`),
+  }));
   const tryTitle = document.getElementById("try-title");
   const tryVerdict = document.getElementById("try-verdict");
+  const tryOutcome = document.getElementById("try-outcome");
   const tryScores = document.getElementById("try-scores");
   const pageSwitches = [...document.querySelectorAll('section[aria-labelledby="pages-section"] input')];
   const profileName = document.getElementById("profile-name");
@@ -46,12 +56,20 @@
   const topicsError = document.getElementById("topics-error");
   const channelsError = document.getElementById("channels-error");
   const shortcutList = document.getElementById("shortcut-list");
-  const filterControls = [...topicFields, threshold, tryTitle, profileSelect, profileName, ...pageSwitches, ...channelFields];
+  const filterControls = [
+    ...topicFields,
+    ...sliders.map(({ input }) => input),
+    tryTitle,
+    profileSelect,
+    profileName,
+    ...pageSwitches,
+    ...channelFields,
+  ];
 
   let tryTimer = null;
   let trySequence = 0; // Only the answer to the latest try is shown.
   let tryPending = false;
-  let tryScore = null; // The latest try's { want, avoid }, which the slider judges again as it moves.
+  let tryScore = null; // The latest try's { want, avoid }, which the sliders judge again as they move.
   let tryFailed = false;
   // The profile selected when each topics field's pending edit started, which is the one it updates.
   const editedProfiles = new Map();
@@ -68,7 +86,30 @@
 
   const typedTitle = () => settings.clip(tryTitle.value, settings.LIMITS.MAX_TITLE_LENGTH);
 
-  const formatScore = (value) => (value === null ? ui.message("tryScoreNone") : ui.formatThreshold(value));
+  // A score shows as the slider step it reaches, so the number shown compares with each line the
+  // way the filter compares the score itself.
+  const formatScore = (value) =>
+    value === null ? ui.message("tryScoreNone") : ui.formatThreshold(settings.stepReached(value));
+
+  // The lines the sliders are at, by the setting each one saves.
+  const currentLines = () => Object.fromEntries(sliders.map(({ input }) => [input.name, input.valueAsNumber]));
+
+  // What the verdict names: the message for the rule that decided and the list whose score it
+  // judged, which is measured against that list's slider. A title the filter shows passes the
+  // wanted topics' line, or, without wanted topics, stays below the line of the topics to avoid.
+  const TRY_RULES = Object.freeze({
+    avoided: { key: "tryAvoided", list: "avoid" },
+    "off-topic": { key: "tryOffTopic", list: "want" },
+    "on-topic": { key: "tryOnTopic", list: "want" },
+    "not-avoided": { key: "tryNotAvoided", list: "avoid" },
+  });
+
+  function tryVerdictText(score, reason) {
+    const shownBy = score.want === null ? "not-avoided" : "on-topic";
+    const { key, list } = TRY_RULES[reason ?? shownBy];
+    const { input } = sliders.find((slider) => slider.list === list);
+    return ui.message(key, [formatScore(score[list]), ui.formatThreshold(input.valueAsNumber)]);
+  }
 
   // What the result says while there is no score to judge.
   function tryNote() {
@@ -78,14 +119,18 @@
     return verdict.hasTopics(verdict.lists(typed())) ? "" : ui.message("tryNeedsTopics");
   }
 
+  // The verdict names the line, so it changes at every slider step and stays out of the live
+  // region. Screen readers announce only Shown or Hidden, which changes when the outcome does.
   function renderTry() {
     if (tryScore === null) {
       setText(tryVerdict, "");
+      setText(tryOutcome, "");
       setText(tryScores, tryNote());
       return;
     }
-    const hidden = verdict.decide(tryScore, threshold.valueAsNumber) !== null;
-    setText(tryVerdict, ui.message(hidden ? "tryHidden" : "tryShown"));
+    const reason = verdict.decide(tryScore, currentLines());
+    setText(tryVerdict, tryVerdictText(tryScore, reason));
+    setText(tryOutcome, ui.message(reason === null ? "tryShown" : "tryHidden"));
     setText(tryScores, ui.message("tryScores", [formatScore(tryScore.want), formatScore(tryScore.avoid)]));
   }
 
@@ -133,10 +178,11 @@
     tryTimer = setTimeout(runTry, TRY_DELAY_MS);
   }
 
-  // With only topics to avoid, the slider works the other way round, so its hint says so.
-  function sensitivityHint() {
-    const { want, avoid } = verdict.lists(typed());
-    return want.length === 0 && avoid.length > 0 ? "sensitivityHintAvoid" : "sensitivityHint";
+  // The slider speaks the value as shown, since the shown value isn't read out on its own.
+  function renderSlider({ input, value, hintLine, list, hint, emptyHint }, typedLists) {
+    value.value = ui.formatThreshold(input.valueAsNumber);
+    input.setAttribute("aria-valuetext", value.value);
+    setText(hintLine, ui.message(typedLists[list].length > 0 ? hint : emptyHint));
   }
 
   // Each button needs a name to save or rename to, and a selected profile to rename or delete.
@@ -150,18 +196,16 @@
     deleteProfile.disabled = off || unselected;
   }
 
-  // The topics, the sensitivity, the try box, the profiles, the pages and the channel lists only
+  // The topics, the sliders, the try box, the profiles, the pages and the channel lists only
   // apply while filtering. The profiles and the channel lists start disabled in the HTML: a list
-  // typed before the stored ones load would have nothing to take its names out of. Moving the
+  // typed before the stored ones load would have nothing to take its names out of. Moving a
   // slider judges the tried title again. The switches for Home and Shorts work without the filter.
   function render() {
     ui.renderFeedSwitches(form.elements);
     for (const control of filterControls) control.disabled = !topicFilter.checked;
     renderProfiles();
-    // The slider speaks the value as shown, since the shown value isn't read out on its own.
-    thresholdValue.value = ui.formatThreshold(threshold.valueAsNumber);
-    threshold.setAttribute("aria-valuetext", thresholdValue.value);
-    thresholdHint.textContent = ui.message(sensitivityHint());
+    const typedLists = verdict.lists(typed());
+    for (const slider of sliders) renderSlider(slider, typedLists);
     status.render();
     if (!topicFilter.checked) stopTry();
     renderTry();
@@ -290,8 +334,10 @@
     field.addEventListener("input", () => showLine(channelsError, channelNote()));
   }
   tryTitle.maxLength = settings.LIMITS.MAX_TITLE_LENGTH;
-  threshold.min = settings.LIMITS.MIN_THRESHOLD;
-  threshold.max = settings.LIMITS.MAX_THRESHOLD;
+  for (const { input } of sliders) {
+    input.min = settings.LIMITS.MIN_THRESHOLD;
+    input.max = settings.LIMITS.MAX_THRESHOLD;
+  }
   for (const field of [tryTitle, ...topicFields]) field.addEventListener("input", scheduleTry);
   // Enter in the title box would submit the form and reload the page.
   form.addEventListener("submit", (event) => event.preventDefault());

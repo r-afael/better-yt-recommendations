@@ -46,21 +46,28 @@
           <label class="title" for="topics" data-i18n="topics"></label>
           <textarea id="topics" name="topics" rows="3" data-i18n-placeholder="topicsPlaceholder" aria-describedby="topics-hint"></textarea>
           <span class="hint" id="topics-hint" data-i18n="topicsHint"></span>
-          <label class="title" for="avoidTopics" data-i18n="avoidTopics"></label>
-          <textarea id="avoidTopics" name="avoidTopics" rows="3" data-i18n-placeholder="avoidTopicsPlaceholder" aria-describedby="avoidTopics-hint"></textarea>
-          <span class="hint" id="avoidTopics-hint" data-i18n="avoidTopicsHint"></span>
           <span class="range-label">
-            <label class="title" for="threshold" data-i18n="sensitivity"></label>
+            <label class="title" for="threshold" data-i18n="threshold"></label>
             <output id="threshold-value" for="threshold" aria-hidden="true"></output>
           </span>
           <input type="range" id="threshold" name="threshold" step="0.01" aria-describedby="threshold-hint">
           <span class="hint" id="threshold-hint"></span>
+          <label class="title list-start" for="avoidTopics" data-i18n="avoidTopics"></label>
+          <textarea id="avoidTopics" name="avoidTopics" rows="3" data-i18n-placeholder="avoidTopicsPlaceholder" aria-describedby="avoidTopics-hint"></textarea>
+          <span class="hint" id="avoidTopics-hint" data-i18n="avoidTopicsHint"></span>
+          <span class="range-label">
+            <label class="title" for="avoidThreshold" data-i18n="avoidThreshold"></label>
+            <output id="avoidThreshold-value" for="avoidThreshold" aria-hidden="true"></output>
+          </span>
+          <input type="range" id="avoidThreshold" name="avoidThreshold" step="0.01" aria-describedby="avoidThreshold-hint">
+          <span class="hint" id="avoidThreshold-hint"></span>
           <div class="try">
             <label class="title" for="try-title" data-i18n="tryTitle"></label>
             <input id="try-title" type="text" data-i18n-placeholder="tryTitlePlaceholder" aria-describedby="try-hint">
             <span class="hint" id="try-hint" data-i18n="tryTitleHint"></span>
-            <p id="try-result" role="status" aria-live="polite">
-              <span id="try-verdict" class="verdict"></span> <span id="try-scores"></span>
+            <p id="try-result">
+              <span id="try-verdict" class="verdict"></span>
+              <span role="status" aria-live="polite"><span id="try-outcome" class="visually-hidden"></span> <span id="try-scores"></span></span>
             </p>
           </div>
           <p class="status" id="model-status" tabindex="-1" role="status" aria-live="polite" hidden></p>

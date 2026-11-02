@@ -5,7 +5,7 @@
   const LIMITS = Object.freeze({
     MAX_TEXT_LENGTH: 500, // The longest list of topics, as the options page lets the user type it.
     MAX_TITLE_LENGTH: 200, // Characters of a video title sent to the model, about twice YouTube's 100-character limit.
-    MIN_THRESHOLD: 0.1, // The ends of the sensitivity slider, which options.js sets from them.
+    MIN_THRESHOLD: 0.1, // The ends of both match sliders, which options.js sets from them.
     MAX_THRESHOLD: 0.4,
     MAX_CHANNELS: 50, // Names per channel list.
     MAX_CHANNEL_LENGTH: 100, // Characters per channel name.
@@ -19,7 +19,15 @@
   const QUOTA_ERROR = "better-yt:quota";
 
   const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
-  const toSliderStep = (value) => Math.round(value * 100) / 100; // The slider moves in steps of 0.01.
+  const STEPS = 100; // The sliders move in steps of 0.01.
+  const toSliderStep = (value) => Math.round(value * STEPS) / STEPS;
+  // The highest slider step at or below a score, so a score shown as 0.58 meets a line of 0.58
+  // and not one of 0.59. Rounding lands on that step or the one above, even where value * 100
+  // falls just short of a whole number, as 0.58 * 100 does.
+  function stepReached(value) {
+    const step = Math.round(value * STEPS);
+    return (step / STEPS <= value ? step : step - 1) / STEPS;
+  }
   // Cutting between the two halves of an emoji would leave half of it, so that half goes too.
   const cut = (value, maxLength) => value.slice(0, maxLength).replace(/[\uD800-\uDBFF]$/u, "");
   const collapseSpaces = (value) => String(value ?? "").replaceAll(/\s+/gu, " ").trim();
@@ -67,9 +75,16 @@
     topicFilter: flag(true), // Hide recommendations that don't match the topics. Does nothing until topics are set.
     topics: text(), // Topics the user wants to see, as typed on the options page.
     avoidTopics: text(), // Topics the user wants hidden, as typed on the options page.
-    // How close to a topic a video must be to stay visible. 0.25 kept 95% of on-topic
+    // How well a video must match a wanted topic to stay visible. 0.25 kept 95% of on-topic
     // and hid 98% of off-topic sidebar videos in testing.
     threshold: range(0.25, LIMITS.MIN_THRESHOLD, LIMITS.MAX_THRESHOLD),
+    // How well a video must match a topic to avoid to be hidden. Against gaming, celebrity gossip
+    // and true crime, 0.24 hid 16 of 20 titles that clearly belong to them and none of 9 unrelated
+    // ones, and spared 5 of 13 near misses, such as chess titles; game programming tutorials
+    // still matched gaming above it. Lines from 0.21 to 0.25 did about as well on these 42
+    // titles: clear matches (0.12 to 0.46) and near misses (0.11 to 0.47) overlap, so no line
+    // separates them well.
+    avoidThreshold: range(0.24, LIMITS.MIN_THRESHOLD, LIMITS.MAX_THRESHOLD),
     filterWatch: flag(true), // Filter the recommendations next to or under the video being watched.
     filterHome: flag(true), // Filter Home, which is all recommendations.
     filterSubscriptions: flag(false), // Filter the Subscriptions grid. Off: it shows what the user subscribed to.
@@ -129,5 +144,5 @@
   }
 
   globalThis.BetterYT ??= {};
-  globalThis.BetterYT.settings = { DEFAULTS, LIMITS, QUOTA_ERROR, load, save, subscribe, nameKey, sameName, clip };
+  globalThis.BetterYT.settings = { DEFAULTS, LIMITS, QUOTA_ERROR, load, save, subscribe, nameKey, sameName, clip, stepReached };
 })();

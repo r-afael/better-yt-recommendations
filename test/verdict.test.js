@@ -11,38 +11,40 @@ function loadVerdict() {
 
 const verdict = loadVerdict();
 
-// Each row is [want, avoid, threshold, the expected verdict].
+const LINES = { threshold: 0.25, avoidThreshold: 0.3 };
+
+// Each row is [want, avoid, the expected verdict at LINES].
 function assertDecisions(rows) {
-  for (const [want, avoid, threshold, expected] of rows) {
-    assert.equal(verdict.decide(score(want, avoid), threshold), expected, JSON.stringify({ want, avoid, threshold }));
+  for (const [want, avoid, expected] of rows) {
+    assert.equal(verdict.decide(score(want, avoid), LINES), expected, JSON.stringify({ want, avoid }));
   }
 }
 
-test("only wanted topics: hidden below the sensitivity", () => {
+test("only wanted topics: hidden below the match needed, shown from it", () => {
   assertDecisions([
-    [0.24, null, 0.25, "off-topic"],
-    [0.25, null, 0.25, null],
+    [0.24, null, "off-topic"],
+    [0.25, null, null],
   ]);
 });
 
-test("only topics to avoid: hidden when closer than the sensitivity", () => {
+test("only topics to avoid: hidden from the match that hides, shown below it", () => {
   assertDecisions([
-    [null, 0.26, 0.25, "avoided"],
-    [null, 0.25, 0.25, null],
+    [null, 0.3, "avoided"],
+    [null, 0.29, null],
   ]);
 });
 
-test("both lists: hidden when a topic to avoid is closer than the closest wanted one", () => {
+test("both lists: each score is judged against its own line, and a topic to avoid wins", () => {
   assertDecisions([
-    [0.31, 0.35, 0.25, "avoided"],
-    [0.31, 0.2, 0.25, null],
-    [0.31, 0.2, 0.35, "off-topic"],
-    [0.4, 0.4, 0.25, null],
+    [0.4, 0.3, "avoided"],
+    [0.1, 0.35, "avoided"],
+    [0.1, 0.2, "off-topic"],
+    [0.31, 0.29, null],
   ]);
 });
 
 test("an unscored video stays visible", () => {
-  assert.equal(verdict.decide(verdict.NO_SCORE, 0.25), null);
+  assert.equal(verdict.decide(verdict.NO_SCORE, LINES), null);
 });
 
 test("the model is needed only with the filter on and some topics", () => {

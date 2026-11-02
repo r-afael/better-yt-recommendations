@@ -41,11 +41,14 @@
   "topicsHint": {
     "message": "Pisahkan topik dengan koma."
   },
-  "sensitivity": {
-    "message": "Sensitivitas filter"
+  "threshold": {
+    "message": "Kecocokan untuk ditampilkan"
   },
-  "sensitivityHint": {
-    "message": "Seberapa dekat video harus dengan topik yang Anda inginkan. Lebih tinggi menyembunyikan lebih banyak video; lebih rendah menampilkan lebih banyak."
+  "thresholdHint": {
+    "message": "Seberapa cocok video minimal dengan salah satu topik Anda agar tetap tampil. Lebih tinggi menyembunyikan lebih banyak."
+  },
+  "thresholdHintEmpty": {
+    "message": "Tidak berpengaruh sampai Anda menambahkan topik yang ingin dilihat."
   },
   "modelIdle": {
     "message": "Model dimuat saat halaman membutuhkannya, atau saat Anda mengklik Muat sekarang."
@@ -90,10 +93,16 @@
     "message": "game, gosip selebriti"
   },
   "avoidTopicsHint": {
-    "message": "Video yang lebih dekat ke salah satu topik ini daripada ke topik mana pun yang Anda inginkan akan disembunyikan. Pisahkan topik dengan koma."
+    "message": "Video yang cocok dengan salah satu topik ini disembunyikan, meskipun juga cocok dengan topik yang Anda inginkan. Pisahkan topik dengan koma."
   },
-  "sensitivityHintAvoid": {
-    "message": "Jika hanya ada topik yang dihindari: seberapa dekat video harus dengan salah satunya agar disembunyikan. Lebih tinggi menyembunyikan lebih sedikit video; lebih rendah menyembunyikan lebih banyak."
+  "avoidThreshold": {
+    "message": "Kecocokan untuk disembunyikan"
+  },
+  "avoidThresholdHint": {
+    "message": "Video yang cocok dengan topik yang dihindari sebesar ini atau lebih akan disembunyikan. Lebih rendah menyembunyikan lebih banyak."
+  },
+  "avoidThresholdHintEmpty": {
+    "message": "Tidak berpengaruh sampai Anda menambahkan topik yang ingin dihindari."
   },
   "summaryAvoiding": {
     "message": "Menghindari: $TOPICS$",
@@ -114,10 +123,10 @@
     "message": "Cara mengalahkan Pertahanan Sisilia"
   },
   "tryTitleHint": {
-    "message": "Ketik judul video untuk melihat bagaimana filter menilainya dengan topik dan sensitivitas di atas."
+    "message": "Ketik judul video untuk melihat apakah filter akan menampilkan atau menyembunyikannya dengan setelan di atas."
   },
   "tryScores": {
-    "message": "Topik yang diinginkan terdekat: $WANT$ · Topik yang dihindari terdekat: $AVOID$",
+    "message": "Kecocokan dengan topik Anda: $WANT$ · Kecocokan dengan topik yang dihindari: $AVOID$",
     "placeholders": {
       "want": {
         "content": "$1",
@@ -137,6 +146,58 @@
   },
   "tryHidden": {
     "message": "Disembunyikan"
+  },
+  "tryAvoided": {
+    "message": "Disembunyikan: cocok dengan topik yang dihindari sebesar $SCORE$, mencapai $LINE$ untuk disembunyikan.",
+    "placeholders": {
+      "score": {
+        "content": "$1",
+        "example": "0.31"
+      },
+      "line": {
+        "content": "$2",
+        "example": "0.25"
+      }
+    }
+  },
+  "tryOffTopic": {
+    "message": "Disembunyikan: cocok dengan topik Anda hanya $SCORE$, di bawah $LINE$ yang diperlukan.",
+    "placeholders": {
+      "score": {
+        "content": "$1",
+        "example": "0.18"
+      },
+      "line": {
+        "content": "$2",
+        "example": "0.25"
+      }
+    }
+  },
+  "tryOnTopic": {
+    "message": "Ditampilkan: cocok dengan topik Anda sebesar $SCORE$, memenuhi $LINE$ yang diperlukan.",
+    "placeholders": {
+      "score": {
+        "content": "$1",
+        "example": "0.31"
+      },
+      "line": {
+        "content": "$2",
+        "example": "0.25"
+      }
+    }
+  },
+  "tryNotAvoided": {
+    "message": "Ditampilkan: cocok dengan topik yang dihindari hanya $SCORE$, di bawah $LINE$ untuk disembunyikan.",
+    "placeholders": {
+      "score": {
+        "content": "$1",
+        "example": "0.18"
+      },
+      "line": {
+        "content": "$2",
+        "example": "0.25"
+      }
+    }
   },
   "tryNeedsTopics": {
     "message": "Tambahkan topik di atas untuk mencoba judul."

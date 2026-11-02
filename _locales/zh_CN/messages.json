@@ -41,11 +41,14 @@
   "topicsHint": {
     "message": "用逗号分隔各个主题。"
   },
-  "sensitivity": {
-    "message": "过滤灵敏度"
+  "threshold": {
+    "message": "显示所需匹配度"
   },
-  "sensitivityHint": {
-    "message": "视频与你想看的主题要多接近。越高隐藏的视频越多，越低保留的越多。"
+  "thresholdHint": {
+    "message": "视频至少要与你的某个主题匹配到这个程度才会保留。越高隐藏越多。"
+  },
+  "thresholdHintEmpty": {
+    "message": "添加想看的主题之前，此项不起作用。"
   },
   "modelIdle": {
     "message": "页面需要时会加载模型，你也可以点击“立即加载”。"
@@ -90,10 +93,16 @@
     "message": "游戏，明星八卦"
   },
   "avoidTopicsHint": {
-    "message": "与其中某个主题比与你想看的任何主题更接近的视频会被隐藏。用逗号分隔各个主题。"
+    "message": "与其中某个主题匹配的视频会被隐藏，即使它也匹配你想看的主题。用逗号分隔各个主题。"
   },
-  "sensitivityHintAvoid": {
-    "message": "仅设置了要避开的主题时：视频与其中某个主题要多接近才会被隐藏。越高隐藏的视频越少，越低隐藏的越多。"
+  "avoidThreshold": {
+    "message": "触发隐藏的匹配度"
+  },
+  "avoidThresholdHint": {
+    "message": "与某个要避开的主题匹配达到这个程度或更高的视频会被隐藏。越低隐藏越多。"
+  },
+  "avoidThresholdHintEmpty": {
+    "message": "添加要避开的主题之前，此项不起作用。"
   },
   "summaryAvoiding": {
     "message": "避开：$TOPICS$",
@@ -114,10 +123,10 @@
     "message": "如何击败西西里防御"
   },
   "tryTitleHint": {
-    "message": "输入一个视频标题，看看过滤器会如何根据上面的主题和灵敏度判断它。"
+    "message": "输入一个视频标题，看看按上面的设置，过滤器会显示还是隐藏它。"
   },
   "tryScores": {
-    "message": "最接近的想看主题：$WANT$ · 最接近的想避开主题：$AVOID$",
+    "message": "你的主题匹配度：$WANT$ · 要避开的主题匹配度：$AVOID$",
     "placeholders": {
       "want": {
         "content": "$1",
@@ -137,6 +146,58 @@
   },
   "tryHidden": {
     "message": "会隐藏"
+  },
+  "tryAvoided": {
+    "message": "会隐藏：与要避开的主题匹配度为 $SCORE$，达到了触发隐藏的 $LINE$。",
+    "placeholders": {
+      "score": {
+        "content": "$1",
+        "example": "0.31"
+      },
+      "line": {
+        "content": "$2",
+        "example": "0.25"
+      }
+    }
+  },
+  "tryOffTopic": {
+    "message": "会隐藏：与你的主题匹配度仅为 $SCORE$，低于所需的 $LINE$。",
+    "placeholders": {
+      "score": {
+        "content": "$1",
+        "example": "0.18"
+      },
+      "line": {
+        "content": "$2",
+        "example": "0.25"
+      }
+    }
+  },
+  "tryOnTopic": {
+    "message": "会显示：与你的主题匹配度为 $SCORE$，达到了所需的 $LINE$。",
+    "placeholders": {
+      "score": {
+        "content": "$1",
+        "example": "0.31"
+      },
+      "line": {
+        "content": "$2",
+        "example": "0.25"
+      }
+    }
+  },
+  "tryNotAvoided": {
+    "message": "会显示：与要避开的主题匹配度仅为 $SCORE$，低于触发隐藏的 $LINE$。",
+    "placeholders": {
+      "score": {
+        "content": "$1",
+        "example": "0.18"
+      },
+      "line": {
+        "content": "$2",
+        "example": "0.25"
+      }
+    }
   },
   "tryNeedsTopics": {
     "message": "请先在上面添加一个主题，再试标题。"

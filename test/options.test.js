@@ -22,6 +22,7 @@ import {
 } from "./helpers.js";
 
 const SAVE_DELAY_MS = 400;
+const messages = readJson("_locales/en/messages.json");
 const IDLE_TEXT = "The model loads when a page needs it, or when you click Load now.";
 
 async function setup(t, options) {
@@ -39,15 +40,18 @@ async function setup(t, options) {
   };
   const commit = () => field.dispatchEvent(new window.Event("change", { bubbles: true }));
   const slider = document.querySelector('input[name="threshold"]');
-  const sliderValue = document.querySelector("#threshold-value");
-  const sliderHint = document.querySelector("#threshold-hint");
-  // Moves the slider the way a drag or an arrow key does: input, then change.
-  const slide = (value) => {
-    slider.value = String(value);
-    slider.dispatchEvent(new window.Event("input", { bubbles: true }));
-    slider.dispatchEvent(new window.Event("change", { bubbles: true }));
+  const avoidSlider = document.querySelector('input[name="avoidThreshold"]');
+  const valueOf = (range) => document.querySelector(`#${range.id}-value`).value;
+  const hintOf = (range) => document.querySelector(`#${range.id}-hint`).textContent;
+  // Moves a slider the way a drag or an arrow key does: input, then change.
+  const slide = (value, range = slider) => {
+    range.value = String(value);
+    range.dispatchEvent(new window.Event("input", { bubbles: true }));
+    range.dispatchEvent(new window.Event("change", { bubbles: true }));
   };
-  return { ...page, toggle, field, avoidField, status, progressBar, loadButton, type, commit, slider, sliderValue, sliderHint, slide };
+  return {
+    ...page, toggle, field, avoidField, status, progressBar, loadButton, type, commit, slider, avoidSlider, valueOf, hintOf, slide,
+  };
 }
 
 // What the background stores while the model loads, as chrome.storage.session reports it.
@@ -61,7 +65,7 @@ const FEED_SETTINGS = ["enabled", "enforce", "hideShorts"]; // The switches for 
 
 test("the Filter recommendations switch on the options page saves and enables the fields, profiles, page checkboxes and channel lists, but not the switches for Home and Shorts", async (t) => {
   const stored = { topicFilter: false, profiles: [WORK], activeProfile: WORK.name };
-  const { document, chrome, toggle, field, avoidField, slider, type } = await setup(t, { stored });
+  const { document, chrome, toggle, field, avoidField, slider, avoidSlider, type } = await setup(t, { stored });
   const titleBox = document.querySelector("#try-title");
   const profileName = document.querySelector("#profile-name");
   const profileButtons = ["save", "rename", "delete"].map((action) => document.querySelector(`#${action}-profile`));
@@ -69,7 +73,7 @@ test("the Filter recommendations switch on the options page saves and enables th
   const profileControls = [document.querySelector("#profile"), profileName, ...profileButtons];
   const channelFields = [...document.querySelectorAll('textarea[name$="Channels"]')];
   assert.equal(channelFields.length, 2);
-  const controls = [field, avoidField, slider, titleBox, ...profileControls, ...PAGE_SETTINGS.map(toggle), ...channelFields];
+  const controls = [field, avoidField, slider, avoidSlider, titleBox, ...profileControls, ...PAGE_SETTINGS.map(toggle), ...channelFields];
   const disabled = () => controls.map((control) => control.disabled);
   const every = (value) => controls.map(() => value);
   assert.deepEqual(disabled(), every(true));
@@ -154,29 +158,30 @@ test("closing the page without typing saves nothing", async (t) => {
   assert.equal(chrome.data.topics, undefined);
 });
 
-test("shows the stored sensitivity, or 0.25 by default", async (t) => {
-  const { slider, sliderValue } = await setup(t);
-  assert.equal(slider.valueAsNumber, 0.25);
-  assert.equal(sliderValue.value, "0.25");
+test("shows each stored match line, or its default", async (t) => {
+  const { slider, avoidSlider, valueOf } = await setup(t);
+  assert.deepEqual([slider, avoidSlider].map(valueOf), ["0.25", "0.24"]);
 
-  const stored = await setup(t, { stored: { threshold: 0.3 } });
-  assert.equal(stored.slider.valueAsNumber, 0.3);
-  assert.equal(stored.sliderValue.value, "0.30");
+  const stored = await setup(t, { stored: { threshold: 0.3, avoidThreshold: 0.35 } });
+  assert.deepEqual([stored.slider.valueAsNumber, stored.avoidSlider.valueAsNumber], [0.3, 0.35]);
+  assert.deepEqual([stored.slider, stored.avoidSlider].map(stored.valueOf), ["0.30", "0.35"]);
 });
 
-test("saves the sensitivity as a number once the slider pauses, showing each value as it moves", async (t) => {
-  const { chrome, clock, slider, slide, sliderValue } = await setup(t);
-  slide(0.31);
-  assert.equal(sliderValue.value, "0.31");
-  assert.equal(slider.getAttribute("aria-valuetext"), "0.31", "screen readers hear the value shown");
-  slide(0.32);
-  clock.tick(SAVE_DELAY_MS - 1);
-  assert.equal(chrome.data.threshold, undefined);
-  clock.tick(1);
-  assert.equal(chrome.data.threshold, 0.32);
+test("saves each slider as a number once it pauses, showing each value as it moves", async (t) => {
+  const { chrome, clock, slider, avoidSlider, slide, valueOf } = await setup(t);
+  for (const range of [slider, avoidSlider]) {
+    slide(0.31, range);
+    assert.equal(valueOf(range), "0.31", range.name);
+    assert.equal(range.getAttribute("aria-valuetext"), "0.31", `${range.name}: screen readers hear the value shown`);
+    slide(0.32, range);
+    clock.tick(SAVE_DELAY_MS - 1);
+    assert.equal(chrome.data[range.name], undefined, range.name);
+    clock.tick(1);
+    assert.equal(chrome.data[range.name], 0.32, range.name);
+  }
 });
 
-test("saves both the topics and the sensitivity when the user moves from one to the other", async (t) => {
+test("saves both the topics and the match needed when the user moves from one to the other", async (t) => {
   const { window, chrome, type, slide } = await setup(t);
   type("chess");
   slide(0.2);
@@ -185,21 +190,20 @@ test("saves both the topics and the sensitivity when the user moves from one to 
   assert.equal(chrome.data.threshold, 0.2);
 });
 
-test("the sensitivity hint explains the slider when only topics to avoid are set", async (t) => {
-  const { type, avoidField, sliderHint } = await setup(t, { stored: { avoidTopics: "gaming" } });
-  const messages = readJson("_locales/en/messages.json");
-  assert.equal(sliderHint.textContent, messages.sensitivityHintAvoid.message);
+test("each slider's hint says it has no effect until its list has a topic", async (t) => {
+  const { type, avoidField, slider, avoidSlider, hintOf } = await setup(t, { stored: { avoidTopics: "gaming" } });
+  const hints = () => [slider, avoidSlider].map(hintOf);
+  assert.deepEqual(hints(), [messages.thresholdHintEmpty.message, messages.avoidThresholdHint.message]);
   type("chess");
-  assert.equal(sliderHint.textContent, messages.sensitivityHint.message);
-  type("");
   type("", avoidField);
-  assert.equal(sliderHint.textContent, messages.sensitivityHint.message);
+  assert.deepEqual(hints(), [messages.thresholdHint.message, messages.avoidThresholdHintEmpty.message]);
+  assert.equal(avoidSlider.disabled, false, "it can be set ahead");
 });
 
-test("shows the sensitivity in the browser's language", async (t) => {
-  const { slider, sliderValue } = await setup(t, { locale: "ar", stored: { threshold: 0.3 } });
-  assert.equal(sliderValue.value, (0.3).toLocaleString("ar", { minimumFractionDigits: 2 }));
-  assert.equal(slider.getAttribute("aria-valuetext"), sliderValue.value, "the slider speaks it the same way");
+test("shows the match needed in the browser's language", async (t) => {
+  const { slider, valueOf } = await setup(t, { locale: "ar", stored: { threshold: 0.3 } });
+  assert.equal(valueOf(slider), (0.3).toLocaleString("ar", { minimumFractionDigits: 2 }));
+  assert.equal(slider.getAttribute("aria-valuetext"), valueOf(slider), "the slider speaks it the same way");
 });
 
 test("describes each model state", async (t) => {
@@ -356,6 +360,7 @@ test("ignores storage changes that aren't the model status", async (t) => {
 const TRY_TITLE = "How to beat the Sicilian Defense";
 const TRY_DELAY_MS = 400; // How long the try box waits for typing to pause.
 const TRY_ERROR = "Couldn't check the title. Try again shortly.";
+const SHOWN = "Shown: matches your topics at 0.31, meeting the 0.25 needed."; // A score of 0.31 at the default line.
 
 // The options page with each title it tries waiting until the test answers it. Other messages,
 // such as loading the model, are answered at once.
@@ -409,33 +414,61 @@ test("tries a title the way the filter reads one on YouTube, with its spacing co
   assert.deepEqual(requests.map((request) => request.message.videos[0].title), ["chess openings"]);
 });
 
-test("shows both scores and whether the title would be hidden", async (t) => {
-  const { clock, requests, tryTitle, answer, type, avoidField, verdictText, scoresText } = await setupTry(t, {
+test("the verdict names the rule that decided and its line, and follows either slider without asking again", async (t) => {
+  const { clock, requests, tryTitle, answer, type, field, avoidSlider, slide, verdictText, scoresText } = await setupTry(t, {
     stored: { topics: "chess", avoidTopics: "gaming" },
   });
   tryTitle(TRY_TITLE);
   await answer({ scores: { try: score(0.31, 0.35) } });
-  assert.equal(verdictText(), "Hidden");
-  assert.equal(scoresText(), "Closest wanted topic: 0.31 · Closest topic to avoid: 0.35");
+  assert.equal(verdictText(), "Hidden: matches a topic to avoid at 0.35, reaching the 0.24 that hides.");
+  assert.equal(scoresText(), "Match with your topics: 0.31 · Match with topics to avoid: 0.35");
+  slide(0.4, avoidSlider);
+  assert.equal(verdictText(), SHOWN);
+  slide(0.35);
+  assert.equal(verdictText(), "Hidden: matches your topics at only 0.31, below the 0.35 needed.");
+  assert.equal(requests.length, 1);
 
-  type("", avoidField);
+  type("", field);
   clock.tick(TRY_DELAY_MS);
-  assert.deepEqual(requests.at(-1).message.avoidTopics, []);
-  await answer({ scores: { try: score(0.4) } });
-  assert.equal(verdictText(), "Shown");
-  assert.equal(scoresText(), "Closest wanted topic: 0.40 · Closest topic to avoid: none");
+  assert.deepEqual(requests.at(-1).message.topics, []);
+  await answer({ scores: { try: score(null, 0.18) } });
+  assert.equal(verdictText(), "Shown: matches a topic to avoid at only 0.18, below the 0.40 that hides.");
+  assert.equal(scoresText(), "Match with your topics: none · Match with topics to avoid: 0.18");
 });
 
-test("moving the sensitivity judges the title again without asking again", async (t) => {
-  const { requests, tryTitle, answer, verdictText, slide } = await setupTry(t, { stored: { topics: "chess", avoidTopics: "gaming" } });
+// Rounding would show 0.296 as 0.30 though a 0.30 line hides it, and 0.29 * 100 falls just short of 29.
+test("a score shows as the highest line it meets, so the number agrees with the verdict at every step", async (t) => {
+  const { tryTitle, answer, avoidSlider, slide, verdictText, scoresText } = await setupTry(t, {
+    stored: { topics: "chess", avoidTopics: "gaming", avoidThreshold: 0.4 },
+  });
   tryTitle(TRY_TITLE);
-  await answer({ scores: { try: score(0.31, 0.2) } });
-  assert.equal(verdictText(), "Shown");
-  slide(0.35);
-  assert.equal(verdictText(), "Hidden");
+  await answer({ scores: { try: score(0.296, 0.29) } });
+  assert.equal(scoresText(), "Match with your topics: 0.29 · Match with topics to avoid: 0.29");
+  slide(0.29);
+  assert.equal(verdictText(), "Shown: matches your topics at 0.29, meeting the 0.29 needed.");
   slide(0.3);
-  assert.equal(verdictText(), "Shown");
-  assert.equal(requests.length, 1);
+  assert.equal(verdictText(), "Hidden: matches your topics at only 0.29, below the 0.30 needed.");
+  slide(0.29, avoidSlider);
+  assert.equal(verdictText(), "Hidden: matches a topic to avoid at 0.29, reaching the 0.29 that hides.");
+});
+
+test("tells screen readers only when moving a slider shows or hides the tried title", async (t) => {
+  const { window, document, tryTitle, answer, slide, verdictText } = await setupTry(t, { stored: { topics: "chess" } });
+  const live = document.querySelector('#try-result [role="status"]');
+  tryTitle(TRY_TITLE);
+  await answer({ scores: { try: score(0.31) } });
+  assert.equal(live.textContent, "Shown Match with your topics: 0.31 · Match with topics to avoid: none");
+  const announced = [];
+  const observer = new window.MutationObserver(() => announced.push(live.textContent));
+  observer.observe(live, { childList: true, characterData: true, subtree: true });
+  slide(0.3);
+  slide(0.31);
+  await flush();
+  assert.equal(verdictText(), "Shown: matches your topics at 0.31, meeting the 0.31 needed.");
+  assert.deepEqual(announced, [], "the line in the verdict isn't read out at each step");
+  slide(0.32);
+  await flush();
+  assert.deepEqual(announced, ["Hidden Match with your topics: 0.31 · Match with topics to avoid: none"]);
 });
 
 test("ignores the answer for a title that has changed since", async (t) => {
@@ -447,7 +480,7 @@ test("ignores the answer for a title that has changed since", async (t) => {
   assert.equal(verdictText(), "");
   assert.equal(scoresText(), "");
   await answer({ scores: { try: score(0.31) } }, latest);
-  assert.equal(verdictText(), "Shown");
+  assert.equal(verdictText(), SHOWN);
 });
 
 test("asks for a topic before trying a title", async (t) => {
@@ -479,7 +512,7 @@ test("says when the title couldn't be checked", async (t) => {
     assert.equal(verdictText(), "", `failure ${index}`);
     assert.equal(scoresText(), TRY_ERROR, `failure ${index}`);
     slide(0.3);
-    assert.equal(scoresText(), TRY_ERROR, `failure ${index}, after moving the sensitivity`);
+    assert.equal(scoresText(), TRY_ERROR, `failure ${index}, after moving the slider`);
   }
 });
 
@@ -491,7 +524,7 @@ test("shows that the model is loading while it waits", async (t) => {
   assert.equal(scoresText(), "Loading the model…");
   await reportStatus(chrome, { state: "ready" });
   await answer({ scores: { try: score(0.31) } });
-  assert.equal(verdictText(), "Shown");
+  assert.equal(verdictText(), SHOWN);
 });
 
 test("turning the filter off stops trying titles and clears the verdict", async (t) => {
@@ -587,8 +620,6 @@ async function setupChannels(t, options) {
   const stored = () => structuredClone({ allowedChannels: chrome.data.allowedChannels, blockedChannels: chrome.data.blockedChannels });
   return { ...page, allowed, blocked, channelsError, stored };
 }
-
-const messages = readJson("_locales/en/messages.json");
 
 test("saves each channel list one name per line", async (t) => {
   const { clock, type, allowed, blocked, stored } = await setupChannels(t, { stored: { allowedChannels: ["Fireship", "Traversy Media"] } });

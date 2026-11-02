@@ -41,11 +41,14 @@
   "topicsHint": {
     "message": "請用逗號分隔各個主題。"
   },
-  "sensitivity": {
-    "message": "過濾靈敏度"
+  "threshold": {
+    "message": "顯示所需符合度"
   },
-  "sensitivityHint": {
-    "message": "影片與你想看的主題要多接近。越高隱藏的影片越多，越低保留的越多。"
+  "thresholdHint": {
+    "message": "影片至少要與你的某個主題符合到這個程度才會保留。越高隱藏越多。"
+  },
+  "thresholdHintEmpty": {
+    "message": "新增想看的主題之前，此項不會生效。"
   },
   "modelIdle": {
     "message": "頁面需要時會載入模型，你也可以點選「立即載入」。"
@@ -90,10 +93,16 @@
     "message": "遊戲，名人八卦"
   },
   "avoidTopicsHint": {
-    "message": "與其中某個主題比與你想看的任何主題更接近的影片會被隱藏。請用逗號分隔各個主題。"
+    "message": "與其中某個主題符合的影片會被隱藏，即使它也符合你想看的主題。請用逗號分隔各個主題。"
   },
-  "sensitivityHintAvoid": {
-    "message": "僅設定了要避開的主題時：影片與其中某個主題要多接近才會被隱藏。越高隱藏的影片越少，越低隱藏的越多。"
+  "avoidThreshold": {
+    "message": "觸發隱藏的符合度"
+  },
+  "avoidThresholdHint": {
+    "message": "與某個要避開的主題符合達到這個程度或更高的影片會被隱藏。越低隱藏越多。"
+  },
+  "avoidThresholdHintEmpty": {
+    "message": "新增要避開的主題之前，此項不會生效。"
   },
   "summaryAvoiding": {
     "message": "避開：$TOPICS$",
@@ -114,10 +123,10 @@
     "message": "如何擊敗西西里防禦"
   },
   "tryTitleHint": {
-    "message": "輸入一個影片標題，看看過濾器會如何根據上面的主題和靈敏度判斷它。"
+    "message": "輸入一個影片標題，看看依照上面的設定，過濾器會顯示還是隱藏它。"
   },
   "tryScores": {
-    "message": "最接近的想看主題：$WANT$ · 最接近的想避開主題：$AVOID$",
+    "message": "你的主題符合度：$WANT$ · 要避開的主題符合度：$AVOID$",
     "placeholders": {
       "want": {
         "content": "$1",
@@ -137,6 +146,58 @@
   },
   "tryHidden": {
     "message": "會隱藏"
+  },
+  "tryAvoided": {
+    "message": "會隱藏：與要避開的主題符合度為 $SCORE$，達到觸發隱藏的 $LINE$。",
+    "placeholders": {
+      "score": {
+        "content": "$1",
+        "example": "0.31"
+      },
+      "line": {
+        "content": "$2",
+        "example": "0.25"
+      }
+    }
+  },
+  "tryOffTopic": {
+    "message": "會隱藏：與你的主題符合度僅為 $SCORE$，低於所需的 $LINE$。",
+    "placeholders": {
+      "score": {
+        "content": "$1",
+        "example": "0.18"
+      },
+      "line": {
+        "content": "$2",
+        "example": "0.25"
+      }
+    }
+  },
+  "tryOnTopic": {
+    "message": "會顯示：與你的主題符合度為 $SCORE$，達到所需的 $LINE$。",
+    "placeholders": {
+      "score": {
+        "content": "$1",
+        "example": "0.31"
+      },
+      "line": {
+        "content": "$2",
+        "example": "0.25"
+      }
+    }
+  },
+  "tryNotAvoided": {
+    "message": "會顯示：與要避開的主題符合度僅為 $SCORE$，低於觸發隱藏的 $LINE$。",
+    "placeholders": {
+      "score": {
+        "content": "$1",
+        "example": "0.18"
+      },
+      "line": {
+        "content": "$2",
+        "example": "0.25"
+      }
+    }
   },
   "tryNeedsTopics": {
     "message": "請先在上面新增一個主題，再試標題。"

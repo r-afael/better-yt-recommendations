@@ -29,13 +29,14 @@
   // the code that saved the change starts loading it.
   const startsNeedingModel = (before, after) => !needsModel(before) && needsModel(after);
 
-  // Returns why a video with these similarities is hidden, "off-topic" or "avoided", or null to show it.
-  function decide({ want, avoid }, threshold) {
-    const closest = want ?? threshold; // No wanted topics: every video sits exactly on the line.
-    const avoided = avoid ?? -Infinity; // No topics to avoid: nothing to beat.
-    if (closest < threshold) return "off-topic";
-    if (avoided > closest) return "avoided";
-    return null; // Visible. Ties keep the video.
+  // Returns why a video with these similarities is hidden, "avoided" or "off-topic", or null to
+  // show it. Each list has its own line: a video that matches a topic to avoid at avoidThreshold
+  // or more is hidden, whatever its other score, and one that matches no wanted topic at
+  // threshold or more is hidden. An empty list scores null, and hides nothing.
+  function decide({ want, avoid }, { threshold, avoidThreshold }) {
+    if ((avoid ?? -Infinity) >= avoidThreshold) return "avoided";
+    if ((want ?? Infinity) < threshold) return "off-topic";
+    return null;
   }
 
   globalThis.BetterYT.verdict = Object.freeze({

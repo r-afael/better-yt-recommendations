@@ -45,9 +45,9 @@ setting, the popup's switches included. Open YouTube tabs pick up changes right 
   the sidebar. A link to a Short opens it as a regular video, without the endless feed of
   Shorts after it. Opening a Short's address directly (typed, bookmarked, reloaded or
   clicked on another site) loads the regular player right away.
-- **Filter recommendations** (on by default): hides videos that don't match your
-  topics on the pages you pick under Where to filter, that are closer to a topic to
-  avoid, or that come from a channel you always hide. It does nothing until you type
+- **Filter recommendations** (on by default): hides videos, on the pages you pick under
+  Where to filter, that don't match your topics, that match a topic to avoid, or that
+  come from a channel you always hide. It does nothing until you type
   some topics to see or to avoid, or a channel to hide. Turn it off to show every
   video again, including blocked channels, and free the model's memory.
 - **Profile**, once you have saved a profile: switches to another profile's topics.
@@ -71,19 +71,23 @@ and the model's status is hidden.
 - **Topics**:
   - **Filter recommendations**: the same switch as in the popup.
   - **Topics you want to see**: the topics to keep, separated by commas.
-  - **Topics to avoid**: topics whose videos you don't want, separated by commas. A
-    video is hidden when it's closer to one of them than to the closest topic you want.
-    With only topics to avoid, a video is hidden when it's closer to one of them than
-    the filter sensitivity.
-  - **Filter sensitivity** (0.25 by default): how close to your topics a video must be
-    to stay visible, from 0.10 to 0.40. Move it up to hide more videos, or down if the
-    filter hides videos you'd want. YouTube pages update as you move it. With only
-    topics to avoid, it works the other way round: move it up to hide fewer videos.
-  - **Try a title**: type a video title to see how close it is to your topics and
-    whether the filter would show or hide a video with that title. Move the sensitivity
-    to see the verdict change. The try judges the title alone; on YouTube the channel
-    name also counts and the channel lists apply, so a real video's verdict can differ
-    slightly. The first try loads the model if it isn't loaded yet.
+  - **Match needed to show** (0.25 by default), under them: how well a video must match
+    one of your topics to stay visible, from 0.10 to 0.40. Move it up to hide more
+    videos, or down if the filter hides videos you'd want. It has no effect until you
+    add a topic you want to see.
+  - **Topics to avoid**: topics whose videos you don't want, separated by commas.
+  - **Match that hides** (0.24 by default, also from 0.10 to 0.40), under them: a video
+    that matches a topic to avoid this much or more is hidden, even when it also matches
+    your topics. Move it down to hide more videos, or up if it hides videos you'd want.
+    It has no effect until you add a topic to avoid. YouTube pages update as you move
+    either slider.
+  - **Try a title**: type a video title to see whether the filter would show or hide a
+    video with that title, which rule decided, and how well the title matches each list.
+    The numbers use the sliders' scale: a title that matches your topics at 0.31 is shown
+    up to a Match needed to show of 0.31 and hidden from 0.32. Move either slider to see
+    the verdict change. The try judges the title alone; on YouTube the channel name also
+    counts and the channel lists apply, so a real video's verdict can differ slightly.
+    The first try loads the model if it isn't loaded yet.
   - The model's status and **Load now**, as in the popup. The status appears as soon as
     you type your first topic.
 - **Profiles**: save your topics and topics to avoid under a name, like 'Work' or 'Evening',

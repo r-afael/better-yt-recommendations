@@ -41,11 +41,14 @@
   "topicsHint": {
     "message": "Separa los temas con comas."
   },
-  "sensitivity": {
-    "message": "Sensibilidad del filtro"
+  "threshold": {
+    "message": "Coincidencia necesaria para mostrar"
   },
-  "sensitivityHint": {
-    "message": "Qué tan cerca debe estar un video de un tema que quieres ver. Más alta oculta más videos; más baja muestra más."
+  "thresholdHint": {
+    "message": "Cuánto debe coincidir, como mínimo, un video con uno de tus temas para seguir visible. Más alta oculta más."
+  },
+  "thresholdHintEmpty": {
+    "message": "No tiene efecto hasta que agregues un tema que quieras ver."
   },
   "modelIdle": {
     "message": "El modelo se carga cuando una página lo necesita o cuando haces clic en Cargar ahora."
@@ -90,10 +93,16 @@
     "message": "videojuegos, chismes de famosos"
   },
   "avoidTopicsHint": {
-    "message": "Se ocultan los videos más cercanos a uno de estos temas que a cualquier tema que quieres ver. Separa los temas con comas."
+    "message": "Se ocultan los videos que coinciden con uno de estos temas, aunque también coincidan con los que quieres ver. Separa los temas con comas."
   },
-  "sensitivityHintAvoid": {
-    "message": "Solo con temas que evitar: qué tan cerca debe estar un video de uno de ellos para ocultarse. Más alta oculta menos videos; más baja oculta más."
+  "avoidThreshold": {
+    "message": "Coincidencia que oculta"
+  },
+  "avoidThresholdHint": {
+    "message": "Se oculta un video que coincida con un tema a evitar en esta medida o más. Más baja oculta más."
+  },
+  "avoidThresholdHintEmpty": {
+    "message": "No tiene efecto hasta que agregues un tema a evitar."
   },
   "summaryAvoiding": {
     "message": "Evitando: $TOPICS$",
@@ -114,10 +123,10 @@
     "message": "Cómo vencer a la defensa siciliana"
   },
   "tryTitleHint": {
-    "message": "Escribe el título de un video para ver cómo lo juzgaría el filtro con los temas y la sensibilidad de arriba."
+    "message": "Escribe el título de un video para ver si el filtro lo mostraría u ocultaría con los ajustes de arriba."
   },
   "tryScores": {
-    "message": "Tema deseado más cercano: $WANT$ · Tema a evitar más cercano: $AVOID$",
+    "message": "Coincidencia con tus temas: $WANT$ · Coincidencia con temas a evitar: $AVOID$",
     "placeholders": {
       "want": {
         "content": "$1",
@@ -137,6 +146,58 @@
   },
   "tryHidden": {
     "message": "Se oculta"
+  },
+  "tryAvoided": {
+    "message": "Se oculta: coincide con un tema a evitar en $SCORE$ y alcanza el $LINE$ que oculta.",
+    "placeholders": {
+      "score": {
+        "content": "$1",
+        "example": "0.31"
+      },
+      "line": {
+        "content": "$2",
+        "example": "0.25"
+      }
+    }
+  },
+  "tryOffTopic": {
+    "message": "Se oculta: coincide con tus temas solo en $SCORE$, por debajo del $LINE$ necesario.",
+    "placeholders": {
+      "score": {
+        "content": "$1",
+        "example": "0.18"
+      },
+      "line": {
+        "content": "$2",
+        "example": "0.25"
+      }
+    }
+  },
+  "tryOnTopic": {
+    "message": "Se muestra: coincide con tus temas en $SCORE$ y alcanza el $LINE$ necesario.",
+    "placeholders": {
+      "score": {
+        "content": "$1",
+        "example": "0.31"
+      },
+      "line": {
+        "content": "$2",
+        "example": "0.25"
+      }
+    }
+  },
+  "tryNotAvoided": {
+    "message": "Se muestra: coincide con un tema a evitar solo en $SCORE$, por debajo del $LINE$ que oculta.",
+    "placeholders": {
+      "score": {
+        "content": "$1",
+        "example": "0.18"
+      },
+      "line": {
+        "content": "$2",
+        "example": "0.25"
+      }
+    }
   },
   "tryNeedsTopics": {
     "message": "Añade un tema arriba para probar un título."

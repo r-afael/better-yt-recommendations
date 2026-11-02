@@ -41,11 +41,14 @@
   "topicsHint": {
     "message": "Séparez les sujets par des virgules."
   },
-  "sensitivity": {
-    "message": "Sensibilité du filtre"
+  "threshold": {
+    "message": "Correspondance requise pour afficher"
   },
-  "sensitivityHint": {
-    "message": "À quel point une vidéo doit être proche d'un sujet que vous voulez voir. Plus elle est haute, plus de vidéos sont masquées ; plus elle est basse, plus il en reste."
+  "thresholdHint": {
+    "message": "À quel point une vidéo doit au moins correspondre à l'un de vos sujets pour rester. Plus elle est haute, plus de vidéos sont masquées."
+  },
+  "thresholdHintEmpty": {
+    "message": "Sans effet tant que vous n'avez pas ajouté de sujet que vous voulez voir."
   },
   "modelIdle": {
     "message": "Le modèle se charge quand une page en a besoin, ou quand vous cliquez sur Charger maintenant."
@@ -90,10 +93,16 @@
     "message": "jeux vidéo, potins de célébrités"
   },
   "avoidTopicsHint": {
-    "message": "Les vidéos plus proches de l'un de ces sujets que de tout sujet que vous voulez voir sont masquées. Séparez les sujets par des virgules."
+    "message": "Les vidéos qui correspondent à l'un de ces sujets sont masquées, même si elles correspondent aussi à vos sujets. Séparez les sujets par des virgules."
   },
-  "sensitivityHintAvoid": {
-    "message": "Avec uniquement des sujets à éviter : à quel point une vidéo doit être proche de l'un d'eux pour être masquée. Plus elle est haute, moins de vidéos sont masquées ; plus elle est basse, plus il y en a."
+  "avoidThreshold": {
+    "message": "Correspondance qui masque"
+  },
+  "avoidThresholdHint": {
+    "message": "Une vidéo qui correspond autant ou plus à un sujet à éviter est masquée. Plus elle est basse, plus de vidéos sont masquées."
+  },
+  "avoidThresholdHintEmpty": {
+    "message": "Sans effet tant que vous n'avez pas ajouté de sujet à éviter."
   },
   "summaryAvoiding": {
     "message": "À éviter : $TOPICS$",
@@ -114,10 +123,10 @@
     "message": "Comment battre la défense sicilienne"
   },
   "tryTitleHint": {
-    "message": "Saisissez un titre de vidéo pour voir comment le filtre le jugerait avec les sujets et la sensibilité ci-dessus."
+    "message": "Saisissez un titre de vidéo pour voir si le filtre l'afficherait ou le masquerait avec les réglages ci-dessus."
   },
   "tryScores": {
-    "message": "Sujet voulu le plus proche : $WANT$ · Sujet à éviter le plus proche : $AVOID$",
+    "message": "Correspondance avec vos sujets : $WANT$ · Correspondance avec les sujets à éviter : $AVOID$",
     "placeholders": {
       "want": {
         "content": "$1",
@@ -137,6 +146,58 @@
   },
   "tryHidden": {
     "message": "Masqué"
+  },
+  "tryAvoided": {
+    "message": "Masqué : correspond à un sujet à éviter à $SCORE$, ce qui atteint les $LINE$ qui masquent.",
+    "placeholders": {
+      "score": {
+        "content": "$1",
+        "example": "0.31"
+      },
+      "line": {
+        "content": "$2",
+        "example": "0.25"
+      }
+    }
+  },
+  "tryOffTopic": {
+    "message": "Masqué : correspond à vos sujets à seulement $SCORE$, sous les $LINE$ requis.",
+    "placeholders": {
+      "score": {
+        "content": "$1",
+        "example": "0.18"
+      },
+      "line": {
+        "content": "$2",
+        "example": "0.25"
+      }
+    }
+  },
+  "tryOnTopic": {
+    "message": "Affiché : correspond à vos sujets à $SCORE$, ce qui atteint les $LINE$ requis.",
+    "placeholders": {
+      "score": {
+        "content": "$1",
+        "example": "0.31"
+      },
+      "line": {
+        "content": "$2",
+        "example": "0.25"
+      }
+    }
+  },
+  "tryNotAvoided": {
+    "message": "Affiché : correspond à un sujet à éviter à seulement $SCORE$, sous les $LINE$ qui masquent.",
+    "placeholders": {
+      "score": {
+        "content": "$1",
+        "example": "0.18"
+      },
+      "line": {
+        "content": "$2",
+        "example": "0.25"
+      }
+    }
   },
   "tryNeedsTopics": {
     "message": "Ajoutez un sujet ci-dessus pour tester un titre."

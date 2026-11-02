@@ -30,7 +30,12 @@ footer {
   border-top: 0;
 }
 
-/* The try box sits between the slider and the model status, set apart from both. */
+/* The topics to avoid and their slider are set apart from the wanted topics' slider above. */
+.list-start {
+  margin-top: 12px;
+}
+
+/* The try box sits between the sliders and the model status, set apart from both. */
 .try {
   display: flex;
   flex-direction: column;
@@ -43,8 +48,23 @@ footer {
   margin: 0;
 }
 
+/* The verdict, then the scores or a note, each on its own line. */
+#try-result > span {
+  display: block;
+}
+
 .verdict {
   font-weight: 600;
+}
+
+/* Text for screen readers only, which the page already shows in other words. */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 /* The profile buttons share one row, and wrap in languages with longer words. */
