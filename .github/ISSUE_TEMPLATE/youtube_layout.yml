@@ -1,5 +1,5 @@
 name: YouTube changed its layout
-description: The extension stopped finding the custom feed tab or the recommended videos.
+description: The extension stopped finding the custom feed tab, video cards on a page it filters, or Shorts.
 labels: ["bug", "youtube-layout"]
 body:
   - type: markdown
@@ -14,6 +14,10 @@ body:
         - Home no longer opens on the custom feed
         - Videos next to the one I'm watching are never hidden
         - The wrong videos are hidden, or hidden videos come back
+        - Home, Subscriptions or search results are never filtered
+        - Shorts still show with Hide Shorts on
+        - Shorts links don't open as regular videos
+        - The right-click menu doesn't offer the video's channel
         - Something else
     validations:
       required: true
@@ -48,5 +52,5 @@ body:
     id: html
     attributes:
       label: The element's HTML
-      description: Optional, but it speeds up a fix. Right-click the tab or a recommended video, choose Inspect, then right-click the highlighted element and choose Copy → Copy outerHTML.
+      description: Optional, but it speeds up a fix. Right-click the tab or a video card, choose Inspect, then right-click the highlighted element and choose Copy → Copy outerHTML.
       render: html

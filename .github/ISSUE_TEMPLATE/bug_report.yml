@@ -9,8 +9,15 @@ body:
       options:
         - Open custom feed on Home
         - Enforcement mode
-        - Filter recommendations by topic
+        - Hide Shorts
+        - Filter recommendations
+        - Topics to avoid or Try a title
+        - Channel lists (Never hide / Always hide this channel)
+        - Profiles
+        - Right-click menu
+        - Keyboard shortcuts
         - The settings popup
+        - The options page (All settings)
         - Something else
     validations:
       required: true
@@ -33,7 +40,7 @@ body:
     id: topics
     attributes:
       label: Your topics
-      description: Only if the topic filter is involved.
+      description: Only if Filter recommendations is involved.
   - type: input
     id: extension-version
     attributes:
