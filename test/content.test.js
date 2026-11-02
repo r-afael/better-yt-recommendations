@@ -4,7 +4,7 @@ import FakeTimers from "@sinonjs/fake-timers";
 import { JSDOM } from "jsdom";
 import { fakeChrome, flush, loadLabels, read, readJson, runScripts } from "./helpers.js";
 
-const scripts = ["src/settings.js", "src/scheduler.js", "src/labels.js", "src/content.js"];
+const scripts = ["src/settings.js", "src/scheduler.js", "src/labels.js", "src/cards.js", "src/content.js"];
 const HOME_PAGE = "ytd-browse";
 
 // Structure observed on desktop YouTube. No account data is needed by the tests.

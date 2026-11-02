@@ -71,12 +71,12 @@
       "js": [
         "src/scheduler.js",
         "src/labels.js",
+        "src/cards.js",
         "src/content.js",
         "src/protocol.js",
         "src/topics.js",
         "src/verdict.js",
         "src/channels.js",
-        "src/cards.js",
         "src/hidden-row.js",
         "src/toast.js",
         "src/channel-menu.js",

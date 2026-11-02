@@ -3,9 +3,10 @@
 (() => {
   "use strict";
 
-  const { CUSTOM_FEED_LABELS, createScheduler, settings } = globalThis.BetterYT;
+  const { CUSTOM_FEED_LABELS, cards, createScheduler, settings } = globalThis.BetterYT;
 
-  const HOME_PATHS = new Set(["/", "/feed/recommended"]);
+  // The same Home pages the filter works on.
+  const HOME_PATHS = new Set(cards.SURFACES.home.paths);
   const CHIP_BAR = 'ytd-browse[page-subtype="home"] ytd-feed-filter-chip-bar-renderer';
   const CHIP_RENDERER = "yt-chip-cloud-chip-renderer";
   const CHIP = `${CHIP_RENDERER}, [role="tab"]`;
