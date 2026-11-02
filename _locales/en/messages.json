@@ -5,7 +5,7 @@
   },
   "lang": {
     "message": "en",
-    "description": "BCP 47 code of this translation, used as the lang attribute of the popup and the options page."
+    "description": "BCP 47 code of this translation, used as the lang attribute of the popup, the options page, and the hidden-videos row and messages the extension shows on YouTube."
   },
   "autoOpen": {
     "message": "Open custom feed on Home",

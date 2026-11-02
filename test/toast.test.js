@@ -1,13 +1,17 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { openYouTube } from "./helpers.js";
+import { fakeChrome, openYouTube } from "./helpers.js";
 
 const TOAST_MS = 3000;
 
 // A blank YouTube page with every content script, which the background tells what a keyboard
 // shortcut changed.
-async function setup(t) {
-  const { window, document, chrome, clock } = await openYouTube(t, { fixture: "", path: "/feed/history" });
+async function setup(t, { locale = "en" } = {}) {
+  const { window, document, chrome, clock } = await openYouTube(t, {
+    fixture: "",
+    path: "/feed/history",
+    chrome: fakeChrome({ locale }),
+  });
   const { NOTICE } = window.BetterYT.protocol;
   const send = (message) => chrome.runtime.onMessage.dispatch(message, { id: "better-yt" }, () => {});
   const notify = (notice) => send({ type: NOTICE, ...notice });
@@ -17,7 +21,7 @@ async function setup(t) {
     const [toast] = toasts();
     return toast && window.getComputedStyle(toast).display !== "none" ? toast.textContent : null;
   };
-  return { clock, send, notify, toasts, toastText };
+  return { document, clock, send, notify, toasts, toastText };
 }
 
 test("a shortcut's notice says the new state", async (t) => {
@@ -35,6 +39,15 @@ test("a shortcut's notice says the new state", async (t) => {
     "Hide Shorts is on",
     "Hide Shorts is off",
   ]);
+});
+
+test("the message speaks the extension's language and direction, not YouTube's", async (t) => {
+  const { document, notify, toasts } = await setup(t, { locale: "ar" });
+  document.documentElement.lang = "en";
+  document.documentElement.dir = "ltr";
+  notify({ key: "hideShorts", value: true });
+  const [toast] = toasts();
+  assert.deepEqual({ lang: toast.lang, dir: toast.dir }, { lang: "ar", dir: "rtl" });
 });
 
 test("a newer message replaces the one on screen", async (t) => {

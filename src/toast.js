@@ -16,9 +16,12 @@
   let toast = null; // Made on first use.
   let timer;
 
+  // The message is in the extension's language, which can differ from YouTube's.
   function create() {
     const element = document.createElement("div");
     element.className = "better-yt-toast";
+    element.lang = chrome.i18n.getMessage("lang");
+    element.dir = chrome.i18n.getMessage("@@bidi_dir");
     element.setAttribute("role", "status");
     element.setAttribute("aria-live", "polite");
     element.hidden = true;

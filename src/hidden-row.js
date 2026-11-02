@@ -28,8 +28,12 @@
   }
 
   // Builds the row once and returns { mount, update, unmount }; clicking its button calls onToggle().
+  // The row speaks the extension's language, which can differ from YouTube's, and its text and
+  // button inherit that language and direction.
   function createHiddenRow({ onToggle }) {
     const row = elementWithClass("div", "better-yt-hidden-row");
+    row.lang = message("lang");
+    row.dir = message("@@bidi_dir");
     const label = elementWithClass("span", "better-yt-hidden-row__text");
     const toggle = elementWithClass("button", "better-yt-hidden-row__toggle");
     row.hidden = true;

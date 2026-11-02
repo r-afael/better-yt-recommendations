@@ -430,6 +430,14 @@ test("counts the hidden videos in the browser's language, with its digits", asyn
   assert.equal(rowText(), hiddenRowMany.message.replace("$COUNT$", (2).toLocaleString("bn")));
 });
 
+test("the row speaks the extension's language and direction, not YouTube's", async (t) => {
+  const { document, hiddenRow, answer } = await setup(t, { locale: "ar" });
+  document.documentElement.lang = "en";
+  document.documentElement.dir = "ltr";
+  await answer(["RphIVv0uWrM"]);
+  assert.deepEqual({ lang: hiddenRow().lang, dir: hiddenRow().dir }, { lang: "ar", dir: "rtl" });
+});
+
 test("Show them shows the hidden videos until Hide them again", async (t) => {
   const { visibleIds, toggle, toggleState, answer } = await setup(t);
   await answer(["RphIVv0uWrM"]);
