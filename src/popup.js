@@ -5,6 +5,7 @@
   "use strict";
 
   const { profiles, ui, verdict } = globalThis.BetterYT;
+  ui.addFeedSwitches();
   const form = document.getElementById("settings");
   const { activeProfile: profileSelect } = form.elements;
   const profileRow = document.getElementById("profile-row");

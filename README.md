@@ -242,8 +242,8 @@ refresh YouTube.
 - `src/options.html`, `src/options.css` and `src/options.js` are the options page.
   `src/options.css` builds on `src/popup.css`.
 - `src/ui.js` holds the code the settings popup and the options page share: starting the
-  page, translation, saving, the custom feed switches, the profile switch, and the model
-  status.
+  page, translation, saving, the switches for Home and Shorts, the profile switch, and the
+  model status.
 - `_locales/` has the translations of the popup, the options page and the messages the
   extension shows on YouTube.
 - `src/protocol.js` names the messages the extension's parts send each other.

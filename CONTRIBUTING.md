@@ -33,7 +33,8 @@ tests, which must cover at least 80% of the code.
 - Give headings and labels their English text in the HTML as well as their
   `data-i18n` key. The page replaces it with the translation, a test keeps it equal
   to the English message, and Sonar's HTML checks, which ESLint can't run, need the
-  markup to carry text.
+  markup to carry text. The Home and Shorts switches are the exception: they are
+  listed in `FEED_SWITCHES` in `src/ui.js`, which gives each row its `data-i18n` keys.
 - Update the README when a setting or behavior changes.
 
 Pull requests are squash-merged, and the title becomes the commit message on `main`.

@@ -20,6 +20,7 @@
   // explain.
   const PROFILE_ERRORS = Object.freeze({ taken: "profileNameTaken", full: "profilesFull", missing: null });
 
+  ui.addFeedSwitches();
   const form = document.getElementById("settings");
   const {
     topicFilter,

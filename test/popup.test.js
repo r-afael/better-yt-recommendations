@@ -91,6 +91,27 @@ test("a switch the user just clicked still shows a change made elsewhere", async
   assert.equal(toggle("enforce").disabled, false);
 });
 
+// What a screen reader announces for each switch, in the order the popup shows them.
+test("each switch is named by its title and described by its hint", async (t) => {
+  const { document } = await setup(t);
+  const english = readJson("_locales/en/messages.json");
+  const textOf = (id) => document.getElementById(id).textContent;
+  const announced = [...document.querySelectorAll(".switch")].map((input) => [
+    input.name,
+    textOf(input.getAttribute("aria-labelledby")),
+    textOf(input.getAttribute("aria-describedby")),
+  ]);
+  assert.deepEqual(
+    announced,
+    [
+      ["enabled", "autoOpen", "autoOpenHint"],
+      ["enforce", "enforce", "enforceHint"],
+      ["hideShorts", "hideShorts", "hideShortsHint"],
+      ["topicFilter", "topicFilter", "topicFilterHint"],
+    ].map(([name, title, hint]) => [name, english[title].message, english[hint].message]),
+  );
+});
+
 test("shows the model status for the stored topics to see or to avoid while the topic filter is on", async (t) => {
   const none = await setup(t, { stored: { topics: " , " } });
   assert.equal(none.status.hidden, true);
@@ -258,9 +279,9 @@ test("translations cover the ten most spoken languages with the same messages as
   }
 });
 
-// The options page and the popup both name their sections and settings in English in the markup
-// too, where checks of the markup read them, so that text has to stay the English message that
-// replaces it. One test covers both pages.
+// The options page and the popup both name their sections and most settings in English in the
+// markup too, where checks of the markup read them, so that text has to stay the English message
+// that replaces it. One test covers both pages.
 test("the pages' English text in the markup matches the English messages", () => {
   const english = readJson("_locales/en/messages.json");
   for (const path of ["src/options.html", "src/popup.html"]) {

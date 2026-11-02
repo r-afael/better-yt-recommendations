@@ -1,6 +1,7 @@
-// Code the settings pages share: starting the page, translation, saving, the custom feed
-// switches, the profile switch and the model status.
-// Each page looks up its own elements, defines render() and boots with startPage().
+// Code the settings pages share: starting the page, translation, saving, the switches for Home
+// and Shorts, the profile switch and the model status.
+// Each page adds the switches for Home and Shorts, looks up its own elements, defines render()
+// and boots with startPage().
 (() => {
   "use strict";
 
@@ -16,6 +17,14 @@
   });
   // The states in which Load now can start loading the model.
   const LOADABLE_STATES = new Set([MODEL_STATES.IDLE, MODEL_STATES.ERROR]);
+
+  // The switches for Home and Shorts, which both pages show in this order: the setting each one
+  // saves and the messages of its title and hint.
+  const FEED_SWITCHES = Object.freeze([
+    { name: "enabled", title: "autoOpen", hint: "autoOpenHint" },
+    { name: "enforce", title: "enforce", hint: "enforceHint" },
+    { name: "hideShorts", title: "hideShorts", hint: "hideShortsHint" },
+  ]);
 
   // Each attribute names the message that fills one part of its element.
   const I18N_TARGETS = Object.freeze([
@@ -86,6 +95,38 @@
       select.replaceChildren(select.options[0], ...names.map((name) => new Option(name, name)));
     }
     select.value = profiles.active(values)?.name ?? "";
+  }
+
+  // A switch's title or hint, which translatePage() fills like the rest of the page.
+  function switchText(className, id, key) {
+    const text = document.createElement("span");
+    text.className = className;
+    text.id = id;
+    text.dataset.i18n = key;
+    return text;
+  }
+
+  // A row that names its switch by its title and describes it by its hint.
+  function feedSwitch({ name, title, hint }) {
+    const row = document.createElement("label");
+    row.className = "setting";
+    const texts = document.createElement("span");
+    texts.append(switchText("title", `${name}-title`, title), switchText("hint", `${name}-hint`, hint));
+    const input = document.createElement("input");
+    input.type = "checkbox";
+    input.className = "switch";
+    input.name = name;
+    input.setAttribute("aria-labelledby", `${name}-title`);
+    input.setAttribute("aria-describedby", `${name}-hint`);
+    row.append(texts, input);
+    return row;
+  }
+
+  // Puts the switches for Home and Shorts in place of the page's empty #feed-switches, so they are
+  // siblings of its other rows and the line between two rows still falls between them. Runs
+  // before the page reads its form's controls.
+  function addFeedSwitches() {
+    document.getElementById("feed-switches").replaceWith(...FEED_SWITCHES.map(feedSwitch));
   }
 
   // Enforcement mode builds on opening the custom feed, so it only changes while that is on.
@@ -250,6 +291,7 @@
     startPage,
     createModelStatus,
     fillProfileSelect,
+    addFeedSwitches,
     renderFeedSwitches,
     formatThreshold,
     formatList,
