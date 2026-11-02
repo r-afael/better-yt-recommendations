@@ -128,7 +128,7 @@ test("skips items without a video id or a title", (t) => {
   assert.deepEqual(readAll(cards, watch), [null, null]);
 });
 
-test("reads every video in the real Home grid markup", (t) => {
+test("reads every video in the Home grid markup", (t) => {
   const { cards, home } = load(t, homeFixture, "https://www.youtube.com/");
   assert.deepEqual(readVideos(cards, home), HOME_VIDEOS);
 });
