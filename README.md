@@ -76,8 +76,10 @@ keyboard shortcuts is disabled while the filter is off, and the model's status i
     filter hides videos you'd want. YouTube pages update as you move it. With only
     topics to avoid, it works the other way round: move it up to hide fewer videos.
   - **Try a title**: type a video title to see how close it is to your topics and
-    whether the filter would show or hide it. Move the sensitivity to see the verdict
-    change. The first try loads the model if it isn't loaded yet.
+    whether the filter would show or hide a video with that title. Move the sensitivity
+    to see the verdict change. The try judges the title alone; on YouTube the channel
+    name also counts and the channel lists apply, so a real video's verdict can differ
+    slightly. The first try loads the model if it isn't loaded yet.
   - The model's status and **Load now**, as in the popup. The status appears as soon as
     you type your first topic.
 - **Profiles**: save your topics and topics to avoid under a name, like 'Work' or 'Evening',
