@@ -554,7 +554,7 @@ test("turning the filter on by shortcut without topics doesn't load the model", 
   assert.deepEqual(offscreen.forwarded, []);
 });
 
-test("turning Hide Shorts on doesn't", async () => {
+test("turning Hide Shorts on by shortcut doesn't load the model", async () => {
   const { offscreen, protocol, press } = setup();
 
   await press(protocol.COMMAND_TOGGLE_SHORTS);

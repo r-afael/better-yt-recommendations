@@ -95,6 +95,16 @@ test("saves the topics once typing pauses", async (t) => {
   assert.equal(chrome.data.topics, "chess, cooking");
 });
 
+test("topics typed before the stored settings load are still saved", async (t) => {
+  const chrome = fakeChrome();
+  chrome.storage.sync.get = () => new Promise(() => {}); // Sync never answers.
+  const { clock, type } = await setup(t, { chrome });
+  type("chess");
+  clock.tick(SAVE_DELAY_MS);
+  await flush();
+  assert.equal(chrome.data.topics, "chess");
+});
+
 test("saves the topics to avoid once typing pauses", async (t) => {
   const { chrome, clock, type, avoidField } = await setup(t, { stored: { avoidTopics: "gaming" } });
   assert.equal(avoidField.value, "gaming");
@@ -701,16 +711,6 @@ async function setupProfiles(t, stored) {
   const storedProfiles = () => structuredClone(chrome.data.profiles);
   return { ...page, select, nameField, button, profilesError, topicsError, name, pick, listed, storedProfiles };
 }
-
-test("topics typed before the stored settings load are still saved", async (t) => {
-  const chrome = fakeChrome();
-  chrome.storage.sync.get = () => new Promise(() => {}); // Sync never answers.
-  const { clock, type } = await setup(t, { chrome });
-  type("chess");
-  clock.tick(SAVE_DELAY_MS);
-  await flush();
-  assert.equal(chrome.data.topics, "chess");
-});
 
 test("saves the topics as a new profile and selects it", async (t) => {
   const { chrome, select, nameField, button, name, listed, storedProfiles } = await setupProfiles(t, { topics: "chess", avoidTopics: "gaming" });

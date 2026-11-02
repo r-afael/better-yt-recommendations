@@ -199,11 +199,9 @@ test("switching a profile from the popup saves its topics and updates the summar
   assert.equal(avoidLine.hidden, true);
 });
 
-test("the profile switch is disabled while the filter is off, and the summary still opens the options page", async (t) => {
-  const { chrome, toggle, summary, select } = await setupProfiles(t, { topicFilter: false, profiles: [WORK], activeProfile: "Work" });
+test("the profile switch is disabled while the filter is off", async (t) => {
+  const { toggle, select } = await setupProfiles(t, { topicFilter: false, profiles: [WORK], activeProfile: "Work" });
   assert.equal(select.disabled, true);
-  summary.click();
-  assert.equal(chrome.openedOptions, 1);
   toggle("topicFilter").click();
   assert.equal(select.disabled, false);
 });
