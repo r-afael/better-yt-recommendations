@@ -5,9 +5,8 @@
   "use strict";
 
   const { protocol, settings, verdict } = globalThis.BetterYT;
-  const { PRELOAD, OFFSCREEN, STATUS_KEY, MODEL_STATES } = protocol;
+  const { PRELOAD, OFFSCREEN, OFFSCREEN_PATH, STATUS_KEY, MODEL_STATES } = protocol;
 
-  const OFFSCREEN_PATH = "src/offscreen.html";
   const OFFSCREEN_DOCUMENT = {
     url: OFFSCREEN_PATH,
     reasons: ["WORKERS"],

@@ -64,12 +64,14 @@ function setup({ stored = { topics: "programming" }, answer = answerMatches } = 
     });
   }
 
+  // Delivers a message from the offscreen document, such as the model's status.
+  const fromModel = (message) => send(message, { url: OFFSCREEN_URL });
   const match = () => send({ type: protocol.MATCH, topics: ["programming"], avoidTopics: [], videos: VIDEOS });
   const status = () => plain(chrome.storage.session.data[protocol.STATUS_KEY]);
   // Delivers a keyboard shortcut the way Chrome does, with the tab it was pressed in, and waits
   // for what it does. Leaving the tab out presses in tab 1; an undefined tab is no tab at all.
   const press = (command, ...tab) => chrome.commands.onCommand.dispatch(command, ...(tab.length > 0 ? tab : [{ id: 1 }]))[0];
-  return { chrome, offscreen, protocol, send, match, status, press };
+  return { chrome, offscreen, protocol, send, fromModel, match, status, press };
 }
 
 test("forwards matching requests to the offscreen document and relays its answer", async () => {
@@ -130,11 +132,11 @@ function pendingFirstAnswer() {
 
 test("a request answered as the model goes idle reopens the document", async () => {
   const pending = pendingFirstAnswer();
-  const { offscreen, protocol, send, match } = setup({ answer: pending.answer });
+  const { offscreen, protocol, fromModel, match } = setup({ answer: pending.answer });
   const answer = match();
   await flush();
 
-  await send({ type: protocol.IDLE });
+  await fromModel({ type: protocol.IDLE });
   await flush();
   pending.closeChannel();
 
@@ -195,10 +197,10 @@ test("answers with an error when the offscreen document sends no answer", async 
 });
 
 test("stores the model status for the popup while the model's document is open", async () => {
-  const { protocol, send, match, status } = setup();
+  const { protocol, fromModel, match, status } = setup();
   await match();
 
-  const answer = await send({ type: protocol.STATUS, status: { state: protocol.MODEL_STATES.LOADING, progress: 0.4 } });
+  const answer = await fromModel({ type: protocol.STATUS, status: { state: protocol.MODEL_STATES.LOADING, progress: 0.4 } });
   await flush();
 
   assert.equal(answer, undefined);
@@ -206,12 +208,12 @@ test("stores the model status for the popup while the model's document is open",
 });
 
 test("a status that arrives after the model was freed leaves it idle", async () => {
-  const { protocol, send, match, status } = setup();
+  const { protocol, fromModel, match, status } = setup();
   await match();
-  await send({ type: protocol.IDLE });
+  await fromModel({ type: protocol.IDLE });
   await flush();
 
-  await send({ type: protocol.STATUS, status: { state: protocol.MODEL_STATES.LOADING, progress: 0.4 } });
+  await fromModel({ type: protocol.STATUS, status: { state: protocol.MODEL_STATES.LOADING, progress: 0.4 } });
   await flush();
 
   assert.deepEqual(status(), { state: "idle" });
@@ -232,17 +234,31 @@ function holdNextCheck(chrome) {
 }
 
 test("a status still being checked as the model is freed leaves it idle", async () => {
-  const { chrome, protocol, send, match, status } = setup();
+  const { chrome, protocol, fromModel, match, status } = setup();
   await match();
   const answerCheck = holdNextCheck(chrome);
 
-  send({ type: protocol.STATUS, status: { state: protocol.MODEL_STATES.LOADING, progress: 0.4 } });
-  send({ type: protocol.IDLE });
+  fromModel({ type: protocol.STATUS, status: { state: protocol.MODEL_STATES.LOADING, progress: 0.4 } });
+  fromModel({ type: protocol.IDLE });
   await flush();
   answerCheck();
   await flush();
 
   assert.deepEqual(status(), { state: "idle" });
+});
+
+test("ignores a model status or idle report from anywhere but the offscreen document", async () => {
+  const { offscreen, protocol, send, fromModel, match, status } = setup();
+  await match();
+  await fromModel({ type: protocol.STATUS, status: { state: protocol.MODEL_STATES.READY } });
+  await flush();
+
+  await send({ type: protocol.STATUS, status: { state: protocol.MODEL_STATES.ERROR } });
+  await send({ type: protocol.IDLE });
+  await flush();
+
+  assert.deepEqual(status(), { state: "ready" });
+  assert.equal(offscreen.open, true);
 });
 
 test("Load now opens the document and forwards the preload", async () => {
@@ -267,10 +283,10 @@ test("a settings change alone never loads the model", async () => {
 });
 
 test("closes the offscreen document when the model goes idle", async () => {
-  const { offscreen, protocol, send, match, status } = setup();
+  const { offscreen, protocol, fromModel, match, status } = setup();
   await match();
 
-  await send({ type: protocol.IDLE });
+  await fromModel({ type: protocol.IDLE });
   await flush();
 
   assert.equal(offscreen.open, false);
@@ -278,9 +294,9 @@ test("closes the offscreen document when the model goes idle", async () => {
 });
 
 test("closing when no document is open is harmless", async () => {
-  const { offscreen, protocol, send, status } = setup();
+  const { offscreen, protocol, fromModel, status } = setup();
 
-  await send({ type: protocol.IDLE });
+  await fromModel({ type: protocol.IDLE });
   await flush();
 
   assert.equal(offscreen.closed, 0);

@@ -46,6 +46,8 @@ globalThis.BetterYT.protocol = Object.freeze({
   SHORTS_RULESET: "shorts_redirect",
   // The target of messages that only the offscreen document handles.
   OFFSCREEN: "offscreen",
+  // The offscreen document's page, the only sender of STATUS and IDLE.
+  OFFSCREEN_PATH: "src/offscreen.html",
   // Where the background keeps the latest model status, in chrome.storage.session.
   STATUS_KEY: "modelStatus",
   MODEL_STATES: Object.freeze({
