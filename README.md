@@ -146,8 +146,10 @@ where you made the change loads it early; your other computers load it when they
   used, or as soon as you turn the filter off or clear your topics to see and to avoid.
 
 When most videos on a page are off topic, YouTube loads more to fill it (the sidebar
-and Home both do this), and the filter checks those too. On some pages, that means
-checking more than a hundred videos before the list settles.
+and Home both do this), and the filter checks those too. Once about 60 videos have been
+hidden without you scrolling, the filter holds YouTube's loading of more until you
+scroll, press a key that scrolls, or show the hidden videos, so an idle tab doesn't keep
+fetching pages that would all be hidden.
 
 Channel lists cost nothing: they don't need the model.
 
