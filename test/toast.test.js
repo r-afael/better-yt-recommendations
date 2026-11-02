@@ -21,8 +21,8 @@ async function setup(t, { locale = "en" } = {}) {
   return { document, clock, send, notify, toasts, toastText };
 }
 
-test("a shortcut's notice says the new state", async (t) => {
-  const { notify, toastText } = await setup(t);
+test("a shortcut's notice says the new state, where screen readers announce it", async (t) => {
+  const { notify, toasts, toastText } = await setup(t);
   const said = [];
   for (const key of ["topicFilter", "hideShorts"]) {
     for (const value of [true, false]) {
@@ -36,6 +36,7 @@ test("a shortcut's notice says the new state", async (t) => {
     "Hide Shorts is on",
     "Hide Shorts is off",
   ]);
+  assert.equal(toasts()[0].getAttribute("role"), "status");
 });
 
 test("the message speaks the extension's language and direction, not YouTube's", async (t) => {
