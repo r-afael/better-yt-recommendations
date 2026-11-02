@@ -65,10 +65,11 @@
 
   globalThis.addEventListener("contextmenu", remember, { capture: true });
 
-  // Answers nothing, so the message channel is never held open.
+  // Answers nothing, so the message channel is never held open. listChannel handles its storage
+  // failures itself: settings.load reads defaults when storage fails, and save says when a save fails.
   chrome.runtime.onMessage.addListener((request) => {
     if (request?.type === protocol.LIST_CHANNEL && Object.hasOwn(CONFIRMATIONS, request.list)) {
-      listChannel(request.list, request.linkUrl);
+      void listChannel(request.list, request.linkUrl);
     }
   });
 })();

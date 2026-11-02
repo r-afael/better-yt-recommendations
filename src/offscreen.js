@@ -135,7 +135,8 @@
     });
     chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
       if (message?.target !== OFFSCREEN) return false;
-      service.handle(message).then(sendResponse);
+      // handle never rejects: every failure comes back as { error }.
+      void service.handle(message).then(sendResponse);
       return true;
     });
   }

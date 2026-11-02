@@ -340,6 +340,8 @@
     return row;
   }
 
+  // Lists the shortcuts as Chrome has them set. Nothing needs the result, and reading them doesn't
+  // fail, so callers don't wait for it or catch.
   async function renderShortcuts() {
     const commands = await chrome.commands.getAll();
     const ours = COMMANDS.map((name) => commands.find((command) => command.name === name)).filter(Boolean);
@@ -380,10 +382,10 @@
   document.getElementById("change-shortcuts").addEventListener("click", () => chrome.tabs.create({ url: SHORTCUTS_PAGE }));
   // The shortcuts may have changed on Chrome's page by the time the user comes back to this tab.
   document.addEventListener("visibilitychange", () => {
-    if (!document.hidden) renderShortcuts();
+    if (!document.hidden) void renderShortcuts();
   });
 
   // page is used by the functions above, which only run once the page has started.
   const page = ui.startPage({ form, render, display, changesFor, onSaved, onError });
-  renderShortcuts();
+  void renderShortcuts();
 })();

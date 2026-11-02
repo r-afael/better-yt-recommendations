@@ -63,7 +63,7 @@
     const target = cards.container(surface) ?? document.documentElement;
     if (observed === target) return;
     observer ??= new MutationObserver((records) => {
-      if (records.some(cards.isRelevant)) scheduleScan();
+      if (records.some((record) => cards.isRelevant(record))) scheduleScan();
     });
     observer.disconnect();
     observer.observe(target, WATCHED);

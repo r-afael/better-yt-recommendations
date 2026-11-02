@@ -10,59 +10,59 @@
     <h1>Better YT Recommendations</h1>
     <form id="settings">
       <section aria-labelledby="home-section">
-        <h2 id="home-section" data-i18n="homeSection"></h2>
+        <h2 id="home-section" data-i18n="homeSection">Home and Shorts</h2>
         <label class="setting">
           <span>
-            <span class="title" id="enabled-title" data-i18n="autoOpen"></span>
+            <span class="title" id="enabled-title" data-i18n="autoOpen">Open custom feed on Home</span>
             <span class="hint" id="enabled-hint" data-i18n="autoOpenHint"></span>
           </span>
           <input type="checkbox" class="switch" name="enabled" aria-labelledby="enabled-title" aria-describedby="enabled-hint">
         </label>
         <label class="setting">
           <span>
-            <span class="title" id="enforce-title" data-i18n="enforce"></span>
+            <span class="title" id="enforce-title" data-i18n="enforce">Enforcement mode</span>
             <span class="hint" id="enforce-hint" data-i18n="enforceHint"></span>
           </span>
           <input type="checkbox" class="switch" name="enforce" aria-labelledby="enforce-title" aria-describedby="enforce-hint">
         </label>
         <label class="setting">
           <span>
-            <span class="title" id="hideShorts-title" data-i18n="hideShorts"></span>
+            <span class="title" id="hideShorts-title" data-i18n="hideShorts">Hide Shorts</span>
             <span class="hint" id="hideShorts-hint" data-i18n="hideShortsHint"></span>
           </span>
           <input type="checkbox" class="switch" name="hideShorts" aria-labelledby="hideShorts-title" aria-describedby="hideShorts-hint">
         </label>
       </section>
       <section aria-labelledby="topics-section">
-        <h2 id="topics-section" data-i18n="topicsSection"></h2>
+        <h2 id="topics-section" data-i18n="topicsSection">Topics</h2>
         <label class="setting">
           <span>
-            <span class="title" id="topicFilter-title" data-i18n="topicFilter"></span>
+            <span class="title" id="topicFilter-title" data-i18n="topicFilter">Filter recommendations</span>
             <span class="hint" id="topicFilter-hint" data-i18n="topicFilterHintHere"></span>
           </span>
           <input type="checkbox" class="switch" name="topicFilter" aria-labelledby="topicFilter-title" aria-describedby="topicFilter-hint">
         </label>
         <div class="field">
-          <label class="title" for="topics" data-i18n="topics"></label>
+          <label class="title" for="topics" data-i18n="topics">Topics you want to see</label>
           <textarea id="topics" name="topics" rows="3" data-i18n-placeholder="topicsPlaceholder" aria-describedby="topics-hint"></textarea>
           <span class="hint" id="topics-hint" data-i18n="topicsHint"></span>
           <span class="range-label">
-            <label class="title" for="threshold" data-i18n="threshold"></label>
+            <label class="title" for="threshold" data-i18n="threshold">Match needed to show</label>
             <output id="threshold-value" for="threshold" aria-hidden="true"></output>
           </span>
           <input type="range" id="threshold" name="threshold" step="0.01" aria-describedby="threshold-hint">
           <span class="hint" id="threshold-hint"></span>
-          <label class="title list-start" for="avoidTopics" data-i18n="avoidTopics"></label>
+          <label class="title list-start" for="avoidTopics" data-i18n="avoidTopics">Topics to avoid</label>
           <textarea id="avoidTopics" name="avoidTopics" rows="3" data-i18n-placeholder="avoidTopicsPlaceholder" aria-describedby="avoidTopics-hint"></textarea>
           <span class="hint" id="avoidTopics-hint" data-i18n="avoidTopicsHint"></span>
           <span class="range-label">
-            <label class="title" for="avoidThreshold" data-i18n="avoidThreshold"></label>
+            <label class="title" for="avoidThreshold" data-i18n="avoidThreshold">Match that hides</label>
             <output id="avoidThreshold-value" for="avoidThreshold" aria-hidden="true"></output>
           </span>
           <input type="range" id="avoidThreshold" name="avoidThreshold" step="0.01" aria-describedby="avoidThreshold-hint">
           <span class="hint" id="avoidThreshold-hint"></span>
           <div class="try">
-            <label class="title" for="try-title" data-i18n="tryTitle"></label>
+            <label class="title" for="try-title" data-i18n="tryTitle">Try a title</label>
             <input id="try-title" type="text" data-i18n-placeholder="tryTitlePlaceholder" aria-describedby="try-hint">
             <span class="hint" id="try-hint" data-i18n="tryTitleHint"></span>
             <p id="try-result">
@@ -77,13 +77,13 @@
         </div>
       </section>
       <section aria-labelledby="profiles-section">
-        <h2 id="profiles-section" data-i18n="profilesSection"></h2>
+        <h2 id="profiles-section" data-i18n="profilesSection">Profiles</h2>
         <div class="field">
-          <label class="title" for="profile" data-i18n="profile"></label>
+          <label class="title" for="profile" data-i18n="profile">Profile</label>
           <select id="profile" name="activeProfile" disabled aria-describedby="profiles-hint">
             <option value="" data-i18n="noProfile"></option>
           </select>
-          <label class="title" for="profile-name" data-i18n="profileName"></label>
+          <label class="title" for="profile-name" data-i18n="profileName">Profile name</label>
           <input id="profile-name" type="text" data-i18n-placeholder="profileNamePlaceholder" disabled>
           <div class="profile-actions">
             <button type="button" id="save-profile" class="secondary" data-i18n="saveProfile" disabled></button>
@@ -95,32 +95,32 @@
         </div>
       </section>
       <section aria-labelledby="pages-section">
-        <h2 id="pages-section" data-i18n="filterPages"></h2>
+        <h2 id="pages-section" data-i18n="filterPages">Where to filter</h2>
         <label class="setting">
-          <span class="title" id="filterWatch-title" data-i18n="filterWatch"></span>
+          <span class="title" id="filterWatch-title" data-i18n="filterWatch">Next to the video you're watching</span>
           <input type="checkbox" class="switch" name="filterWatch" aria-labelledby="filterWatch-title" aria-describedby="filterPages-hint">
         </label>
         <label class="setting">
-          <span class="title" id="filterHome-title" data-i18n="filterHome"></span>
+          <span class="title" id="filterHome-title" data-i18n="filterHome">Home</span>
           <input type="checkbox" class="switch" name="filterHome" aria-labelledby="filterHome-title" aria-describedby="filterPages-hint">
         </label>
         <label class="setting">
-          <span class="title" id="filterSubscriptions-title" data-i18n="filterSubscriptions"></span>
+          <span class="title" id="filterSubscriptions-title" data-i18n="filterSubscriptions">Subscriptions</span>
           <input type="checkbox" class="switch" name="filterSubscriptions" aria-labelledby="filterSubscriptions-title" aria-describedby="filterPages-hint">
         </label>
         <label class="setting">
-          <span class="title" id="filterSearch-title" data-i18n="filterSearch"></span>
+          <span class="title" id="filterSearch-title" data-i18n="filterSearch">Search results</span>
           <input type="checkbox" class="switch" name="filterSearch" aria-labelledby="filterSearch-title" aria-describedby="filterPages-hint">
         </label>
         <p class="hint" id="filterPages-hint" data-i18n="filterPagesHint"></p>
       </section>
       <section aria-labelledby="channels-section">
-        <h2 id="channels-section" data-i18n="channels"></h2>
+        <h2 id="channels-section" data-i18n="channels">Channels</h2>
         <div class="field">
-          <label class="title" for="allowedChannels" data-i18n="allowedChannels"></label>
+          <label class="title" for="allowedChannels" data-i18n="allowedChannels">Never hide these channels</label>
           <textarea id="allowedChannels" name="allowedChannels" rows="4" disabled aria-describedby="allowedChannels-hint channels-hint channels-menu-hint"></textarea>
           <span class="hint" id="allowedChannels-hint" data-i18n="allowedChannelsHint"></span>
-          <label class="title" for="blockedChannels" data-i18n="blockedChannels"></label>
+          <label class="title" for="blockedChannels" data-i18n="blockedChannels">Always hide these channels</label>
           <textarea id="blockedChannels" name="blockedChannels" rows="4" disabled aria-describedby="blockedChannels-hint channels-hint channels-menu-hint"></textarea>
           <span class="hint" id="blockedChannels-hint" data-i18n="blockedChannelsHint"></span>
           <p class="hint" id="channels-hint" data-i18n="channelsHint"></p>
@@ -130,7 +130,7 @@
       </section>
     </form>
     <section aria-labelledby="shortcuts-section">
-      <h2 id="shortcuts-section" data-i18n="shortcuts"></h2>
+      <h2 id="shortcuts-section" data-i18n="shortcuts">Keyboard shortcuts</h2>
       <ul id="shortcut-list" class="shortcuts"></ul>
       <p class="hint" data-i18n="shortcutsHint"></p>
       <button type="button" id="change-shortcuts" class="secondary" data-i18n="changeShortcuts"></button>

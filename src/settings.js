@@ -53,7 +53,13 @@
   // so no two readers share one they could change.
   const list = (maxCount, isEntry, readEntry) => ({
     fallback: Object.freeze([]),
-    check: (value) => (Array.isArray(value) ? value.filter(isEntry).map(readEntry).slice(0, maxCount) : []),
+    check: (value) =>
+      Array.isArray(value)
+        ? value
+            .filter((entry) => isEntry(entry))
+            .map((entry) => readEntry(entry))
+            .slice(0, maxCount)
+        : [],
   });
   const channelList = () =>
     list(LIMITS.MAX_CHANNELS, (entry) => typeof entry === "string", (entry) => cut(entry, LIMITS.MAX_CHANNEL_LENGTH));

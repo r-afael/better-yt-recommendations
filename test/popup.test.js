@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { JSDOM } from "jsdom";
 import {
   EVENING,
   PRELOAD,
@@ -10,6 +11,7 @@ import {
   openPage,
   optionTexts,
   pickOption,
+  read,
   readJson,
   recordMessages,
   untranslated,
@@ -253,6 +255,22 @@ test("translations cover the ten most spoken languages with the same messages as
     for (const key of keys) {
       assert.deepEqual(placeholderNames(messages[key]), placeholderNames(english[key]), `${locale} ${key}`);
     }
+  }
+});
+
+// The options page and the popup both name their sections and settings in English in the markup
+// too, where checks of the markup read them, so that text has to stay the English message that
+// replaces it. One test covers both pages.
+test("the pages' English text in the markup matches the English messages", () => {
+  const english = readJson("_locales/en/messages.json");
+  for (const path of ["src/options.html", "src/popup.html"]) {
+    const { document } = new JSDOM(read(path)).window;
+    const named = [...document.querySelectorAll("[data-i18n]")].filter((element) => element.textContent);
+    assert.deepEqual(
+      named.map((element) => [element.dataset.i18n, element.textContent]),
+      named.map((element) => [element.dataset.i18n, english[element.dataset.i18n].message]),
+      path,
+    );
   }
 });
 

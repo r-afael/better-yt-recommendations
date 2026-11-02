@@ -30,6 +30,10 @@ tests, which must cover at least 80% of the code.
 - Keep functions small and follow the style of the code around them.
 - Add new text for the popup, the options page or YouTube pages to every
   `_locales/*/messages.json`.
+- Give headings and labels their English text in the HTML as well as their
+  `data-i18n` key. The page replaces it with the translation, a test keeps it equal
+  to the English message, and Sonar's HTML checks, which ESLint can't run, need the
+  markup to carry text.
 - Update the README when a setting or behavior changes.
 
 Pull requests are squash-merged, and the title becomes the commit message on `main`.
