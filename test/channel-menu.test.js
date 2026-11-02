@@ -9,6 +9,8 @@ const TOAST_MS = 3000;
 const LONG_TOAST_MS = 8000;
 const NO_CHANNEL = "Right-click a video's thumbnail or title to pick its channel.";
 const LIST_FULL = "That list is full. Remove a channel in All settings first.";
+// A channel name as the confirmations show it, isolated from the sentence around it.
+const isolated = (name) => `\u2068${name}\u2069`;
 const NOT_FILTERED = "It applies where Filter recommendations is on and the page is checked under Where to filter.";
 
 async function setup(t, { fixture = watchFixture, path = WATCH_PATH, stored = {} } = {}) {
@@ -40,7 +42,7 @@ test("Always hide this channel hides the right-clicked video's channel and says 
   await list("blockedChannels", titleLink(1).href);
 
   assert.deepEqual(storedList("blockedChannels"), ["freeCodeCamp.org"]);
-  assert.equal(toastText(), "freeCodeCamp.org will always be hidden.");
+  assert.equal(toastText(), `${isolated("freeCodeCamp.org")} will always be hidden.`);
   await clock.tickAsync(SCAN_MS);
   assert.deepEqual(cards().map(isShown), [true, false, true, true]);
 });
@@ -56,7 +58,7 @@ test("Never hide this channel moves a channel from the block list to the allow l
 
   assert.deepEqual(storedList("allowedChannels"), ["freeCodeCamp.org"]);
   assert.deepEqual(storedList("blockedChannels"), ["Fireship"]);
-  assert.equal(toastText(), "freeCodeCamp.org will never be hidden.");
+  assert.equal(toastText(), `${isolated("freeCodeCamp.org")} will never be hidden.`);
   await clock.tickAsync(SCAN_MS);
   assert.equal(isShown(cards()[1]), true);
 });
@@ -144,7 +146,7 @@ test("lists the channel of a video in a shelf, and the shelf stays as it is", as
   await list("blockedChannels", channelLink.href);
 
   assert.deepEqual(storedList("blockedChannels"), ["Shelf Channel"]);
-  assert.equal(toastText(), "Shelf Channel will always be hidden.");
+  assert.equal(toastText(), `${isolated("Shelf Channel")} will always be hidden.`);
   await clock.tickAsync(SCAN_MS);
   assert.equal(isShown(shelfCard), true);
 });
@@ -165,17 +167,17 @@ test("says where the list applies when nothing will be hidden right now", async 
   const off = await setup(t, { stored: { topicFilter: false } });
   off.rightClick(off.titleLink(1));
   await off.list("blockedChannels", off.titleLink(1).href);
-  assert.equal(off.toastText(), `freeCodeCamp.org will always be hidden. ${NOT_FILTERED}`);
+  assert.equal(off.toastText(), `${isolated("freeCodeCamp.org")} will always be hidden. ${NOT_FILTERED}`);
 
   const pageUnchecked = await setup(t, { stored: { filterWatch: false } });
   pageUnchecked.rightClick(pageUnchecked.titleLink(1));
   await pageUnchecked.list("blockedChannels", pageUnchecked.titleLink(1).href);
-  assert.equal(pageUnchecked.toastText(), `freeCodeCamp.org will always be hidden. ${NOT_FILTERED}`);
+  assert.equal(pageUnchecked.toastText(), `${isolated("freeCodeCamp.org")} will always be hidden. ${NOT_FILTERED}`);
 
   const on = await setup(t);
   on.rightClick(on.titleLink(1));
   await on.list("blockedChannels", on.titleLink(1).href);
-  assert.equal(on.toastText(), "freeCodeCamp.org will always be hidden.");
+  assert.equal(on.toastText(), `${isolated("freeCodeCamp.org")} will always be hidden.`);
 });
 
 // Fifty names fill a list. So do long names in a script of 3 bytes a character: these 28 fit in
@@ -204,7 +206,7 @@ test("confirms a channel the full list already holds", async (t) => {
   rightClick(titleLink(1));
   await list("blockedChannels", titleLink(1).href);
 
-  assert.equal(toastText(), "freeCodeCamp.org will always be hidden.");
+  assert.equal(toastText(), `${isolated("freeCodeCamp.org")} will always be hidden.`);
   assert.deepEqual(storedList("blockedChannels"), blockedChannels);
 });
 
@@ -247,7 +249,7 @@ test("a message that says where the list applies stays up long enough to read", 
   await list("blockedChannels", titleLink(1).href);
 
   await clock.tickAsync(TOAST_MS);
-  assert.equal(toastText(), `freeCodeCamp.org will always be hidden. ${NOT_FILTERED}`);
+  assert.equal(toastText(), `${isolated("freeCodeCamp.org")} will always be hidden. ${NOT_FILTERED}`);
   await clock.tickAsync(LONG_TOAST_MS - TOAST_MS);
   assert.equal(toastText(), null);
 });

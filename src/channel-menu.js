@@ -33,10 +33,11 @@
   }
 
   // The message for a channel just saved. When the list hides videos but nothing will be hidden
-  // right now, it also says where the list applies.
+  // right now, it also says where the list applies. The name is isolated (FSI ... PDI), so a name
+  // in another script or starting with digits keeps its place in a right-to-left sentence.
   function confirmation(list, channel, values, surface) {
     const { key, hides } = CONFIRMATIONS[list];
-    const saved = message(key, channel);
+    const saved = message(key, `\u2068${channel}\u2069`);
     if (!hides || cards.filtersOn(values, surface)) return brief(saved);
     return long(`${saved} ${message("channelSavedNotFiltered")}`);
   }
