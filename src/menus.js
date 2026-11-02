@@ -3,7 +3,8 @@
 (() => {
   "use strict";
 
-  const { LIST_CHANNEL, MENU_ALLOW_CHANNEL, MENU_BLOCK_CHANNEL } = globalThis.BetterYT.protocol;
+  const { CHANNEL_LISTS, LIST_CHANNEL, MENU_ALLOW_CHANNEL, MENU_BLOCK_CHANNEL } = globalThis.BetterYT.protocol;
+  const [ALLOWED, BLOCKED] = CHANNEL_LISTS;
 
   const YOUTUBE_PAGES = Object.freeze(["https://www.youtube.com/*", "https://youtube.com/*"]);
   // A card's thumbnail and title link to its video. On Home and in search results, its channel
@@ -14,8 +15,8 @@
     "https://*.youtube.com/channel/*",
   ]);
   const ITEMS = Object.freeze([
-    { id: MENU_ALLOW_CHANNEL, list: "allowedChannels", title: "menuAllowChannel" },
-    { id: MENU_BLOCK_CHANNEL, list: "blockedChannels", title: "menuBlockChannel" },
+    { id: MENU_ALLOW_CHANNEL, list: ALLOWED, title: "menuAllowChannel" },
+    { id: MENU_BLOCK_CHANNEL, list: BLOCKED, title: "menuBlockChannel" },
   ]);
 
   // Reading the error tells Chrome it was handled, so it isn't logged as unchecked.

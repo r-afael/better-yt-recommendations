@@ -8,13 +8,13 @@
   const { LIMITS } = settings;
 
   // The settings that hold the lists, named in protocol.js.
-  const LISTS = protocol.CHANNEL_LISTS;
+  const [ALLOWED, BLOCKED] = protocol.CHANNEL_LISTS;
 
   const key = settings.nameKey;
   // A name with its spacing collapsed, cut the way a card's channel is read.
   const clean = (name) => settings.clip(name, LIMITS.MAX_CHANNEL_LENGTH);
   // Each name moves between the two lists, so a name typed into one leaves the other.
-  const otherList = (list) => (list === LISTS[0] ? LISTS[1] : LISTS[0]);
+  const otherList = (list) => (list === ALLOWED ? BLOCKED : ALLOWED);
   const without = (list, keys) => list.filter((name) => !keys.has(key(name)));
 
   // Every name typed, one per line, without blank lines or names typed twice.

@@ -5,11 +5,12 @@
   "use strict";
 
   const { cards, channels, protocol, settings, toast } = globalThis.BetterYT;
+  const [ALLOWED, BLOCKED] = protocol.CHANNEL_LISTS;
 
   // For each list: the message that confirms a channel was added, and whether it hides videos.
   const CONFIRMATIONS = Object.freeze({
-    allowedChannels: Object.freeze({ key: "channelAllowed", hides: false }),
-    blockedChannels: Object.freeze({ key: "channelBlocked", hides: true }),
+    [ALLOWED]: Object.freeze({ key: "channelAllowed", hides: false }),
+    [BLOCKED]: Object.freeze({ key: "channelBlocked", hides: true }),
   });
 
   const message = (key, substitutions) => chrome.i18n.getMessage(key, substitutions);
