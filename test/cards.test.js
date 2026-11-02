@@ -170,6 +170,8 @@ test("reads every video in the real search results markup", (t) => {
 test("leaves channel results, Shorts shelves and ads out of search results", (t) => {
   const { cards, search } = load(t, searchFixture, SEARCH_URL);
   const found = Array.from(cards.findItems(search), (item) => item.localName);
+  // The channel result, the shelf's Shorts and the ad all fall outside the search items selector,
+  // so this holds without EXCLUDED: the captured page has no search item inside an excluded container.
   assert.deepEqual(found, ["ytd-video-renderer", "ytd-video-renderer", "yt-lockup-view-model"]);
 });
 
