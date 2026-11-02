@@ -124,7 +124,7 @@ and the model's status is hidden.
   set**; **Change shortcuts** opens `chrome://extensions/shortcuts`, where you can pick
   your own.
 
-![The Topics section of the options page, with the topics programming, software engineering and chess, the topic to avoid gaming, the filter sensitivity at 0.25, the title The best chess opening for beginners tried and shown, and the status The model is ready](docs/options-page.png)
+![The Topics section of the options page, with the topics programming, software engineering and chess and Match needed to show at 0.25 under them, the topic to avoid gaming and Match that hides at 0.24 under it, the title The best chess opening for beginners tried with the verdict Shown: matches your topics at 0.44, meeting the 0.25 needed, and the status The model is ready](docs/options-page.png)
 
 Settings synced from another computer are kept within the limits the options page allows.
 
