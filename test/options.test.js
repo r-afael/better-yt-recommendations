@@ -826,6 +826,18 @@ test("switching profiles on the page while typing saves the typed topics into th
   assert.equal(field.value, EVENING.topics);
 });
 
+// The profile list may be open while this happens; redrawing it would close it under the user.
+test("typing a profile name or a change from elsewhere doesn't redraw the profile list", async (t) => {
+  const { chrome, select, name } = await setupProfiles(t, { profiles: [WORK, EVENING], activeProfile: "Work", ...WORK });
+  const before = [...select.options];
+  for (const typed of ["O", "Of", "Off"]) name(typed);
+  await chrome.storage.sync.set({ threshold: 0.5 });
+  await flush();
+  const after = [...select.options];
+  assert.ok(after.length === before.length && after.every((option, index) => option === before[index]), "the same option elements");
+  assert.equal(select.value, "Work");
+});
+
 test("renaming the selected profile keeps it selected", async (t) => {
   const { chrome, select, button, name, listed, storedProfiles } = await setupProfiles(t, { profiles: [WORK, EVENING], activeProfile: "Work" });
   name("Office");
