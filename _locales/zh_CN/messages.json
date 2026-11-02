@@ -127,10 +127,10 @@
     "message": "无"
   },
   "tryShown": {
-    "message": "显示"
+    "message": "会显示"
   },
   "tryHidden": {
-    "message": "隐藏"
+    "message": "会隐藏"
   },
   "tryNeedsTopics": {
     "message": "请先在上面添加一个主题，再试标题。"
