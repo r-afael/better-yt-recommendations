@@ -33,6 +33,8 @@
   } = form.elements;
   const channelFields = [allowedChannels, blockedChannels];
   const topicFields = [topicsField, avoidField];
+  // The topic fields and the sliders, whose values a profile keeps a copy of.
+  const profileFields = settings.PROFILE_SETTINGS.map((name) => form.elements[name]);
   // Each slider sets the line for one list of topics. Its hint says what it does, or that it does
   // nothing until that list has a topic; it stays enabled, so it can be set ahead.
   const sliders = [
@@ -71,7 +73,7 @@
   let tryPending = false;
   let tryScore = null; // The latest try's { want, avoid }, which the sliders judge again as they move.
   let tryFailed = false;
-  // The profile selected when each topics field's pending edit started, which is the one it updates.
+  // The profile selected when each profile field's pending edit started, which is the one it updates.
   const editedProfiles = new Map();
 
   // The fields as typed, so the page follows the first topic and not only once it is saved.
@@ -252,8 +254,8 @@
     return shown;
   }
 
-  // A typed channel list saves its names, and takes them out of the other list. Topics update
-  // the profile they were typed for, and picking a profile brings its topics.
+  // A typed channel list saves its names, and takes them out of the other list. Topics and
+  // sliders update the profile they were changed for, and picking a profile brings its own.
   function changesFor(control, values) {
     if (isChannelField(control)) return channels.reconcile(values, control.name, channels.parse(control.value));
     return profiles.changesFor(control.name, ui.valueOf(control), values, editedProfiles.get(control));
@@ -281,18 +283,18 @@
   const isQuotaError = (error) => error?.code === settings.QUOTA_ERROR;
   const isProfilesFull = (error) => isQuotaError(error) && error.key === "profiles";
 
-  // Topics too long for their profile still reach the filter. The profile keeps its older topics.
-  function saveTopicsAlone(control) {
+  // A change that no longer fits in its profile still reaches the filter. The profile keeps what it had.
+  function saveWithoutProfile(control) {
     page.save({ [control.name]: ui.valueOf(control) }).then(
-      () => showLine(topicsError, "profileTopicsTooLong"),
+      () => showLine(topicsError, "profileChangeTooLarge"),
       () => showLine(topicsError, "saveFailed"),
     );
   }
 
   // A section without an error line still reports the refused save, in the console.
   function onError(error, control) {
-    if (topicFields.includes(control) && isProfilesFull(error)) {
-      saveTopicsAlone(control);
+    if (profileFields.includes(control) && isProfilesFull(error)) {
+      saveWithoutProfile(control);
       return;
     }
     const line = errorLineOf(control);
@@ -321,8 +323,11 @@
     );
   }
 
-  // A new profile saves the topics as typed, even before their own save.
-  const typedProfile = () => ({ name: profileName.value, topics: topicsField.value, avoidTopics: avoidField.value });
+  // A new profile saves the topics and sliders as shown, even before their own save.
+  const shownProfile = () => ({
+    name: profileName.value,
+    ...Object.fromEntries(profileFields.map((control) => [control.name, ui.valueOf(control)])),
+  });
 
   // A shortcut's description, then its keys, or Not set when Chrome left it unset.
   function shortcutRow({ description, shortcut }) {
@@ -342,20 +347,21 @@
   }
 
   // The fields' limits are set here rather than in the HTML, so the page allows what settings.js reads.
-  for (const field of topicFields) {
-    field.maxLength = settings.LIMITS.MAX_TEXT_LENGTH;
-    // This runs before the form's listener makes the edit pending, so it sees where the edit starts.
-    field.addEventListener("input", () => {
-      if (!page.saver.isPending(field)) editedProfiles.set(field, page.values.activeProfile);
+  for (const field of topicFields) field.maxLength = settings.LIMITS.MAX_TEXT_LENGTH;
+  // The topic fields and the sliders save once they pause, on input. This runs before the
+  // form's listener makes the edit pending, so it sees where the edit starts.
+  for (const control of profileFields) {
+    control.addEventListener("input", () => {
+      if (!page.saver.isPending(control)) editedProfiles.set(control, page.values.activeProfile);
     });
   }
   profileName.maxLength = settings.LIMITS.MAX_PROFILE_NAME_LENGTH;
   profileName.addEventListener("input", renderProfiles);
-  saveProfile.addEventListener("click", () => saveProfiles(profiles.create(page.values.profiles, typedProfile())));
+  saveProfile.addEventListener("click", () => saveProfiles(profiles.create(page.values.profiles, shownProfile())));
   renameProfile.addEventListener("click", () =>
     saveProfiles(profiles.rename(page.values.profiles, page.values.activeProfile, profileName.value)),
   );
-  // Deleting a profile keeps its topics, so the filter goes on as before.
+  // Deleting a profile keeps its topics and sliders, so the filter goes on as before.
   deleteProfile.addEventListener("click", () =>
     saveProfiles({ list: profiles.remove(page.values.profiles, page.values.activeProfile), name: "" }),
   );

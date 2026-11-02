@@ -43,7 +43,8 @@
 
   const isCheckbox = (control) => control.type === "checkbox";
   const isRange = (control) => control.type === "range";
-  const savesAfterPause = (control) => control.type === "textarea" || isRange(control);
+  const isTextField = (control) => control.type === "textarea";
+  const savesAfterPause = (control) => isTextField(control) || isRange(control);
   const isSetting = (control) => Object.hasOwn(settings.DEFAULTS, control.name);
 
   function valueOf(control) {
@@ -154,10 +155,11 @@
     });
   }
 
-  // A field being typed in, or waiting to be saved, keeps its value when settings change elsewhere.
-  // A focused switch still follows them: nothing is typed into it.
+  // A field being typed in, or a control waiting to be saved, keeps its value when settings change
+  // elsewhere. A focused switch or slider still follows them: nothing is typed into it, and a
+  // slider keeps focus after it moves.
   const isBusy = (control, saver) =>
-    saver.isPending(control) || (savesAfterPause(control) && control === control.ownerDocument.activeElement);
+    saver.isPending(control) || (isTextField(control) && control === control.ownerDocument.activeElement);
 
   // Boots a settings page and owns its values: what is stored, merged with every change since.
   // Until the stored settings load, the values are the defaults, so a change made before then

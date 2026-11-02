@@ -762,6 +762,16 @@ test("Change shortcuts opens Chrome's shortcuts page", async (t) => {
 const NO_PROFILE = messages.noProfile.message;
 // Profiles whose topics take 3 bytes a character, so five of them nearly fill their sync item.
 const cjkProfiles = (count) => Array.from({ length: count }, (_, index) => ({ name: `频道 ${index}`, topics: "频".repeat(500), avoidTopics: "" }));
+const ITEM_BUDGET = 8000; // The bytes settings.js lets one synced setting take.
+const syncBytes = (key, value) => key.length + new TextEncoder().encode(JSON.stringify(value)).length;
+
+// Work and profiles that fill the rest of their sync item to the byte, so Work can't grow.
+function filledProfiles() {
+  const filler = { name: "Filler", topics: "", avoidTopics: "" };
+  const list = [WORK, ...cjkProfiles(5), filler];
+  filler.topics = "x".repeat(ITEM_BUDGET - syncBytes("profiles", list));
+  return list;
+}
 
 // The options page with its profile switch, the profile name field and the profile buttons.
 async function setupProfiles(t, stored) {
@@ -782,14 +792,16 @@ async function setupProfiles(t, stored) {
   return { ...page, select, nameField, button, profilesError, topicsError, name, pick, listed, storedProfiles };
 }
 
-test("saves the topics as a new profile and selects it", async (t) => {
-  const { chrome, select, nameField, button, name, listed, storedProfiles } = await setupProfiles(t, { topics: "chess", avoidTopics: "gaming" });
+test("saves the topics and sliders as shown as a new profile and selects it", async (t) => {
+  const stored = { topics: "chess", avoidTopics: "gaming", threshold: 0.3 };
+  const { chrome, select, nameField, button, name, listed, storedProfiles, slide, avoidSlider } = await setupProfiles(t, stored);
   assert.equal(button("save").disabled, true, "until there is a name");
   name("  Chess   club ");
   assert.equal(button("save").disabled, false);
+  slide(0.2, avoidSlider);
   button("save").click();
   await flush();
-  assert.deepEqual(storedProfiles(), [{ name: "Chess club", topics: "chess", avoidTopics: "gaming" }]);
+  assert.deepEqual(storedProfiles(), [{ name: "Chess club", ...stored, avoidThreshold: 0.2 }]);
   assert.equal(chrome.data.activeProfile, "Chess club");
   assert.deepEqual(listed(), [NO_PROFILE, "Chess club"]);
   assert.equal(select.value, "Chess club");
@@ -813,60 +825,103 @@ test("shows the stored profile as selected when the page opens", async (t) => {
   assert.equal(select.value, "Evening");
 });
 
-test("switching profiles fills both topic fields and saves them in one write", async (t) => {
-  const { chrome, field, avoidField, pick } = await setupProfiles(t, { profiles: [WORK, EVENING], activeProfile: "Evening", topics: EVENING.topics });
+test("switching profiles fills both topic fields and both sliders and saves them in one write", async (t) => {
+  const { chrome, field, avoidField, slider, avoidSlider, pick } = await setupProfiles(t, { profiles: [WORK, EVENING], activeProfile: "Work", ...WORK });
   const set = chrome.storage.sync.set;
   let writes = 0;
   chrome.storage.sync.set = (changes) => {
     writes += 1;
     return set(changes);
   };
-  pick("Work");
+  pick("Evening");
   await flush();
   assert.equal(writes, 1);
-  const { activeProfile, topics, avoidTopics } = chrome.data;
-  assert.deepEqual({ activeProfile, topics, avoidTopics }, { activeProfile: "Work", topics: "programming", avoidTopics: "gaming" });
-  assert.equal(field.value, "programming");
-  assert.equal(avoidField.value, "gaming");
+  const { activeProfile, topics, avoidTopics, threshold, avoidThreshold } = chrome.data;
+  assert.deepEqual({ name: activeProfile, topics, avoidTopics, threshold, avoidThreshold }, EVENING);
+  assert.deepEqual([field.value, avoidField.value], [EVENING.topics, EVENING.avoidTopics]);
+  assert.deepEqual([slider.valueAsNumber, avoidSlider.valueAsNumber], [EVENING.threshold, EVENING.avoidThreshold]);
 });
 
-test("editing the topics updates the selected profile", async (t) => {
-  const { chrome, clock, type, storedProfiles } = await setupProfiles(t, { profiles: [WORK, EVENING], activeProfile: "Work", ...WORK });
-  type("programming, rust");
+test("a saved profile brings back its sliders as they were last moved", async (t) => {
+  const { chrome, clock, slider, avoidSlider, slide, name, button, pick } = await setupProfiles(t, { profiles: [EVENING], topics: "chess" });
+  name("Chess club");
+  button("save").click();
+  await flush();
+  slide(0.33);
   clock.tick(SAVE_DELAY_MS);
-  assert.equal(chrome.data.topics, "programming, rust");
-  assert.deepEqual(storedProfiles(), [{ ...WORK, topics: "programming, rust" }, EVENING]);
+  pick("Evening");
+  await flush();
+  assert.deepEqual([slider.valueAsNumber, avoidSlider.valueAsNumber], [EVENING.threshold, EVENING.avoidThreshold]);
+  pick("Chess club");
+  await flush();
+  assert.deepEqual([slider.valueAsNumber, avoidSlider.valueAsNumber], [0.33, 0.24]);
+  assert.deepEqual([chrome.data.threshold, chrome.data.avoidThreshold], [0.33, 0.24]);
 });
 
-test("editing topics that no longer fit in the profile still applies them and says the profile keeps its older topics", async (t) => {
-  const others = cjkProfiles(5);
-  const { chrome, clock, type, select, topicsError, storedProfiles } = await setupProfiles(t, {
-    profiles: [WORK, ...others],
-    activeProfile: "Work",
-    ...WORK,
-  });
-  const typed = "频".repeat(100);
-  type(typed);
+test("editing the topics or moving a slider updates the selected profile, even one saved without sliders", async (t) => {
+  const { chrome, clock, type, slide, avoidSlider, storedProfiles } = await setupProfiles(t, { profiles: [WORK, EVENING], activeProfile: "Work", ...WORK });
+  type("programming, rust");
+  slide(0.3, avoidSlider);
   clock.tick(SAVE_DELAY_MS);
   await flush();
-  assert.equal(chrome.data.topics, typed);
-  assert.deepEqual(storedProfiles(), [WORK, ...others]);
-  assert.equal(chrome.data.activeProfile, "Work");
-  assert.equal(select.value, "Work");
-  assert.equal(topicsError.hidden, false);
-  assert.equal(topicsError.textContent, messages.profileTopicsTooLong.message);
+  assert.deepEqual([chrome.data.topics, chrome.data.avoidThreshold], ["programming, rust", 0.3]);
+  assert.deepEqual(storedProfiles(), [{ ...WORK, topics: "programming, rust", avoidThreshold: 0.3 }, EVENING]);
 });
 
-test("a profile switch from elsewhere during typing doesn't write the typed topics into the new profile", async (t) => {
-  const { chrome, clock, field, type, select, storedProfiles } = await setupProfiles(t, { profiles: [WORK, EVENING], activeProfile: "Work", ...WORK });
-  field.focus();
-  type("programming, rust");
-  await chrome.storage.sync.set({ activeProfile: "Evening", topics: EVENING.topics, avoidTopics: EVENING.avoidTopics });
-  await flush();
-  assert.equal(select.value, "Evening");
+test("a change that no longer fits in the profile still applies, and the page says the profile keeps what it had", async (t) => {
+  const profiles = filledProfiles();
+  const edits = [
+    ["topics", "programming, rust", (page) => page.type("programming, rust")],
+    ["threshold", 0.33, (page) => page.slide(0.33)],
+  ];
+  for (const [key, value, edit] of edits) {
+    const page = await setupProfiles(t, { profiles, activeProfile: "Work", ...WORK });
+    const { chrome, clock, select, topicsError, storedProfiles } = page;
+    edit(page);
+    clock.tick(SAVE_DELAY_MS);
+    await flush();
+    assert.equal(chrome.data[key], value, key);
+    assert.deepEqual(storedProfiles(), profiles, key);
+    assert.equal(chrome.data.activeProfile, "Work", key);
+    assert.equal(select.value, "Work", key);
+    assert.equal(topicsError.hidden, false, key);
+    assert.equal(topicsError.textContent, messages.profileChangeTooLarge.message, key);
+  }
+});
+
+test("a profile switch from elsewhere during an edit doesn't write the edit into the new profile", async (t) => {
+  const edits = [
+    ["topics", "programming, rust", (page) => {
+      page.field.focus();
+      page.type("programming, rust");
+    }],
+    ["threshold", 0.33, (page) => page.slide(0.33)],
+  ];
+  for (const [key, value, edit] of edits) {
+    const page = await setupProfiles(t, { profiles: [WORK, EVENING], activeProfile: "Work", ...WORK });
+    const { chrome, clock, select, storedProfiles } = page;
+    edit(page);
+    await chrome.storage.sync.set({ activeProfile: "Evening", topics: EVENING.topics, avoidTopics: EVENING.avoidTopics });
+    await flush();
+    assert.equal(select.value, "Evening", key);
+    clock.tick(SAVE_DELAY_MS);
+    await flush();
+    assert.deepEqual(storedProfiles(), [WORK, EVENING], key);
+    assert.equal(chrome.data[key], value, `${key}: the edit still reaches the filter`);
+  }
+});
+
+test("a profile switch from elsewhere moves a focused slider once its move is saved", async (t) => {
+  const { chrome, clock, slider, slide, valueOf } = await setupProfiles(t, { profiles: [WORK, EVENING], activeProfile: "Work", ...WORK });
+  slider.focus();
+  slide(0.33);
   clock.tick(SAVE_DELAY_MS);
-  assert.deepEqual(storedProfiles(), [WORK, EVENING]);
-  assert.equal(chrome.data.topics, "programming, rust", "the typed topics still reach the filter");
+  await flush();
+  const { name, ...evening } = EVENING;
+  await chrome.storage.sync.set({ activeProfile: name, ...evening });
+  await flush();
+  assert.equal(slider.valueAsNumber, EVENING.threshold);
+  assert.equal(valueOf(slider), "0.30");
 });
 
 test("typing in the other topics field after a switch from elsewhere doesn't move the first edit into the new profile", async (t) => {
@@ -946,7 +1001,7 @@ test("refuses a name already in use", async (t) => {
   button("save").click();
   await flush();
   assert.equal(profilesError.hidden, true, "a save that works clears the error");
-  assert.deepEqual(storedProfiles(), [WORK, EVENING, { name: "Office", topics: "", avoidTopics: "" }]);
+  assert.deepEqual(storedProfiles(), [WORK, EVENING, { name: "Office", topics: "", avoidTopics: "", threshold: 0.25, avoidThreshold: 0.24 }]);
 });
 
 test("says when there's no room for another profile", async (t) => {

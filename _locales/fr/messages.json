@@ -382,7 +382,7 @@
     "message": "Supprimer"
   },
   "profilesHint": {
-    "message": "Un profil enregistre les sujets ci-dessus sous un nom. Changez de profil ici ou depuis la fenêtre de l'extension dans la barre d'outils. Passer d'Aucun profil à un profil remplace les sujets : enregistrez-les d'abord comme profil pour les garder."
+    "message": "Un profil enregistre sous un nom les sujets ci-dessus et les deux curseurs, Correspondance requise pour afficher et Correspondance qui masque. Changez de profil ici ou depuis la fenêtre de l'extension dans la barre d'outils. Passer d'Aucun profil à un profil remplace les sujets et les curseurs : enregistrez-les d'abord comme profil pour les garder."
   },
   "profileNameTaken": {
     "message": "Un profil porte déjà ce nom."
@@ -390,7 +390,7 @@
   "profilesFull": {
     "message": "Plus de place pour un autre profil. Supprimez-en un ou raccourcissez les sujets des autres."
   },
-  "profileTopicsTooLong": {
-    "message": "Ces sujets s'appliquent déjà, mais ils ne tiennent pas dans le profil, qui garde ses anciens sujets. Raccourcissez-les ou supprimez un autre profil."
+  "profileChangeTooLarge": {
+    "message": "Cette modification s'applique déjà, mais elle ne tient pas dans le profil, qui garde ce qu'il avait. Raccourcissez les sujets ou supprimez un autre profil."
   }
 }

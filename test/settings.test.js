@@ -89,22 +89,24 @@ test("every read gets its own list", async () => {
   }
 });
 
-test("drops malformed profiles from another device", async () => {
+test("reads profiles from another device within bounds, dropping those without a name", async () => {
   const { settings } = loadSettings({
     profiles: [
       null,
       "Work",
       { name: "  ", topics: "", avoidTopics: "" },
       { name: `${" ".repeat(30)}x`, topics: "", avoidTopics: "" },
-      { name: "Evening", topics: 42, avoidTopics: "" },
-      { name: "w".repeat(40), topics: "t".repeat(600), avoidTopics: "", extra: true },
+      { name: "w".repeat(40), topics: "t".repeat(600), avoidTopics: 42, threshold: 0.9, avoidThreshold: 0.287, extra: true },
       WORK,
       ...manyProfiles(8),
     ],
   });
   const { profiles } = await settings.load();
   assert.equal(profiles.length, 8);
-  assert.deepEqual(structuredClone(profiles.slice(0, 2)), [{ name: "w".repeat(30), topics: "t".repeat(500), avoidTopics: "" }, WORK]);
+  assert.deepEqual(structuredClone(profiles.slice(0, 2)), [
+    { name: "w".repeat(30), topics: "t".repeat(500), avoidTopics: "", threshold: 0.4, avoidThreshold: 0.29 },
+    WORK,
+  ]);
 });
 
 test("forgets a selected profile that no longer exists", async () => {

@@ -382,7 +382,7 @@
     "message": "Eliminar"
   },
   "profilesHint": {
-    "message": "Un perfil guarda los temas de arriba con un nombre. Cambia de perfil aquí o desde la ventana de la extensión en la barra de herramientas. Pasar de Sin perfil a un perfil reemplaza los temas, así que guárdalos antes como perfil para conservarlos."
+    "message": "Un perfil guarda con un nombre los temas de arriba y los dos controles deslizantes, Coincidencia necesaria para mostrar y Coincidencia que oculta. Cambia de perfil aquí o desde la ventana de la extensión en la barra de herramientas. Pasar de Sin perfil a un perfil reemplaza los temas y los controles deslizantes, así que guárdalos antes como perfil para conservarlos."
   },
   "profileNameTaken": {
     "message": "Ya existe un perfil con ese nombre."
@@ -390,7 +390,7 @@
   "profilesFull": {
     "message": "No hay espacio para otro perfil. Elimina uno o acorta los temas de los demás."
   },
-  "profileTopicsTooLong": {
-    "message": "Estos temas ya se aplican, pero no caben en el perfil, que conserva sus temas anteriores. Acórtalos o elimina otro perfil."
+  "profileChangeTooLarge": {
+    "message": "Este cambio ya se aplica, pero no cabe en el perfil, que conserva lo que tenía. Acorta los temas o elimina otro perfil."
   }
 }

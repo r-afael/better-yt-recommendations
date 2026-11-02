@@ -31,9 +31,10 @@ export const HIDDEN_COUNT = "better-yt:hidden-count";
 // Channel names such as "Channel 0", for filling a channel list.
 export const channelNames = (count) => Array.from({ length: count }, (_, index) => `Channel ${index}`);
 
-// Two topic profiles, as the pages save them.
+// Two topic profiles: Evening as the pages save it, and Work as saved before profiles kept the
+// sliders, which users may still have.
 export const WORK = Object.freeze({ name: "Work", topics: "programming", avoidTopics: "gaming" });
-export const EVENING = Object.freeze({ name: "Evening", topics: "cooking, chess", avoidTopics: "" });
+export const EVENING = Object.freeze({ name: "Evening", topics: "cooking, chess", avoidTopics: "", threshold: 0.3, avoidThreshold: 0.2 });
 
 // Profiles such as "Profile 0" with Work's topics, for filling the profile list.
 export const manyProfiles = (count) => Array.from({ length: count }, (_, index) => ({ ...WORK, name: `Profile ${index}` }));

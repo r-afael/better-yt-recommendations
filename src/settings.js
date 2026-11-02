@@ -57,19 +57,21 @@
   });
   const channelList = () =>
     list(LIMITS.MAX_CHANNELS, (entry) => typeof entry === "string", (entry) => cut(entry, LIMITS.MAX_CHANNEL_LENGTH));
-  // A profile the popup can list: a name to show once cut to its length, and the two topic texts
-  // it switches to.
+  // The settings a profile keeps a copy of, and switching to it brings back.
+  const PROFILE_SETTINGS = Object.freeze(["topics", "avoidTopics", "threshold", "avoidThreshold"]);
+  // Those of them that values holds. Profiles saved before they kept the sliders hold only the
+  // topics, and switching to one leaves the sliders as they are.
+  const profileCopy = (values) =>
+    Object.fromEntries(PROFILE_SETTINGS.filter((key) => Object.hasOwn(values, key)).map((key) => [key, values[key]]));
+  // A profile the popup can list: a name to show once cut to its length, and the settings it
+  // switches to, each read the way the setting itself is (by sanitize, below).
   const isProfile = (value) =>
-    typeof value?.name === "string" &&
-    cut(value.name, LIMITS.MAX_PROFILE_NAME_LENGTH).trim() !== "" &&
-    typeof value.topics === "string" &&
-    typeof value.avoidTopics === "string";
-  const trimProfile = ({ name, topics, avoidTopics }) => ({
-    name: cut(name, LIMITS.MAX_PROFILE_NAME_LENGTH),
-    topics: cut(topics, LIMITS.MAX_TEXT_LENGTH),
-    avoidTopics: cut(avoidTopics, LIMITS.MAX_TEXT_LENGTH),
+    typeof value?.name === "string" && cut(value.name, LIMITS.MAX_PROFILE_NAME_LENGTH).trim() !== "";
+  const readProfile = (profile) => ({
+    name: cut(profile.name, LIMITS.MAX_PROFILE_NAME_LENGTH),
+    ...Object.fromEntries(Object.entries(profileCopy(profile)).map(([key, value]) => [key, sanitize(key, value)])),
   });
-  const profileList = () => list(LIMITS.MAX_PROFILES, isProfile, trimProfile);
+  const profileList = () => list(LIMITS.MAX_PROFILES, isProfile, readProfile);
 
   const SCHEMA = Object.freeze({
     enabled: flag(true), // Open Your custom feed when Home opens.
@@ -95,8 +97,9 @@
     filterSearch: flag(false), // Filter search results. Off: they show what the user asked for.
     allowedChannels: channelList(), // Channels whose videos are never hidden.
     blockedChannels: channelList(), // Channels whose videos are always hidden where the filter works.
-    profiles: profileList(), // Named copies of the topics, which the popup switches between.
-    activeProfile: text("", LIMITS.MAX_PROFILE_NAME_LENGTH), // The selected profile, which topic edits update, or "" for none.
+    profiles: profileList(), // Named copies of the topics and sliders, which the popup switches between.
+    // The selected profile, which edits to the topics and sliders update, or "" for none.
+    activeProfile: text("", LIMITS.MAX_PROFILE_NAME_LENGTH),
   });
 
   const DEFAULTS = Object.freeze(Object.fromEntries(Object.entries(SCHEMA).map(([key, { fallback }]) => [key, fallback])));
@@ -148,5 +151,19 @@
   }
 
   globalThis.BetterYT ??= {};
-  globalThis.BetterYT.settings = { DEFAULTS, LIMITS, QUOTA_ERROR, DECIMALS, load, save, subscribe, nameKey, sameName, clip, stepReached };
+  globalThis.BetterYT.settings = {
+    DEFAULTS,
+    LIMITS,
+    PROFILE_SETTINGS,
+    QUOTA_ERROR,
+    DECIMALS,
+    load,
+    save,
+    subscribe,
+    nameKey,
+    sameName,
+    clip,
+    stepReached,
+    profileCopy,
+  };
 })();

@@ -50,7 +50,8 @@ setting, the popup's switches included. Open YouTube tabs pick up changes right 
   come from a channel you always hide. It does nothing until you type
   some topics to see or to avoid, or a channel to hide. Turn it off to show every
   video again, including blocked channels, and free the model's memory.
-- **Profile**, once you have saved a profile: switches to another profile's topics.
+- **Profile**, once you have saved a profile: switches to another profile's topics and
+  sliders.
 - A summary of your topics to see and to avoid. Click it to change them on the options page.
 - While the filter is on and has topics to see or to avoid, the model's status: waiting
   to be needed, loading, ready, or failed. While it's waiting or after a failure, **Load
@@ -98,13 +99,15 @@ and the model's status is hidden.
     yet.
   - The model's status and **Load now**, as in the popup. The status appears as soon as
     you type your first topic.
-- **Profiles**: save your topics and topics to avoid under a name, like 'Work' or 'Evening',
-  and switch between them here or from the popup's **Profile** menu. While a profile is
-  selected, editing the topics updates it. Switching from No profile to a profile replaces
-  your topics, so save them as a profile first if you want to keep them. **Rename** and
-  **Delete** work on the selected profile; deleting a profile keeps the topics you have now.
-  Up to 8 profiles fit, fewer if their topics are long; if a profile's topics grow too long
-  to save, they still apply, the profile keeps its earlier topics, and the page says so.
+- **Profiles**: save your topics, your topics to avoid and both sliders, **Match needed to
+  show** and **Match that hides**, under a name, like 'Work' or 'Evening', and switch
+  between them here or from the popup's **Profile** menu. While a profile is selected,
+  editing the topics or moving a slider updates it. Switching from No profile to a profile
+  replaces your topics and sliders, so save them as a profile first if you want to keep
+  them. **Rename** and **Delete** work on the selected profile; deleting a profile keeps
+  the topics and sliders you have now. Up to 8 profiles fit, fewer if their topics are
+  long; if a change no longer fits in its profile, it still applies, the profile keeps
+  what it had, and the page says so.
 - **Where to filter**: Next to the video you're watching (on by default), Home (on by
   default, including Your custom feed), Subscriptions (off by default) and Search
   results (off by default). Subscriptions and search results show what you asked for,

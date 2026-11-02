@@ -50,7 +50,8 @@
     document.getElementById(id).addEventListener("click", () => chrome.runtime.openOptionsPage());
   }
 
-  // Picking a profile saves its topics with it, and the summary follows them once they're saved.
+  // Picking a profile saves its topics and sliders with it, and the summary follows the topics
+  // once they're saved.
   const changesFor = (control, values) => profiles.changesFor(control.name, ui.valueOf(control), values);
   const page = ui.startPage({ form, render, changesFor });
 })();

@@ -453,7 +453,7 @@
   },
   "noProfile": {
     "message": "No profile",
-    "description": "First choice of the profile switch: the topics aren't tied to a profile."
+    "description": "First choice of the profile switch: the topics and sliders aren't tied to a profile."
   },
   "profileName": {
     "message": "Profile name",
@@ -465,7 +465,7 @@
   },
   "saveProfile": {
     "message": "Save as new profile",
-    "description": "Button that saves the current topics under the typed name."
+    "description": "Button that saves the current topics and both sliders under the typed name."
   },
   "renameProfile": {
     "message": "Rename",
@@ -473,11 +473,11 @@
   },
   "deleteProfile": {
     "message": "Delete",
-    "description": "Button that deletes the selected profile. The topics stay as they are."
+    "description": "Button that deletes the selected profile. The topics and sliders stay as they are."
   },
   "profilesHint": {
-    "message": "A profile saves the topics above under a name. Switch profiles here or from the toolbar popup. Switching from No profile replaces the topics, so save them as a profile first to keep them.",
-    "description": "Hint under the Profiles section on the options page. \"No profile\" is the first choice of the profile switch (noProfile); use the same words. \"Toolbar popup\" is the extension's popup."
+    "message": "A profile saves the topics above and both sliders, Match needed to show and Match that hides, under a name. Switch profiles here or from the toolbar popup. Switching from No profile replaces the topics and sliders, so save them as a profile first to keep them.",
+    "description": "Hint under the Profiles section on the options page. \"Match needed to show\" and \"Match that hides\" are the two sliders' labels (threshold, avoidThreshold), and \"No profile\" is the first choice of the profile switch (noProfile); use the same words. \"Toolbar popup\" is the extension's popup."
   },
   "profileNameTaken": {
     "message": "A profile with that name already exists.",
@@ -487,8 +487,8 @@
     "message": "No room for another profile. Delete one, or shorten the topics of the others.",
     "description": "Shown when Chrome sync can't hold another profile, or a renamed one."
   },
-  "profileTopicsTooLong": {
-    "message": "These topics apply now, but they don't fit in the profile, which keeps its older topics. Shorten them, or delete another profile.",
-    "description": "Shown under the topics when Chrome sync can't hold the selected profile's new topics. The filter uses the new topics, and the profile keeps its older ones."
+  "profileChangeTooLarge": {
+    "message": "This change applies now, but it doesn't fit in the profile, which keeps what it had. Shorten the topics, or delete another profile.",
+    "description": "Shown under the topics and sliders when Chrome sync can't hold the selected profile with new topics or a new slider value. The filter uses the new value, and the profile keeps its older one."
   }
 }
