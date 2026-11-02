@@ -25,6 +25,11 @@ test("keeps at most 50 channels of 100 characters", () => {
   assert.equal(parsed.length, 50);
   assert.equal(parsed[0], "x".repeat(100));
   assert.equal(channels.countNames(typed), 61, "the page still counts every name typed");
+  assert.deepEqual(
+    structuredClone(channels.parse(`${"a".repeat(99)}🌴`)),
+    ["a".repeat(99)],
+    "an emoji the cut would split goes whole, leaving no half of it",
+  );
 });
 
 test("adding a channel to one list removes it from the other", () => {
