@@ -88,8 +88,7 @@ keyboard shortcuts is disabled while the filter is off, and the model's status i
   your topics, so save them as a profile first if you want to keep them. **Rename** and
   **Delete** work on the selected profile; deleting a profile keeps the topics you have now.
   Up to 8 profiles fit, fewer if their topics are long; if a profile's topics grow too long
-  to save, they still apply, the profile keeps its earlier topics, and the page says there's
-  no room for them.
+  to save, they still apply, the profile keeps its earlier topics, and the page says so.
 - **Where to filter**: Next to the video you're watching (on by default), Home (on by
   default, including Your custom feed), Subscriptions (off by default) and Search
   results (off by default). Subscriptions and search results show what you asked for,
@@ -98,20 +97,21 @@ keyboard shortcuts is disabled while the filter is off, and the model's status i
   filtered like the results. Playlists and mixes on Home and in search results are
   judged like videos, by their title and channel.
 - **Channels**: **Never hide these channels** and **Always hide these channels** take one
-  channel name per line, as YouTube shows it, up to 50 per list. Videos from a channel you
+  channel name per line, as YouTube shows it, up to 50 per list, fewer if the names are long. Videos from a channel you
   never hide stay visible whatever their topic; videos from a channel you always hide are
   hidden on every page you filter, without the model. Names match ignoring case and
   spacing, so two channels with the same name both match, and a channel that changes its
   name needs adding again. Typing a name into one list removes it from the other. You can
-  also right-click a video's thumbnail or title on YouTube (or its channel name on Home and
-  in search results) and pick **Never hide this channel** or **Always hide this channel**.
+  also right-click a video's thumbnail or title on YouTube (or its channel name, where
+  YouTube links it) and pick **Never hide this channel** or **Always hide this channel**.
   A message at the bottom of the page confirms it. Ads and the shelves the filter leaves
   alone, such as Home's, stay as they are when you pick a channel from them; the channel is
   listed for every page the filter works on.
 - **Keyboard shortcuts**: **Alt+Shift+F** turns Filter recommendations on or off, and
   **Alt+Shift+S** turns Hide Shorts on or off. On a Mac they are **Control+Shift+F** and
-  **Control+Shift+S**, and on ChromeOS **Alt+Shift+F** and **Alt+Shift+H**. On YouTube, a
-  message confirms the change. The section lists the keys Chrome assigned. If another
+  **Control+Shift+S**, and on ChromeOS **Alt+Shift+F** and **Alt+Shift+H**. The shortcuts
+  work in any tab; on YouTube, a message confirms the change, and elsewhere the popup shows
+  the new state. The section lists the keys Chrome assigned. If another
   extension already uses a combination, Chrome leaves it unset and the list says **Not
   set**; **Change shortcuts** opens `chrome://extensions/shortcuts`, where you can pick
   your own.
@@ -255,7 +255,8 @@ refresh YouTube.
 - `src/icons/` holds the extension's icons.
 - `test/` holds the tests, and `test/helpers.js` the fake Chrome APIs and page setup they
   share. `test/fixtures/watch-sidebar.html`, `test/fixtures/home-grid.html` and
-  `test/fixtures/search-results.html` are YouTube's markup for the lists the filter reads;
+  `test/fixtures/search-results.html` hold markup for the lists the filter reads
+  (`home-grid.html` is written by hand until a signed-in capture replaces it);
   [CONTRIBUTING.md](CONTRIBUTING.md) says where each comes from and when to replace it.
 
 To run the checks, install Node.js 24 or later and pnpm 11, then run:
