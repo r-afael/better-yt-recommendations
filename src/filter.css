@@ -3,6 +3,12 @@
   display: none !important;
 }
 
+/* YouTube's marker that loads more videos when it comes into view, taken away while the filter has
+   hidden many videos with no try to scroll. See src/filter.js. */
+:root[data-better-yt-paused] ytd-continuation-item-renderer {
+  display: none !important;
+}
+
 /* Revealed videos keep YouTube's own layout, dimmed and outlined so they read as "would be hidden". */
 :root[data-better-yt-reveal] [data-better-yt-hidden] {
   opacity: 0.55;

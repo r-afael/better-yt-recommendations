@@ -15,6 +15,11 @@
   const MAX_BATCH = 30; // Videos per request, so the first verdicts arrive quickly.
   const REQUEST_TIMEOUT_MS = 60_000; // A request that never settles counts as a failure, so filtering resumes.
   const REVEAL_ATTRIBUTE = "data-better-yt-reveal"; // On the root while the hidden videos are shown.
+  const PAUSE_ATTRIBUTE = "data-better-yt-paused"; // On the root while YouTube's loading of more videos is held.
+  const PAUSE_AFTER = 60; // Videos hidden without the user scrolling, about two of YouTube's pages.
+  // What a user does to see more of the page; any of them lets YouTube load more videos again.
+  const SCROLL_EVENTS = Object.freeze(["wheel", "touchmove", "pointerdown"]);
+  const SCROLL_KEYS = new Set(["PageDown", "End", " ", "ArrowDown"]);
   const WATCHED = Object.freeze({
     childList: true,
     subtree: true,
@@ -35,6 +40,7 @@
   let surface = cards.surfaceFor(location.pathname);
   let revealed = false; // Whether the hidden videos are shown, until the next page.
   let lastReported = 0; // The count last sent for the badge.
+  let hiddenSinceScroll = 0; // Videos the filter hid since the user last tried to scroll.
   const row = createHiddenRow({ onToggle: toggleReveal });
 
   // Whether the topics ask the model about videos, once the filter is on.
@@ -72,7 +78,22 @@
     scanLater.cancel();
     row.unmount();
     setRevealed(false);
+    resumeLoading();
     report(0);
+  }
+
+  // YouTube loads more videos once its marker at the end of the list comes into view. When the
+  // filter hides nearly every video, nothing pushes the marker away, and YouTube would keep loading
+  // pages that are hidden in turn while the tab sits idle. After PAUSE_AFTER hidden videos with no
+  // try to scroll, filter.css takes the marker away until the user scrolls or shows the videos.
+  function noteHidden() {
+    hiddenSinceScroll += 1;
+    if (hiddenSinceScroll >= PAUSE_AFTER) document.documentElement.setAttribute(PAUSE_ATTRIBUTE, "");
+  }
+
+  function resumeLoading() {
+    hiddenSinceScroll = 0;
+    document.documentElement.removeAttribute(PAUSE_ATTRIBUTE);
   }
 
   // Stops filtering and shows every hidden video in the document.
@@ -88,6 +109,7 @@
 
   function toggleReveal() {
     setRevealed(!revealed);
+    resumeLoading();
     showHiddenCount();
   }
 
@@ -123,8 +145,12 @@
     const reason = reasonFor(video, ruling);
     const hiddenFor = reason ? video.id : null;
     if (cards.hiddenId(item) === hiddenFor && cards.hiddenReason(item) === reason) return;
-    if (reason) cards.hide(item, hiddenFor, reason);
-    else cards.unhide(item);
+    if (!reason) {
+      cards.unhide(item);
+      return;
+    }
+    if (cards.hiddenId(item) === null) noteHidden();
+    cards.hide(item, hiddenFor, reason);
   }
 
   function scan() {
@@ -223,7 +249,7 @@
 
   // A new kind of page takes the row away and re-targets the observer, and its count is always
   // sent for the badge. The next scan mounts the row on the list shown, and every new page starts
-  // with its hidden videos collapsed.
+  // with its hidden videos collapsed and YouTube free to load more.
   function onNavigate() {
     const next = cards.surfaceFor(location.pathname);
     if (next !== surface) {
@@ -233,10 +259,17 @@
       surface = next;
     }
     setRevealed(false);
+    resumeLoading();
     updatePage();
   }
 
   document.addEventListener("yt-navigate-finish", onNavigate);
+
+  // Capturing at the window, so YouTube's own handlers can't keep these from the filter.
+  for (const type of SCROLL_EVENTS) addEventListener(type, resumeLoading, { capture: true, passive: true });
+  addEventListener("keydown", (event) => {
+    if (SCROLL_KEYS.has(event.key)) resumeLoading();
+  }, { capture: true, passive: true });
 
   addEventListener("pagehide", () => report(0));
   // Chrome clears the badge of a page kept in the back/forward cache, and no navigation or

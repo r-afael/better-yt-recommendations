@@ -677,3 +677,60 @@ test("turning the filter off shows blocked channels again", async (t) => {
   assert.deepEqual(visibleIds(), FIXTURE_IDS);
   assert.equal(rowShown(), false);
 });
+
+// YouTube loads more videos when its marker at the end of the list comes into view. Hidden videos
+// take no room, so when nearly all are hidden the marker stays in view while the tab sits idle.
+const PAUSE_AFTER = 60;
+
+// Sets up the watch page with every video of Mosh's channel hidden, and a way to load more of them
+// the way YouTube loads its next pages.
+async function setupIdleFeed(t) {
+  const page = await setup(t, { stored: { topics: "", blockedChannels: [MOSH.channel] } });
+  const { document, items, isShown, clock } = page;
+  const loadMore = async (count) => {
+    const list = document.querySelector("#related #contents");
+    for (let index = 0; index < count; index += 1) {
+      const item = items()[0].cloneNode(true);
+      item.removeAttribute("data-better-yt-hidden");
+      item.removeAttribute("data-better-yt-reason");
+      showVideo(item, `more${String(index).padStart(7, "0")}`);
+      list.append(item);
+    }
+    await clock.tickAsync(SCAN_MS);
+  };
+  const loads = () => isShown(document.querySelector("ytd-continuation-item-renderer"));
+  return { ...page, loadMore, loads };
+}
+
+test("stops YouTube loading more videos once many were hidden without the user scrolling", async (t) => {
+  const { loadMore, loads } = await setupIdleFeed(t);
+  await loadMore(PAUSE_AFTER - 2);
+  assert.equal(loads(), true, "a page or two of hidden videos still loads the next");
+  await loadMore(1);
+  assert.equal(loads(), false);
+});
+
+test("scrolling lets YouTube load more videos again", async (t) => {
+  const { window, document, loadMore, loads, toggle } = await setupIdleFeed(t);
+  await loadMore(PAUSE_AFTER);
+
+  document.dispatchEvent(new window.WheelEvent("wheel", { bubbles: true, deltaY: 100 }));
+  assert.equal(loads(), true, "after a wheel");
+  await loadMore(PAUSE_AFTER - 1);
+  assert.equal(loads(), true, "the count starts again from the scroll");
+
+  await loadMore(1);
+  document.body.dispatchEvent(new window.KeyboardEvent("keydown", { bubbles: true, key: "End" }));
+  assert.equal(loads(), true, "after the End key");
+
+  await loadMore(PAUSE_AFTER);
+  toggle().click();
+  assert.equal(loads(), true, "after Show them");
+});
+
+test("turning the filter off lets YouTube load more videos again", async (t) => {
+  const { loadMore, loads, changeSettings } = await setupIdleFeed(t);
+  await loadMore(PAUSE_AFTER);
+  await changeSettings({ topicFilter: false });
+  assert.equal(loads(), true);
+});
