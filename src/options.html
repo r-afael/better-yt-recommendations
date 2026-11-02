@@ -9,6 +9,30 @@
   <main>
     <h1>Better YT Recommendations</h1>
     <form id="settings">
+      <section aria-labelledby="home-section">
+        <h2 id="home-section" data-i18n="homeSection"></h2>
+        <label class="setting">
+          <span>
+            <span class="title" id="enabled-title" data-i18n="autoOpen"></span>
+            <span class="hint" id="enabled-hint" data-i18n="autoOpenHint"></span>
+          </span>
+          <input type="checkbox" class="switch" name="enabled" aria-labelledby="enabled-title" aria-describedby="enabled-hint">
+        </label>
+        <label class="setting">
+          <span>
+            <span class="title" id="enforce-title" data-i18n="enforce"></span>
+            <span class="hint" id="enforce-hint" data-i18n="enforceHint"></span>
+          </span>
+          <input type="checkbox" class="switch" name="enforce" aria-labelledby="enforce-title" aria-describedby="enforce-hint">
+        </label>
+        <label class="setting">
+          <span>
+            <span class="title" id="hideShorts-title" data-i18n="hideShorts"></span>
+            <span class="hint" id="hideShorts-hint" data-i18n="hideShortsHint"></span>
+          </span>
+          <input type="checkbox" class="switch" name="hideShorts" aria-labelledby="hideShorts-title" aria-describedby="hideShorts-hint">
+        </label>
+      </section>
       <section aria-labelledby="topics-section">
         <h2 id="topics-section" data-i18n="topicsSection"></h2>
         <label class="setting">

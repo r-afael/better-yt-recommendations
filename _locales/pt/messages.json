@@ -65,6 +65,9 @@
   "allSettings": {
     "message": "Todas as configurações"
   },
+  "homeSection": {
+    "message": "Início e Shorts"
+  },
   "topicsSection": {
     "message": "Assuntos"
   },

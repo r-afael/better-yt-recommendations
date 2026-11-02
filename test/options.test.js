@@ -57,8 +57,9 @@ async function reportStatus(chrome, status) {
 }
 
 const PAGE_SETTINGS = ["filterWatch", "filterHome", "filterSubscriptions", "filterSearch"];
+const FEED_SETTINGS = ["enabled", "enforce", "hideShorts"]; // The switches for Home and Shorts.
 
-test("the Filter recommendations switch on the options page saves and enables the fields, profiles, page checkboxes and channel lists", async (t) => {
+test("the Filter recommendations switch on the options page saves and enables the fields, profiles, page checkboxes and channel lists, but not the switches for Home and Shorts", async (t) => {
   const stored = { topicFilter: false, profiles: [WORK], activeProfile: WORK.name };
   const { document, chrome, toggle, field, avoidField, slider, type } = await setup(t, { stored });
   const titleBox = document.querySelector("#try-title");
@@ -72,6 +73,7 @@ test("the Filter recommendations switch on the options page saves and enables th
   const disabled = () => controls.map((control) => control.disabled);
   const every = (value) => controls.map(() => value);
   assert.deepEqual(disabled(), every(true));
+  assert.deepEqual(FEED_SETTINGS.map((name) => toggle(name).disabled), [false, false, false], "they work without the filter");
   toggle("topicFilter").click();
   await flush();
   assert.equal(chrome.data.topicFilter, true);
@@ -523,6 +525,28 @@ test("the page checkboxes show their defaults and save as they change", async (t
   await flush();
   assert.equal(chrome.data.filterSearch, true);
   assert.equal(chrome.data.filterHome, false);
+});
+
+test("the switches for Home and Shorts show their defaults and save as they change", async (t) => {
+  const { chrome, toggle } = await setup(t);
+  assert.deepEqual(FEED_SETTINGS.map((name) => toggle(name).checked), [true, false, false]);
+
+  toggle("hideShorts").click();
+  toggle("enforce").click();
+  toggle("enabled").click();
+  await flush();
+  assert.deepEqual(FEED_SETTINGS.map((name) => chrome.data[name]), [false, true, true]);
+});
+
+test("the switches for Home and Shorts show the stored settings and follow a change made in the popup", async (t) => {
+  const { chrome, toggle } = await setup(t, { stored: { enabled: false, enforce: true, hideShorts: true } });
+  assert.deepEqual(FEED_SETTINGS.map((name) => toggle(name).checked), [false, true, true]);
+  assert.equal(toggle("enforce").disabled, true);
+
+  await chrome.storage.sync.set({ enabled: true, hideShorts: false });
+  await flush();
+  assert.deepEqual(FEED_SETTINGS.map((name) => toggle(name).checked), [true, true, false]);
+  assert.equal(toggle("enforce").disabled, false);
 });
 
 test("submitting the options form, as Enter in the title box does, keeps the page open", async (t) => {

@@ -65,6 +65,9 @@
   "allSettings": {
     "message": "Semua setelan"
   },
+  "homeSection": {
+    "message": "Beranda dan Shorts"
+  },
   "topicsSection": {
     "message": "Topik"
   },

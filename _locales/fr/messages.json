@@ -65,6 +65,9 @@
   "allSettings": {
     "message": "Tous les paramètres"
   },
+  "homeSection": {
+    "message": "Accueil et Shorts"
+  },
   "topicsSection": {
     "message": "Sujets"
   },

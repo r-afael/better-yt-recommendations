@@ -65,6 +65,9 @@
   "allSettings": {
     "message": "所有設定"
   },
+  "homeSection": {
+    "message": "首頁和 Shorts"
+  },
   "topicsSection": {
     "message": "主題"
   },

@@ -65,6 +65,9 @@
   "allSettings": {
     "message": "Все настройки"
   },
+  "homeSection": {
+    "message": "Главная и Shorts"
+  },
   "topicsSection": {
     "message": "Темы"
   },

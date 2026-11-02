@@ -27,9 +27,9 @@ on desktop.*
 
 ## Settings
 
-Click the extension's icon in the Chrome toolbar for the main switches. Click **All
-settings** (or the gear) to open the options page in a tab, with everything else. Open
-YouTube tabs pick up changes right away.
+Click the extension's icon in the Chrome toolbar for quick access to the main switches.
+Click **All settings** (or the gear) to open the options page in a tab, with every
+setting, the popup's switches included. Open YouTube tabs pick up changes right away.
 
 ### In the popup
 
@@ -38,7 +38,8 @@ YouTube tabs pick up changes right away.
   has its own toggle, below.
 - **Enforcement mode** (off by default): keeps you on Your custom feed. Clicking
   another Home tab, like Podcasts or All, does nothing, and if YouTube switches tabs
-  on its own, the extension switches back.
+  on its own, the extension switches back. It works with Open custom feed on Home and
+  can only be changed while that is on.
 - **Hide Shorts** (off by default): hides the Shorts entry in the side menu, Shorts
   shelves on Home, Subscriptions and channel pages, and Shorts in search results and
   the sidebar. A link to a Short opens it as a regular video, without the endless feed of
@@ -61,9 +62,12 @@ YouTube tabs pick up changes right away.
 
 ### On the options page
 
-Everything on the options page except the **Filter recommendations** switch and the
-keyboard shortcuts is disabled while the filter is off, and the model's status is hidden.
+Everything on the options page except the **Home and Shorts** switches, the **Filter
+recommendations** switch and the keyboard shortcuts is disabled while the filter is off,
+and the model's status is hidden.
 
+- **Home and Shorts**: **Open custom feed on Home**, **Enforcement mode** and **Hide
+  Shorts**, the same switches as in the popup.
 - **Topics**:
   - **Filter recommendations**: the same switch as in the popup.
   - **Topics you want to see**: the topics to keep, separated by commas.
@@ -110,8 +114,8 @@ keyboard shortcuts is disabled while the filter is off, and the model's status i
 - **Keyboard shortcuts**: **Alt+Shift+F** turns Filter recommendations on or off, and
   **Alt+Shift+S** turns Hide Shorts on or off. On a Mac they are **Control+Shift+F** and
   **Control+Shift+S**, and on ChromeOS **Alt+Shift+F** and **Alt+Shift+H**. The shortcuts
-  work in any tab; on YouTube, a message confirms the change, and elsewhere the popup shows
-  the new state. The section lists the keys Chrome assigned. If another
+  work in any tab; on YouTube, a message confirms the change, and elsewhere the popup and
+  the options page show the new state. The section lists the keys Chrome assigned. If another
   extension already uses a combination, Chrome leaves it unset and the list says **Not
   set**; **Change shortcuts** opens `chrome://extensions/shortcuts`, where you can pick
   your own.
@@ -223,7 +227,8 @@ refresh YouTube.
 - `src/options.html`, `src/options.css` and `src/options.js` are the options page.
   `src/options.css` builds on `src/popup.css`.
 - `src/ui.js` holds the code the settings popup and the options page share: starting the
-  page, translation, saving, the profile switch, and the model status.
+  page, translation, saving, the custom feed switches, the profile switch, and the model
+  status.
 - `_locales/` has the translations of the popup, the options page and the messages the
   extension shows on YouTube.
 - `src/protocol.js` names the messages the extension's parts send each other.

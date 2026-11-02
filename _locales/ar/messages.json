@@ -65,6 +65,9 @@
   "allSettings": {
     "message": "كل الإعدادات"
   },
+  "homeSection": {
+    "message": "الصفحة الرئيسية وShorts"
+  },
   "topicsSection": {
     "message": "الموضوعات"
   },

@@ -1,12 +1,12 @@
 // Toolbar popup with the main switches, the profile switch, a summary of the topics and the
-// topic model's status.
-// Everything else is on the options page. Open YouTube tabs pick up changes right away.
+// topic model's status, for quick access.
+// The options page has these and every other setting. Open YouTube tabs pick up changes right away.
 (() => {
   "use strict";
 
   const { profiles, ui, verdict } = globalThis.BetterYT;
   const form = document.getElementById("settings");
-  const { enabled, enforce, activeProfile: profileSelect } = form.elements;
+  const { activeProfile: profileSelect } = form.elements;
   const profileRow = document.getElementById("profile-row");
   const summaryField = document.querySelector(".summary-field");
   const summaryTopics = document.getElementById("summary-topics");
@@ -39,9 +39,8 @@
     profileSelect.disabled = !page.values.topicFilter;
   }
 
-  // Enforcement mode builds on opening the custom feed.
   function render() {
-    enforce.disabled = !enabled.checked;
+    ui.renderFeedSwitches(form.elements);
     renderProfiles();
     renderSummary();
     status.render();

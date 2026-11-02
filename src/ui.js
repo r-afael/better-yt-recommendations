@@ -1,5 +1,5 @@
-// Code the settings pages share: starting the page, translation, saving, the profile switch and
-// the model status.
+// Code the settings pages share: starting the page, translation, saving, the custom feed
+// switches, the profile switch and the model status.
 // Each page looks up its own elements, defines render() and boots with startPage().
 (() => {
   "use strict";
@@ -83,6 +83,11 @@
       select.replaceChildren(select.options[0], ...names.map((name) => new Option(name, name)));
     }
     select.value = profiles.active(values)?.name ?? "";
+  }
+
+  // Enforcement mode builds on opening the custom feed, so it only changes while that is on.
+  function renderFeedSwitches({ enabled, enforce }) {
+    enforce.disabled = !enabled.checked;
   }
 
   // Saves a control's value right away or once it stops changing.
@@ -241,6 +246,7 @@
     startPage,
     createModelStatus,
     fillProfileSelect,
+    renderFeedSwitches,
     formatThreshold,
     formatList,
   };

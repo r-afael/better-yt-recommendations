@@ -9,7 +9,7 @@
   },
   "autoOpen": {
     "message": "Open custom feed on Home",
-    "description": "Popup toggle that opens the custom feed tab when YouTube Home opens."
+    "description": "Toggle in the popup and on the options page that opens the custom feed tab when YouTube Home opens."
   },
   "autoOpenHint": {
     "message": "Switches to your custom feed whenever you open YouTube Home.",
@@ -17,7 +17,7 @@
   },
   "enforce": {
     "message": "Enforcement mode",
-    "description": "Popup toggle name for enforcement mode."
+    "description": "Toggle name for enforcement mode, in the popup and on the options page."
   },
   "enforceHint": {
     "message": "Stay on your custom feed, even if you pick another Home tab.",
@@ -25,7 +25,7 @@
   },
   "hideShorts": {
     "message": "Hide Shorts",
-    "description": "Popup toggle that hides YouTube Shorts."
+    "description": "Toggle in the popup and on the options page that hides YouTube Shorts."
   },
   "hideShortsHint": {
     "message": "Removes Shorts from feeds, search and the sidebar, and opens Shorts links as regular videos.",
@@ -86,6 +86,10 @@
   "allSettings": {
     "message": "All settings",
     "description": "Popup link and gear button that open the options page with every setting."
+  },
+  "homeSection": {
+    "message": "Home and Shorts",
+    "description": "Heading of the options page section with the switches for YouTube Home (autoOpen, enforce) and Hide Shorts (hideShorts). \"Home\" is YouTube's Home page and \"Shorts\" YouTube's name for short videos; use the same words as those switches."
   },
   "topicsSection": {
     "message": "Topics",

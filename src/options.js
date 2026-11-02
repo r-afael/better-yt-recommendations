@@ -1,7 +1,8 @@
-// Options page with the settings that don't fit in the popup: the topics to see and to avoid,
-// the filter sensitivity, a box to try a title against them, the topic profiles, the pages to
-// filter, the channel lists and the keyboard shortcuts. Open YouTube tabs pick up changes right
-// away.
+// Options page with every setting: the popup's switches for Home and Shorts and Filter
+// recommendations, then what doesn't fit in the popup: the topics to see and to avoid, the
+// filter sensitivity, a box to try a title against them, the topic profiles, the pages to
+// filter, the channel lists and the keyboard shortcuts. Open YouTube tabs pick up changes
+// right away.
 (() => {
   "use strict";
 
@@ -152,8 +153,9 @@
   // The topics, the sensitivity, the try box, the profiles, the pages and the channel lists only
   // apply while filtering. The profiles and the channel lists start disabled in the HTML: a list
   // typed before the stored ones load would have nothing to take its names out of. Moving the
-  // slider judges the tried title again.
+  // slider judges the tried title again. The switches for Home and Shorts work without the filter.
   function render() {
+    ui.renderFeedSwitches(form.elements);
     for (const control of filterControls) control.disabled = !topicFilter.checked;
     renderProfiles();
     // The slider speaks the value as shown, since the shown value isn't read out on its own.

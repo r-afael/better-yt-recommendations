@@ -65,6 +65,9 @@
   "allSettings": {
     "message": "সব সেটিংস"
   },
+  "homeSection": {
+    "message": "হোম ও Shorts"
+  },
   "topicsSection": {
     "message": "বিষয়"
   },

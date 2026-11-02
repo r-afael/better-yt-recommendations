@@ -65,6 +65,9 @@
   "allSettings": {
     "message": "सभी सेटिंग्स"
   },
+  "homeSection": {
+    "message": "होम और Shorts"
+  },
   "topicsSection": {
     "message": "विषय"
   },
