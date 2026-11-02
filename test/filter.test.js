@@ -144,7 +144,7 @@ test("sends both topic lists", async (t) => {
   assert.deepEqual(requests[0].message.avoidTopics, ["gaming", "gossip"]);
 });
 
-test("hides a video that matches a topic to avoid as much as the match that hides, however well it matches the topics", async (t) => {
+test("with both lists, hides a video for a topic to avoid only when it matches that more than the topics", async (t) => {
   const { requests, visibleIds, clock } = await setup(t, {
     stored: { topics: "programming", avoidTopics: "gaming", avoidThreshold: 0.24 },
   });
@@ -152,10 +152,10 @@ test("hides a video that matches a topic to avoid as much as the match that hide
     PFmuCDHHpwk: score(0.9, 0.24),
     PkZNo7MFNFg: score(0.31, 0.23),
     RphIVv0uWrM: score(0.2, 0.1),
-    C4dGVTl6ry8: score(0.2, 0.3),
+    C4dGVTl6ry8: score(0.3, 0.35),
   } });
   await clock.tickAsync(SCAN_MS);
-  assert.deepEqual(visibleIds(), ["PkZNo7MFNFg"]);
+  assert.deepEqual(visibleIds(), ["PFmuCDHHpwk", "PkZNo7MFNFg"]);
 });
 
 test("with only topics to avoid, hides videos from the match that hides, and decides again when it moves without asking", async (t) => {

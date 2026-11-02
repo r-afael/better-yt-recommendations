@@ -75,19 +75,27 @@ and the model's status is hidden.
     one of your topics to stay visible, from 0.10 to 0.40. Move it up to hide more
     videos, or down if the filter hides videos you'd want. It has no effect until you
     add a topic you want to see.
-  - **Topics to avoid**: topics whose videos you don't want, separated by commas.
-  - **Match that hides** (0.24 by default, also from 0.10 to 0.40), under them: a video
-    that matches a topic to avoid this much or more is hidden, even when it also matches
-    your topics. Move it down to hide more videos, or up if it hides videos you'd want.
-    It has no effect until you add a topic to avoid. YouTube pages update as you move
-    either slider.
+  - **Topics to avoid**: topics whose videos you don't want, separated by commas. A video
+    that matches one of them more than your topics is hidden.
+  - **Match that hides** (0.24 by default, also from 0.10 to 0.40), under them: a video is
+    hidden for a topic to avoid only if it matches it this much or more. With topics you
+    want to see too, it must also match the topic to avoid more than your topics, so the
+    stronger match decides, and a tie keeps the video. With the topic java, the topic to
+    avoid gaming and this slider at 0.20, the title Java matches gaming at 0.20 but java at
+    0.92, and is shown. The cost is that a gaming video whose title matches one of your
+    topics more than gaming, like Minecraft Java Edition Let's Play with the topic java,
+    gets through; add the game itself, here minecraft, to your topics to avoid. Move the
+    slider down to hide more videos, or up if it hides videos you'd want. It has no effect
+    until you add a topic to avoid. YouTube pages update as you move either slider.
   - **Try a title**: type a video title to see whether the filter would show or hide a
     video with that title, which rule decided, and how well the title matches each list.
     The numbers use the sliders' scale: a title that matches your topics at 0.31 is shown
-    up to a Match needed to show of 0.31 and hidden from 0.32. Move either slider to see
-    the verdict change. The try judges the title alone; on YouTube the channel name also
-    counts and the channel lists apply, so a real video's verdict can differ slightly.
-    The first try loads the model if it isn't loaded yet.
+    up to a Match needed to show of 0.31 and hidden from 0.32. When the two matches would
+    show as the same number, they show with more decimals, so you can tell which is
+    higher. Move either slider to see the verdict change. The try judges the title alone;
+    on YouTube the channel name also counts and the channel lists apply, so a real
+    video's verdict can differ slightly. The first try loads the model if it isn't loaded
+    yet.
   - The model's status and **Load now**, as in the popup. The status appears as soon as
     you type your first topic.
 - **Profiles**: save your topics and topics to avoid under a name, like 'Work' or 'Evening',

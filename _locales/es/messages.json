@@ -93,13 +93,13 @@
     "message": "videojuegos, chismes de famosos"
   },
   "avoidTopicsHint": {
-    "message": "Se ocultan los videos que coinciden con uno de estos temas, aunque también coincidan con los que quieres ver. Separa los temas con comas."
+    "message": "Se ocultan los videos que coinciden con uno de estos temas más que con los que quieres ver. Separa los temas con comas."
   },
   "avoidThreshold": {
     "message": "Coincidencia que oculta"
   },
   "avoidThresholdHint": {
-    "message": "Se oculta un video que coincida con un tema a evitar en esta medida o más. Más baja oculta más."
+    "message": "Un video se oculta por un tema a evitar solo si coincide con él en esta medida o más, y más que con tus temas. Más baja oculta más."
   },
   "avoidThresholdHintEmpty": {
     "message": "No tiene efecto hasta que agregues un tema a evitar."
@@ -157,6 +157,32 @@
       "line": {
         "content": "$2",
         "example": "0.25"
+      }
+    }
+  },
+  "tryAvoidedMore": {
+    "message": "Se oculta: coincide con un tema a evitar en $AVOID$, más que con tus temas, en $WANT$.",
+    "placeholders": {
+      "avoid": {
+        "content": "$1",
+        "example": "0.39"
+      },
+      "want": {
+        "content": "$2",
+        "example": "0.31"
+      }
+    }
+  },
+  "tryAvoidedNotMore": {
+    "message": "Se muestra: coincide con un tema a evitar en $AVOID$, pero no más que con tus temas, en $WANT$.",
+    "placeholders": {
+      "avoid": {
+        "content": "$1",
+        "example": "0.39"
+      },
+      "want": {
+        "content": "$2",
+        "example": "0.31"
       }
     }
   },

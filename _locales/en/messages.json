@@ -122,16 +122,16 @@
     "description": "Example topics to avoid in the empty field. Use topics that make sense in this language, separated by commas."
   },
   "avoidTopicsHint": {
-    "message": "Videos that match one of these are hidden, even when they match your topics. Separate topics with commas.",
-    "description": "Explains the topics-to-avoid field."
+    "message": "Videos that match one of these more than your topics are hidden. Separate topics with commas.",
+    "description": "Explains the topics-to-avoid field: a video is hidden for these only when it matches one of them more than the wanted topics."
   },
   "avoidThreshold": {
     "message": "Match that hides",
     "description": "Label of the slider that sets how well a video must match a topic to avoid to be hidden. Its value, from 0.10 to 0.40, shows next to it."
   },
   "avoidThresholdHint": {
-    "message": "A video that matches a topic to avoid this much or more is hidden. Lower hides more.",
-    "description": "Explains the avoidThreshold slider (\"Match that hides\")."
+    "message": "A video is hidden for a topic to avoid only if it matches it this much or more, and more than your topics. Lower hides more.",
+    "description": "Explains the avoidThreshold slider (\"Match that hides\"): a video is hidden for a topic to avoid only when it matches it at least this much and more than the wanted topics."
   },
   "avoidThresholdHintEmpty": {
     "message": "Has no effect until you add a topic to avoid.",
@@ -183,15 +183,15 @@
   },
   "tryShown": {
     "message": "Shown",
-    "description": "Read out by screen readers when the try box's verdict says the filter would keep the typed title visible, such as when moving a slider makes it shown. The verdict on screen (tryOnTopic or tryNotAvoided) says why."
+    "description": "Read out by screen readers when the try box's verdict says the filter would keep the typed title visible, such as when moving a slider makes it shown. The verdict on screen (tryOnTopic, tryNotAvoided or tryAvoidedNotMore) says why."
   },
   "tryHidden": {
     "message": "Hidden",
-    "description": "Read out by screen readers when the try box's verdict says the filter would hide the typed title, such as when moving a slider makes it hidden. The verdict on screen (tryAvoided or tryOffTopic) says why."
+    "description": "Read out by screen readers when the try box's verdict says the filter would hide the typed title, such as when moving a slider makes it hidden. The verdict on screen (tryAvoided, tryAvoidedMore or tryOffTopic) says why."
   },
   "tryAvoided": {
     "message": "Hidden: matches a topic to avoid at $SCORE$, reaching the $LINE$ that hides.",
-    "description": "Verdict in the try box: the title would be hidden because it matches a topic to avoid at least as well as the avoidThreshold slider (\"Match that hides\") is set. Use the words of that slider's label.",
+    "description": "Verdict in the try box with only topics to avoid: the title would be hidden because it matches them at least as well as the avoidThreshold slider (\"Match that hides\") is set. Use the words of that slider's label.",
     "placeholders": {
       "score": {
         "content": "$1",
@@ -200,6 +200,34 @@
       "line": {
         "content": "$2",
         "example": "0.25"
+      }
+    }
+  },
+  "tryAvoidedMore": {
+    "message": "Hidden: matches a topic to avoid at $AVOID$, more than your topics at $WANT$.",
+    "description": "Verdict in the try box with both lists: the title would be hidden because it reaches the avoidThreshold slider (\"Match that hides\") and matches a topic to avoid more than the wanted topics. The first number is the match with the topics to avoid, the second with the wanted topics.",
+    "placeholders": {
+      "avoid": {
+        "content": "$1",
+        "example": "0.39"
+      },
+      "want": {
+        "content": "$2",
+        "example": "0.31"
+      }
+    }
+  },
+  "tryAvoidedNotMore": {
+    "message": "Shown: matches a topic to avoid at $AVOID$, but not more than your topics at $WANT$.",
+    "description": "Verdict in the try box with both lists: the title would be shown because, though it reaches the avoidThreshold slider (\"Match that hides\"), it matches a topic to avoid no more than the wanted topics, which it matches as the threshold slider asks. The first number is the match with the topics to avoid, the second with the wanted topics.",
+    "placeholders": {
+      "avoid": {
+        "content": "$1",
+        "example": "0.39"
+      },
+      "want": {
+        "content": "$2",
+        "example": "0.31"
       }
     }
   },

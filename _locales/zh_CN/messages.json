@@ -93,13 +93,13 @@
     "message": "游戏，明星八卦"
   },
   "avoidTopicsHint": {
-    "message": "与其中某个主题匹配的视频会被隐藏，即使它也匹配你想看的主题。用逗号分隔各个主题。"
+    "message": "与其中某个主题的匹配度高于你想看的主题的视频会被隐藏。用逗号分隔各个主题。"
   },
   "avoidThreshold": {
     "message": "触发隐藏的匹配度"
   },
   "avoidThresholdHint": {
-    "message": "与某个要避开的主题匹配达到这个程度或更高的视频会被隐藏。越低隐藏越多。"
+    "message": "只有当视频与某个要避开的主题匹配达到这个程度或更高，且高于与你的主题的匹配度时，才会因此被隐藏。越低隐藏越多。"
   },
   "avoidThresholdHintEmpty": {
     "message": "添加要避开的主题之前，此项不起作用。"
@@ -157,6 +157,32 @@
       "line": {
         "content": "$2",
         "example": "0.25"
+      }
+    }
+  },
+  "tryAvoidedMore": {
+    "message": "会隐藏：与要避开的主题匹配度为 $AVOID$，高于与你的主题的匹配度 $WANT$。",
+    "placeholders": {
+      "avoid": {
+        "content": "$1",
+        "example": "0.39"
+      },
+      "want": {
+        "content": "$2",
+        "example": "0.31"
+      }
+    }
+  },
+  "tryAvoidedNotMore": {
+    "message": "会显示：与要避开的主题匹配度为 $AVOID$，但不高于与你的主题的匹配度 $WANT$。",
+    "placeholders": {
+      "avoid": {
+        "content": "$1",
+        "example": "0.39"
+      },
+      "want": {
+        "content": "$2",
+        "example": "0.31"
       }
     }
   },

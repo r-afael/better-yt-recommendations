@@ -19,14 +19,17 @@
   const QUOTA_ERROR = "better-yt:quota";
 
   const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
-  const STEPS = 100; // The sliders move in steps of 0.01.
+  const DECIMALS = 2; // The sliders move in steps of 0.01.
+  const STEPS = 10 ** DECIMALS;
   const toSliderStep = (value) => Math.round(value * STEPS) / STEPS;
   // The highest slider step at or below a score, so a score shown as 0.58 meets a line of 0.58
   // and not one of 0.59. Rounding lands on that step or the one above, even where value * 100
-  // falls just short of a whole number, as 0.58 * 100 does.
-  function stepReached(value) {
-    const step = Math.round(value * STEPS);
-    return (step / STEPS <= value ? step : step - 1) / STEPS;
+  // falls just short of a whole number, as 0.58 * 100 does. With more decimals, the steps are
+  // finer, and a score still shows at or below itself.
+  function stepReached(value, decimals = DECIMALS) {
+    const steps = 10 ** decimals;
+    const step = Math.round(value * steps);
+    return (step / steps <= value ? step : step - 1) / steps;
   }
   // Cutting between the two halves of an emoji would leave half of it, so that half goes too.
   const cut = (value, maxLength) => value.slice(0, maxLength).replace(/[\uD800-\uDBFF]$/u, "");
@@ -83,7 +86,8 @@
     // ones, and spared 5 of 13 near misses, such as chess titles; game programming tutorials
     // still matched gaming above it. Lines from 0.21 to 0.25 did about as well on these 42
     // titles: clear matches (0.12 to 0.46) and near misses (0.11 to 0.47) overlap, so no line
-    // separates them well.
+    // separates them well. This was measured with topics to avoid only, where the line alone
+    // decides; next to wanted topics, a video is also kept when it matches them at least as much.
     avoidThreshold: range(0.24, LIMITS.MIN_THRESHOLD, LIMITS.MAX_THRESHOLD),
     filterWatch: flag(true), // Filter the recommendations next to or under the video being watched.
     filterHome: flag(true), // Filter Home, which is all recommendations.
@@ -144,5 +148,5 @@
   }
 
   globalThis.BetterYT ??= {};
-  globalThis.BetterYT.settings = { DEFAULTS, LIMITS, QUOTA_ERROR, load, save, subscribe, nameKey, sameName, clip, stepReached };
+  globalThis.BetterYT.settings = { DEFAULTS, LIMITS, QUOTA_ERROR, DECIMALS, load, save, subscribe, nameKey, sameName, clip, stepReached };
 })();

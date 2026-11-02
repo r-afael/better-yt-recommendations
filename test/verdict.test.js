@@ -11,7 +11,7 @@ function loadVerdict() {
 
 const verdict = loadVerdict();
 
-const LINES = { threshold: 0.25, avoidThreshold: 0.3 };
+const LINES = { threshold: 0.25, avoidThreshold: 0.2 };
 
 // Each row is [want, avoid, the expected verdict at LINES].
 function assertDecisions(rows) {
@@ -29,17 +29,22 @@ test("only wanted topics: hidden below the match needed, shown from it", () => {
 
 test("only topics to avoid: hidden from the match that hides, shown below it", () => {
   assertDecisions([
-    [null, 0.3, "avoided"],
-    [null, 0.29, null],
+    [null, 0.2, "avoided"],
+    [null, 0.19, null],
   ]);
 });
 
-test("both lists: each score is judged against its own line, and a topic to avoid wins", () => {
+// The first four rows are titles the model scored against the topics programming, java, sql,
+// leetcode, javascript and system design, and the topic to avoid gaming.
+test("both lists: a topic to avoid hides from its line only when it matches more than the wanted topics", () => {
   assertDecisions([
-    [0.4, 0.3, "avoided"],
-    [0.1, 0.35, "avoided"],
-    [0.1, 0.2, "off-topic"],
-    [0.31, 0.29, null],
+    [0.926, 0.202, null], // Java
+    [0.39, 0.33, null], // I Played 100 Games of Bullet Chess
+    [0.02, 0.3, "avoided"], // Top 10 Best PS5 Games
+    [0.22, 0.38, "avoided"], // Gaming Setup Tour
+    [0.3, 0.3, null], // A tie keeps the video.
+    [0.1, 0.15, "off-topic"], // Below its line, a topic to avoid hides nothing.
+    [0.22, 0.21, "off-topic"], // Kept from the topic to avoid, then judged against its own line.
   ]);
 });
 

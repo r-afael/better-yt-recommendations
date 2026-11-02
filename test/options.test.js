@@ -420,7 +420,7 @@ test("the verdict names the rule that decided and its line, and follows either s
   });
   tryTitle(TRY_TITLE);
   await answer({ scores: { try: score(0.31, 0.35) } });
-  assert.equal(verdictText(), "Hidden: matches a topic to avoid at 0.35, reaching the 0.24 that hides.");
+  assert.equal(verdictText(), "Hidden: matches a topic to avoid at 0.35, more than your topics at 0.31.");
   assert.equal(scoresText(), "Match with your topics: 0.31 · Match with topics to avoid: 0.35");
   slide(0.4, avoidSlider);
   assert.equal(verdictText(), SHOWN);
@@ -434,22 +434,35 @@ test("the verdict names the rule that decided and its line, and follows either s
   await answer({ scores: { try: score(null, 0.18) } });
   assert.equal(verdictText(), "Shown: matches a topic to avoid at only 0.18, below the 0.40 that hides.");
   assert.equal(scoresText(), "Match with your topics: none · Match with topics to avoid: 0.18");
+  slide(0.18, avoidSlider);
+  assert.equal(verdictText(), "Hidden: matches a topic to avoid at 0.18, reaching the 0.18 that hides.");
 });
 
-// Rounding would show 0.296 as 0.30 though a 0.30 line hides it, and 0.29 * 100 falls just short of 29.
+// Rounding would show 0.196 as 0.20 though a 0.20 line isn't reached, and 0.29 * 100 falls just short of 29.
 test("a score shows as the highest line it meets, so the number agrees with the verdict at every step", async (t) => {
   const { tryTitle, answer, avoidSlider, slide, verdictText, scoresText } = await setupTry(t, {
-    stored: { topics: "chess", avoidTopics: "gaming", avoidThreshold: 0.4 },
+    stored: { topics: "chess", avoidTopics: "gaming", avoidThreshold: 0.2 },
   });
   tryTitle(TRY_TITLE);
-  await answer({ scores: { try: score(0.296, 0.29) } });
-  assert.equal(scoresText(), "Match with your topics: 0.29 · Match with topics to avoid: 0.29");
+  await answer({ scores: { try: score(0.29, 0.196) } });
+  assert.equal(scoresText(), "Match with your topics: 0.29 · Match with topics to avoid: 0.19");
   slide(0.29);
   assert.equal(verdictText(), "Shown: matches your topics at 0.29, meeting the 0.29 needed.");
   slide(0.3);
   assert.equal(verdictText(), "Hidden: matches your topics at only 0.29, below the 0.30 needed.");
-  slide(0.29, avoidSlider);
-  assert.equal(verdictText(), "Hidden: matches a topic to avoid at 0.29, reaching the 0.29 that hides.");
+  slide(0.29);
+  slide(0.19, avoidSlider);
+  assert.equal(verdictText(), "Shown: matches a topic to avoid at 0.19, but not more than your topics at 0.29.");
+  slide(0.3);
+  assert.equal(verdictText(), "Hidden: matches your topics at only 0.29, below the 0.30 needed.");
+});
+
+test("two scores that would show as the same number show with the decimals that tell them apart", async (t) => {
+  const { tryTitle, answer, verdictText, scoresText } = await setupTry(t, { stored: { topics: "chess", avoidTopics: "gaming" } });
+  tryTitle(TRY_TITLE);
+  await answer({ scores: { try: score(0.312, 0.314) } });
+  assert.equal(verdictText(), "Hidden: matches a topic to avoid at 0.314, more than your topics at 0.312.");
+  assert.equal(scoresText(), "Match with your topics: 0.312 · Match with topics to avoid: 0.314");
 });
 
 test("tells screen readers only when moving a slider shows or hides the tried title", async (t) => {

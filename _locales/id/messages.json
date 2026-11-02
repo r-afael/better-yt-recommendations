@@ -93,13 +93,13 @@
     "message": "game, gosip selebriti"
   },
   "avoidTopicsHint": {
-    "message": "Video yang cocok dengan salah satu topik ini disembunyikan, meskipun juga cocok dengan topik yang Anda inginkan. Pisahkan topik dengan koma."
+    "message": "Video yang lebih cocok dengan salah satu topik ini daripada dengan topik Anda akan disembunyikan. Pisahkan topik dengan koma."
   },
   "avoidThreshold": {
     "message": "Kecocokan untuk disembunyikan"
   },
   "avoidThresholdHint": {
-    "message": "Video yang cocok dengan topik yang dihindari sebesar ini atau lebih akan disembunyikan. Lebih rendah menyembunyikan lebih banyak."
+    "message": "Video disembunyikan karena topik yang dihindari hanya jika cocok dengannya sebesar ini atau lebih, dan lebih cocok daripada dengan topik Anda. Lebih rendah menyembunyikan lebih banyak."
   },
   "avoidThresholdHintEmpty": {
     "message": "Tidak berpengaruh sampai Anda menambahkan topik yang ingin dihindari."
@@ -157,6 +157,32 @@
       "line": {
         "content": "$2",
         "example": "0.25"
+      }
+    }
+  },
+  "tryAvoidedMore": {
+    "message": "Disembunyikan: cocok dengan topik yang dihindari sebesar $AVOID$, lebih dari kecocokan dengan topik Anda sebesar $WANT$.",
+    "placeholders": {
+      "avoid": {
+        "content": "$1",
+        "example": "0.39"
+      },
+      "want": {
+        "content": "$2",
+        "example": "0.31"
+      }
+    }
+  },
+  "tryAvoidedNotMore": {
+    "message": "Ditampilkan: cocok dengan topik yang dihindari sebesar $AVOID$, tetapi tidak lebih dari kecocokan dengan topik Anda sebesar $WANT$.",
+    "placeholders": {
+      "avoid": {
+        "content": "$1",
+        "example": "0.39"
+      },
+      "want": {
+        "content": "$2",
+        "example": "0.31"
       }
     }
   },

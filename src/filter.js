@@ -1,8 +1,8 @@
 // Hides videos in the lists checked under Where to filter: next to the video, Home, Subscriptions
 // and search. A video is hidden when its channel is always hidden, or when it matches a topic to
-// avoid or doesn't match the user's topics, as verdict.js decides. A channel that is never hidden
-// keeps its videos visible. Listed channels need no model; for the others, the model answers
-// through the background service worker, and until it does, videos stay visible.
+// avoid more than the user's topics or doesn't match them, as verdict.js decides. A channel that
+// is never hidden keeps its videos visible. Listed channels need no model; for the others, the
+// model answers through the background service worker, and until it does, videos stay visible.
 // A row above the list counts the hidden videos and shows them on request, and the toolbar
 // icon's badge shows the same count.
 (() => {

@@ -93,13 +93,13 @@
     "message": "遊戲，名人八卦"
   },
   "avoidTopicsHint": {
-    "message": "與其中某個主題符合的影片會被隱藏，即使它也符合你想看的主題。請用逗號分隔各個主題。"
+    "message": "與其中某個主題的符合度高於你想看的主題的影片會被隱藏。請用逗號分隔各個主題。"
   },
   "avoidThreshold": {
     "message": "觸發隱藏的符合度"
   },
   "avoidThresholdHint": {
-    "message": "與某個要避開的主題符合達到這個程度或更高的影片會被隱藏。越低隱藏越多。"
+    "message": "只有當影片與某個要避開的主題符合達到這個程度或更高，且高於與你的主題的符合度時，才會因此被隱藏。越低隱藏越多。"
   },
   "avoidThresholdHintEmpty": {
     "message": "新增要避開的主題之前，此項不會生效。"
@@ -157,6 +157,32 @@
       "line": {
         "content": "$2",
         "example": "0.25"
+      }
+    }
+  },
+  "tryAvoidedMore": {
+    "message": "會隱藏：與要避開的主題符合度為 $AVOID$，高於與你的主題的符合度 $WANT$。",
+    "placeholders": {
+      "avoid": {
+        "content": "$1",
+        "example": "0.39"
+      },
+      "want": {
+        "content": "$2",
+        "example": "0.31"
+      }
+    }
+  },
+  "tryAvoidedNotMore": {
+    "message": "會顯示：與要避開的主題符合度為 $AVOID$，但不高於與你的主題的符合度 $WANT$。",
+    "placeholders": {
+      "avoid": {
+        "content": "$1",
+        "example": "0.39"
+      },
+      "want": {
+        "content": "$2",
+        "example": "0.31"
       }
     }
   },

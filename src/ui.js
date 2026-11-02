@@ -58,7 +58,9 @@
     if (element.textContent !== text) element.textContent = text;
   }
 
-  const formatThreshold = (value) => value.toLocaleString(message("lang"), { minimumFractionDigits: 2 });
+  // A slider's value, or a score, with exactly this many decimals.
+  const formatThreshold = (value, decimals = settings.DECIMALS) =>
+    value.toLocaleString(message("lang"), { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
 
   // "programming, chess" in English and "编程、国际象棋" in Chinese. The unit type would drop the separators.
   const formatList = (items) =>

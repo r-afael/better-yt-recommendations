@@ -86,29 +86,57 @@
 
   const typedTitle = () => settings.clip(tryTitle.value, settings.LIMITS.MAX_TITLE_LENGTH);
 
-  // A score shows as the slider step it reaches, so the number shown compares with each line the
-  // way the filter compares the score itself.
-  const formatScore = (value) =>
-    value === null ? ui.message("tryScoreNone") : ui.formatThreshold(settings.stepReached(value));
+  // How many decimals the tried title's scores show with: as many as the sliders, or as many
+  // more as it takes for two different scores to read differently, so a verdict that compares
+  // them never says "0.31, more than 0.31". Any two different scores read apart at some number
+  // of decimals, so even the rare pair less than a millionth apart shows which is higher. Each
+  // score shows as the step it reaches at that many decimals, so it also compares with each line
+  // the way the filter compares the score itself.
+  function decimalsFor({ want, avoid }) {
+    let decimals = settings.DECIMALS;
+    if (want === null || avoid === null || want === avoid) return decimals;
+    const readAlike = () => settings.stepReached(want, decimals) === settings.stepReached(avoid, decimals);
+    while (readAlike()) decimals += 1;
+    return decimals;
+  }
+
+  const formatScore = (value, decimals) =>
+    value === null ? ui.message("tryScoreNone") : ui.formatThreshold(settings.stepReached(value, decimals), decimals);
+
+  // The tried title's scores as the verdict and the scores line show them.
+  function shownScores(score) {
+    const decimals = decimalsFor(score);
+    return { want: formatScore(score.want, decimals), avoid: formatScore(score.avoid, decimals) };
+  }
 
   // The lines the sliders are at, by the setting each one saves.
   const currentLines = () => Object.fromEntries(sliders.map(({ input }) => [input.name, input.valueAsNumber]));
 
-  // What the verdict names: the message for the rule that decided and the list whose score it
-  // judged, which is measured against that list's slider. A title the filter shows passes the
-  // wanted topics' line, or, without wanted topics, stays below the line of the topics to avoid.
+  // What the verdict names: the comparison that decided, with the two numbers it compared, and
+  // its message when the title is hidden and when it is shown. A topic to avoid is measured
+  // against its line while it is the only list, and against the wanted topics once it reaches
+  // that line, unless the wanted topics' own line hides the title; otherwise the wanted topics
+  // are measured against theirs.
   const TRY_RULES = Object.freeze({
-    avoided: { key: "tryAvoided", list: "avoid" },
-    "off-topic": { key: "tryOffTopic", list: "want" },
-    "on-topic": { key: "tryOnTopic", list: "want" },
-    "not-avoided": { key: "tryNotAvoided", list: "avoid" },
+    avoidLine: { values: ["avoid", "avoidThreshold"], hidden: "tryAvoided", shown: "tryNotAvoided" },
+    avoidTopics: { values: ["avoid", "want"], hidden: "tryAvoidedMore", shown: "tryAvoidedNotMore" },
+    wantLine: { values: ["want", "threshold"], hidden: "tryOffTopic", shown: "tryOnTopic" },
   });
 
-  function tryVerdictText(score, reason) {
-    const shownBy = score.want === null ? "not-avoided" : "on-topic";
-    const { key, list } = TRY_RULES[reason ?? shownBy];
-    const { input } = sliders.find((slider) => slider.list === list);
-    return ui.message(key, [formatScore(score[list]), ui.formatThreshold(input.valueAsNumber)]);
+  function tryRule(score, reason, lines) {
+    if (score.want === null) return TRY_RULES.avoidLine;
+    const comparesTopics = reason !== "off-topic" && verdict.reachesAvoidLine(score, lines);
+    return comparesTopics ? TRY_RULES.avoidTopics : TRY_RULES.wantLine;
+  }
+
+  function tryVerdictText(score, reason, lines, scores) {
+    const shownValues = {
+      ...scores,
+      threshold: ui.formatThreshold(lines.threshold),
+      avoidThreshold: ui.formatThreshold(lines.avoidThreshold),
+    };
+    const { values, hidden, shown } = tryRule(score, reason, lines);
+    return ui.message(reason === null ? shown : hidden, values.map((name) => shownValues[name]));
   }
 
   // What the result says while there is no score to judge.
@@ -128,10 +156,12 @@
       setText(tryScores, tryNote());
       return;
     }
-    const reason = verdict.decide(tryScore, currentLines());
-    setText(tryVerdict, tryVerdictText(tryScore, reason));
+    const lines = currentLines();
+    const reason = verdict.decide(tryScore, lines);
+    const scores = shownScores(tryScore);
+    setText(tryVerdict, tryVerdictText(tryScore, reason, lines, scores));
     setText(tryOutcome, ui.message(reason === null ? "tryShown" : "tryHidden"));
-    setText(tryScores, ui.message("tryScores", [formatScore(tryScore.want), formatScore(tryScore.avoid)]));
+    setText(tryScores, ui.message("tryScores", [scores.want, scores.avoid]));
   }
 
   // A missing score, from an { error } answer, an answer without this title or a failed send,

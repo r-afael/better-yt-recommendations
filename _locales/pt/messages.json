@@ -93,13 +93,13 @@
     "message": "games, fofoca de celebridades"
   },
   "avoidTopicsHint": {
-    "message": "Vídeos que correspondem a um destes assuntos ficam ocultos, mesmo que também correspondam aos que você quer ver. Separe os assuntos com vírgulas."
+    "message": "Vídeos que correspondem a um destes assuntos mais do que aos seus assuntos ficam ocultos. Separe os assuntos com vírgulas."
   },
   "avoidThreshold": {
     "message": "Correspondência que oculta"
   },
   "avoidThresholdHint": {
-    "message": "Um vídeo que corresponda a um assunto a evitar nesta medida ou mais fica oculto. Mais baixa oculta mais."
+    "message": "Um vídeo só fica oculto por um assunto a evitar se corresponder a ele nesta medida ou mais, e mais do que aos seus assuntos. Mais baixa oculta mais."
   },
   "avoidThresholdHintEmpty": {
     "message": "Não tem efeito até você adicionar um assunto a evitar."
@@ -157,6 +157,32 @@
       "line": {
         "content": "$2",
         "example": "0.25"
+      }
+    }
+  },
+  "tryAvoidedMore": {
+    "message": "Oculto: corresponde a um assunto a evitar em $AVOID$, mais do que aos seus assuntos, em $WANT$.",
+    "placeholders": {
+      "avoid": {
+        "content": "$1",
+        "example": "0.39"
+      },
+      "want": {
+        "content": "$2",
+        "example": "0.31"
+      }
+    }
+  },
+  "tryAvoidedNotMore": {
+    "message": "Exibido: corresponde a um assunto a evitar em $AVOID$, mas não mais do que aos seus assuntos, em $WANT$.",
+    "placeholders": {
+      "avoid": {
+        "content": "$1",
+        "example": "0.39"
+      },
+      "want": {
+        "content": "$2",
+        "example": "0.31"
       }
     }
   },

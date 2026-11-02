@@ -93,13 +93,13 @@
     "message": "jeux vidéo, potins de célébrités"
   },
   "avoidTopicsHint": {
-    "message": "Les vidéos qui correspondent à l'un de ces sujets sont masquées, même si elles correspondent aussi à vos sujets. Séparez les sujets par des virgules."
+    "message": "Les vidéos qui correspondent davantage à l'un de ces sujets qu'à vos sujets sont masquées. Séparez les sujets par des virgules."
   },
   "avoidThreshold": {
     "message": "Correspondance qui masque"
   },
   "avoidThresholdHint": {
-    "message": "Une vidéo qui correspond autant ou plus à un sujet à éviter est masquée. Plus elle est basse, plus de vidéos sont masquées."
+    "message": "Une vidéo n'est masquée pour un sujet à éviter que si elle lui correspond autant ou plus, et davantage qu'à vos sujets. Plus elle est basse, plus de vidéos sont masquées."
   },
   "avoidThresholdHintEmpty": {
     "message": "Sans effet tant que vous n'avez pas ajouté de sujet à éviter."
@@ -157,6 +157,32 @@
       "line": {
         "content": "$2",
         "example": "0.25"
+      }
+    }
+  },
+  "tryAvoidedMore": {
+    "message": "Masqué : correspond à un sujet à éviter à $AVOID$, plus qu'à vos sujets, à $WANT$.",
+    "placeholders": {
+      "avoid": {
+        "content": "$1",
+        "example": "0.39"
+      },
+      "want": {
+        "content": "$2",
+        "example": "0.31"
+      }
+    }
+  },
+  "tryAvoidedNotMore": {
+    "message": "Affiché : correspond à un sujet à éviter à $AVOID$, mais pas plus qu'à vos sujets, à $WANT$.",
+    "placeholders": {
+      "avoid": {
+        "content": "$1",
+        "example": "0.39"
+      },
+      "want": {
+        "content": "$2",
+        "example": "0.31"
       }
     }
   },

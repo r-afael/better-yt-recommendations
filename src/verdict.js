@@ -29,13 +29,19 @@
   // the code that saved the change starts loading it.
   const startsNeedingModel = (before, after) => !needsModel(before) && needsModel(after);
 
+  // Whether a video matches a topic to avoid at the Match that hides line or more. An empty list
+  // scores null, and never reaches it.
+  const reachesAvoidLine = ({ avoid }, { avoidThreshold }) => (avoid ?? -Infinity) >= avoidThreshold;
+
   // Returns why a video with these similarities is hidden, "avoided" or "off-topic", or null to
-  // show it. Each list has its own line: a video that matches a topic to avoid at avoidThreshold
-  // or more is hidden, whatever its other score, and one that matches no wanted topic at
-  // threshold or more is hidden. An empty list scores null, and hides nothing.
-  function decide({ want, avoid }, { threshold, avoidThreshold }) {
-    if ((avoid ?? -Infinity) >= avoidThreshold) return "avoided";
-    if ((want ?? Infinity) < threshold) return "off-topic";
+  // show it. A video is avoided when it reaches the line of the topics to avoid and matches them
+  // more than the wanted topics, so with both lists the stronger match decides and a tie keeps
+  // it. Otherwise it is off-topic when it matches no wanted topic at threshold or more. An empty
+  // list scores null, and hides nothing.
+  function decide(score, lines) {
+    const { want, avoid } = score;
+    if (reachesAvoidLine(score, lines) && avoid > (want ?? -Infinity)) return "avoided";
+    if ((want ?? Infinity) < lines.threshold) return "off-topic";
     return null;
   }
 
@@ -46,6 +52,7 @@
     hasTopics,
     needsModel,
     startsNeedingModel,
+    reachesAvoidLine,
     decide,
   });
 })();
