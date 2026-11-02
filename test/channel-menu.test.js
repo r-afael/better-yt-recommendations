@@ -25,7 +25,7 @@ async function setup(t, { fixture = watchFixture, path = WATCH_PATH, stored = {}
   };
   const toast = () => document.querySelector(".better-yt-toast");
   // The message shown at the bottom of the page, or null while none is.
-  const toastText = () => (toast() && isShown(toast()) ? toast().textContent : null);
+  const toastText = () => toast()?.textContent || null;
   // A stored list, copied out of the page's realm so it compares as a plain array.
   const storedList = (key) => structuredClone(chrome.data[key]);
 

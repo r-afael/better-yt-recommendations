@@ -13,10 +13,11 @@
     hideShorts: ["hideShortsOff", "hideShortsOn"],
   });
 
-  let toast = null; // Made on first use.
   let timer;
 
-  // The message is in the extension's language, which can differ from YouTube's.
+  // The message is in the extension's language, which can differ from YouTube's. The region is
+  // on the page, empty, from the start: a screen reader may not announce a live region that
+  // appears, or comes back from display:none, together with its text.
   function create() {
     const element = document.createElement("div");
     element.className = "better-yt-toast";
@@ -24,19 +25,18 @@
     element.dir = chrome.i18n.getMessage("@@bidi_dir");
     element.setAttribute("role", "status");
     element.setAttribute("aria-live", "polite");
-    element.hidden = true;
     document.body.append(element);
     return element;
   }
 
+  const toast = create();
+
   // Shows text for a few seconds, counted again from now when another message is showing.
   function show(text) {
-    toast ??= create();
     toast.textContent = text;
-    toast.hidden = false;
     clearTimeout(timer);
     timer = setTimeout(() => {
-      toast.hidden = true;
+      toast.textContent = "";
     }, DURATION_MS);
   }
 

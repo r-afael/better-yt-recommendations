@@ -50,6 +50,10 @@
   font: 1.4rem/2rem "Roboto", "Arial", sans-serif;
 }
 
-.better-yt-toast[hidden] {
-  display: none;
+/* Between messages the toast stays in the accessibility tree, empty and unseen, so a screen reader
+   announces the next one. */
+.better-yt-toast:empty {
+  padding: 0;
+  opacity: 0;
+  pointer-events: none;
 }

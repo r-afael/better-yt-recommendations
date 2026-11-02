@@ -17,10 +17,7 @@ async function setup(t, { locale = "en" } = {}) {
   const notify = (notice) => send({ type: NOTICE, ...notice });
   const toasts = () => [...document.querySelectorAll(".better-yt-toast")];
   // The message shown at the bottom of the page, or null while none is.
-  const toastText = () => {
-    const [toast] = toasts();
-    return toast && window.getComputedStyle(toast).display !== "none" ? toast.textContent : null;
-  };
+  const toastText = () => toasts()[0]?.textContent || null;
   return { document, clock, send, notify, toasts, toastText };
 }
 
