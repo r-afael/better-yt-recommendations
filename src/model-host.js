@@ -17,8 +17,6 @@
   // or when the document closes before it answers, such as on going idle as a request arrives.
   const MISSING_RECEIVER = /Could not establish connection|Receiving end does not exist|message (?:channel|port) closed/i;
   const NO_ANSWER = "The topic model did not answer.";
-  // The settings that decide whether the filter needs the model.
-  const MODEL_KEYS = ["topicFilter", "topics", "avoidTopics"];
 
   // Opening and closing run one at a time, so concurrent requests share one document
   // and a request never forwards to a document that is still closing.
@@ -100,7 +98,7 @@
   // The settings are read from storage, never cached, so a service-worker restart can't judge
   // a change against stale values, and keys this version doesn't know are ignored.
   async function onSettingsChanged(changes) {
-    if (!MODEL_KEYS.some((key) => key in changes)) return;
+    if (!verdict.MODEL_SETTINGS.some((key) => key in changes)) return;
     if (verdict.needsModel(await settings.load())) return;
     turnOffs += 1;
     await release();

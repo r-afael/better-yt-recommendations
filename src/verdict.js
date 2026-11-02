@@ -16,6 +16,9 @@
   // Whether there is any topic to match, wanted or to avoid.
   const hasTopics = ({ want, avoid }) => want.length > 0 || avoid.length > 0;
 
+  // The settings needsModel reads, so a change to any other setting can't change its answer.
+  const MODEL_SETTINGS = Object.freeze(["topicFilter", "topics", "avoidTopics"]);
+
   // The model is needed only while the filter is on and has topics to match.
   function needsModel(values) {
     if (!values.topicFilter) return false;
@@ -35,5 +38,13 @@
     return null; // Visible. Ties keep the video.
   }
 
-  globalThis.BetterYT.verdict = Object.freeze({ NO_SCORE, lists, hasTopics, needsModel, startsNeedingModel, decide });
+  globalThis.BetterYT.verdict = Object.freeze({
+    NO_SCORE,
+    MODEL_SETTINGS,
+    lists,
+    hasTopics,
+    needsModel,
+    startsNeedingModel,
+    decide,
+  });
 })();
