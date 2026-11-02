@@ -29,6 +29,9 @@
   "topicFilterHint": {
     "message": "Oculta los videos que no coinciden con tus temas ni con tus listas de canales en las páginas marcadas en Dónde filtrar, en Todos los ajustes. Usa un modelo de IA en tu equipo."
   },
+  "topicFilterHintHere": {
+    "message": "Oculta los videos que no coinciden con tus temas ni con tus listas de canales en las páginas marcadas en Dónde filtrar, más abajo. Usa un modelo de IA en tu equipo."
+  },
   "topics": {
     "message": "Temas que quieres ver"
   },

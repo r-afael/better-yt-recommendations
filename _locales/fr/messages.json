@@ -29,6 +29,9 @@
   "topicFilterHint": {
     "message": "Masque les vidéos qui ne correspondent pas à vos sujets ou à vos listes de chaînes, sur les pages cochées dans Où filtrer, dans Tous les paramètres. Utilise un modèle d'IA sur votre ordinateur."
   },
+  "topicFilterHintHere": {
+    "message": "Masque les vidéos qui ne correspondent pas à vos sujets ou à vos listes de chaînes, sur les pages cochées dans Où filtrer, plus bas. Utilise un modèle d'IA sur votre ordinateur."
+  },
   "topics": {
     "message": "Sujets que vous voulez voir"
   },

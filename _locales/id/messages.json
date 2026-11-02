@@ -29,6 +29,9 @@
   "topicFilterHint": {
     "message": "Menyembunyikan video yang tidak cocok dengan topik atau daftar saluran Anda di halaman yang dicentang pada Tempat memfilter di Semua setelan. Menggunakan model AI di komputer Anda."
   },
+  "topicFilterHintHere": {
+    "message": "Menyembunyikan video yang tidak cocok dengan topik atau daftar saluran Anda di halaman yang dicentang pada Tempat memfilter di bawah. Menggunakan model AI di komputer Anda."
+  },
   "topics": {
     "message": "Topik yang ingin Anda lihat"
   },

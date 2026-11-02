@@ -37,7 +37,11 @@
   },
   "topicFilterHint": {
     "message": "Hides videos that don't match your topics or your channel lists, on the pages checked under Where to filter in All settings. Uses an AI model on your computer.",
-    "description": "Explains the Filter recommendations switch, in the popup and on the options page. \"Where to filter\" is the options section's heading (filterPages) and \"All settings\" the link to the options page (allSettings); use the same words."
+    "description": "Explains the Filter recommendations switch in the popup. \"Where to filter\" is the options section's heading (filterPages) and \"All settings\" the link to the options page (allSettings); use the same words."
+  },
+  "topicFilterHintHere": {
+    "message": "Hides videos that don't match your topics or your channel lists, on the pages checked under Where to filter below. Uses an AI model on your computer.",
+    "description": "Explains the Filter recommendations switch on the options page, where the Where to filter section (filterPages) comes further down; use the same words as its heading."
   },
   "topics": {
     "message": "Topics you want to see",
