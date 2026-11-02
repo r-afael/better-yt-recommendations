@@ -7,10 +7,14 @@
   const { protocol, settings } = globalThis.BetterYT;
   const RULESET_IDS = [protocol.SHORTS_RULESET];
 
-  // A failure leaves the rule as it was; src/shorts.js still opens the regular player then.
+  const logFailure = (error) => console.error("Better YT Recommendations: switching the Shorts redirect failed.", error);
+
+  // A failure leaves the rule as it was, and is logged. After a failed enable, src/shorts.js still
+  // opens the regular player; a failed disable is undone by the next reconcile, at startup or on
+  // an update.
   function sync(on) {
     const change = on ? { enableRulesetIds: RULESET_IDS } : { disableRulesetIds: RULESET_IDS };
-    return chrome.declarativeNetRequest.updateEnabledRulesets(change).catch(() => {});
+    return chrome.declarativeNetRequest.updateEnabledRulesets(change).catch(logFailure);
   }
 
   // Chrome keeps the rule's state across restarts, but resets it to the manifest's (off) on every
