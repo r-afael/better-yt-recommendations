@@ -37,7 +37,9 @@
     const label = elementWithClass("span", "better-yt-hidden-row__text");
     const toggle = elementWithClass("button", "better-yt-hidden-row__toggle");
     row.hidden = true;
+    label.id = "better-yt-hidden-row-text";
     toggle.type = "button";
+    toggle.setAttribute("aria-describedby", label.id); // "Show them" is read with the count.
     toggle.setAttribute("aria-expanded", "false");
     toggle.addEventListener("click", () => onToggle());
     row.append(label, toggle);

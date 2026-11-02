@@ -408,13 +408,15 @@ test("waits for the sidebar when a watch page renders it late", async (t) => {
 });
 
 test("starts the list with a row that counts the hidden videos", async (t) => {
-  const { hiddenRow, rowShown, rowText, list, answer } = await setup(t);
+  const { document, hiddenRow, rowShown, rowText, toggle, list, answer } = await setup(t);
   assert.equal(rowShown(), false, "no row while nothing is hidden");
 
   await answer(["RphIVv0uWrM", "C4dGVTl6ry8"]);
   assert.equal(rowShown(), true);
   assert.equal(rowText(), "2 videos hidden");
   assert.equal(hiddenRow().nextElementSibling, list());
+  const description = document.getElementById(toggle().getAttribute("aria-describedby"));
+  assert.equal(description.textContent, "2 videos hidden", "screen readers hear the count with the button");
 });
 
 test("says 1 video hidden for a single one", async (t) => {

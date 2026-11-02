@@ -127,9 +127,10 @@ test("Load now moves focus to the model status, since the button turns off", asy
   assert.equal(document.activeElement, status);
 });
 
-test("the summary lists the topics, and clicking it opens the options page", async (t) => {
-  const { chrome, summary } = await setup(t, { stored: { topics: "programming, software engineering, chess" } });
+test("the summary lists the topics, and clicking it opens the options page, as screen readers hear", async (t) => {
+  const { document, chrome, summary } = await setup(t, { stored: { topics: "programming, software engineering, chess" } });
   assert.equal(summary.textContent, "Topics: programming, software engineering, chess");
+  assert.equal(document.getElementById(summary.getAttribute("aria-describedby")).textContent, "All settings");
   summary.click();
   assert.equal(chrome.openedOptions, 1);
 });

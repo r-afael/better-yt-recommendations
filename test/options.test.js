@@ -163,9 +163,10 @@ test("shows the stored sensitivity, or 0.25 by default", async (t) => {
 });
 
 test("saves the sensitivity as a number once the slider pauses, showing each value as it moves", async (t) => {
-  const { chrome, clock, slide, sliderValue } = await setup(t);
+  const { chrome, clock, slider, slide, sliderValue } = await setup(t);
   slide(0.31);
   assert.equal(sliderValue.value, "0.31");
+  assert.equal(slider.getAttribute("aria-valuetext"), "0.31", "screen readers hear the value shown");
   slide(0.32);
   clock.tick(SAVE_DELAY_MS - 1);
   assert.equal(chrome.data.threshold, undefined);
@@ -194,8 +195,9 @@ test("the sensitivity hint explains the slider when only topics to avoid are set
 });
 
 test("shows the sensitivity in the browser's language", async (t) => {
-  const { sliderValue } = await setup(t, { locale: "ar", stored: { threshold: 0.3 } });
+  const { slider, sliderValue } = await setup(t, { locale: "ar", stored: { threshold: 0.3 } });
   assert.equal(sliderValue.value, (0.3).toLocaleString("ar", { minimumFractionDigits: 2 }));
+  assert.equal(slider.getAttribute("aria-valuetext"), sliderValue.value, "the slider speaks it the same way");
 });
 
 test("describes each model state", async (t) => {

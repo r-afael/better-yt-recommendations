@@ -156,7 +156,9 @@
   function render() {
     for (const control of filterControls) control.disabled = !topicFilter.checked;
     renderProfiles();
+    // The slider speaks the value as shown, since the shown value isn't read out on its own.
     thresholdValue.value = ui.formatThreshold(threshold.valueAsNumber);
+    threshold.setAttribute("aria-valuetext", thresholdValue.value);
     thresholdHint.textContent = ui.message(sensitivityHint());
     status.render();
     if (!topicFilter.checked) stopTry();
