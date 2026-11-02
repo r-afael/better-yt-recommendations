@@ -296,5 +296,8 @@
   },
   "profilesFull": {
     "message": "Plus de place pour un autre profil. Supprimez-en un ou raccourcissez les sujets des autres."
+  },
+  "profileTopicsTooLong": {
+    "message": "Ces sujets s'appliquent déjà, mais ils ne tiennent pas dans le profil, qui garde ses anciens sujets. Raccourcissez-les ou supprimez un autre profil."
   }
 }

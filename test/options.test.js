@@ -758,7 +758,7 @@ test("editing the topics updates the selected profile", async (t) => {
   assert.deepEqual(storedProfiles(), [{ ...WORK, topics: "programming, rust" }, EVENING]);
 });
 
-test("editing topics that no longer fit in the profile still applies them and says the profile is full", async (t) => {
+test("editing topics that no longer fit in the profile still applies them and says the profile keeps its older topics", async (t) => {
   const others = cjkProfiles(5);
   const { chrome, clock, type, select, topicsError, storedProfiles } = await setupProfiles(t, {
     profiles: [WORK, ...others],
@@ -774,7 +774,7 @@ test("editing topics that no longer fit in the profile still applies them and sa
   assert.equal(chrome.data.activeProfile, "Work");
   assert.equal(select.value, "Work");
   assert.equal(topicsError.hidden, false);
-  assert.equal(topicsError.textContent, messages.profilesFull.message);
+  assert.equal(topicsError.textContent, messages.profileTopicsTooLong.message);
 });
 
 test("a profile switch from elsewhere during typing doesn't write the typed topics into the new profile", async (t) => {

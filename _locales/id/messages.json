@@ -296,5 +296,8 @@
   },
   "profilesFull": {
     "message": "Tidak ada ruang untuk profil lain. Hapus satu, atau persingkat topik profil lainnya."
+  },
+  "profileTopicsTooLong": {
+    "message": "Topik ini sudah berlaku, tetapi tidak muat di profil, yang tetap menyimpan topik lamanya. Persingkat topiknya, atau hapus profil lain."
   }
 }

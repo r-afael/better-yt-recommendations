@@ -296,5 +296,8 @@
   },
   "profilesFull": {
     "message": "No hay espacio para otro perfil. Elimina uno o acorta los temas de los demás."
+  },
+  "profileTopicsTooLong": {
+    "message": "Estos temas ya se aplican, pero no caben en el perfil, que conserva sus temas anteriores. Acórtalos o elimina otro perfil."
   }
 }

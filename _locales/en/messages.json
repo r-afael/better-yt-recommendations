@@ -381,6 +381,10 @@
   },
   "profilesFull": {
     "message": "No room for another profile. Delete one, or shorten the topics of the others.",
-    "description": "Shown when Chrome sync can't hold another profile, or can't hold the selected profile's new topics (which still apply)."
+    "description": "Shown when Chrome sync can't hold another profile, or a renamed one."
+  },
+  "profileTopicsTooLong": {
+    "message": "These topics apply now, but they don't fit in the profile, which keeps its older topics. Shorten them, or delete another profile.",
+    "description": "Shown under the topics when Chrome sync can't hold the selected profile's new topics. The filter uses the new topics, and the profile keeps its older ones."
   }
 }

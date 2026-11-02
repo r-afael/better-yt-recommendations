@@ -206,7 +206,7 @@
   // Topics too long for their profile still reach the filter. The profile keeps its older topics.
   function saveTopicsAlone(control) {
     page.save({ [control.name]: ui.valueOf(control) }).then(
-      () => showLine(topicsError, PROFILE_ERRORS.full),
+      () => showLine(topicsError, "profileTopicsTooLong"),
       () => showLine(topicsError, "saveFailed"),
     );
   }
