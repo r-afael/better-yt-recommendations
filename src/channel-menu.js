@@ -13,6 +13,9 @@
   });
 
   const message = (key, substitutions) => chrome.i18n.getMessage(key, substitutions);
+  // A message read at a glance, and one that explains or asks for something, which stays longer.
+  const brief = (text) => ({ text });
+  const long = (text) => ({ text, durationMs: toast.LONG_MS });
 
   let last = null; // The card under the last right-click, or null.
 
@@ -34,19 +37,19 @@
   function confirmation(list, channel, values, surface) {
     const { key, hides } = CONFIRMATIONS[list];
     const saved = message(key, channel);
-    if (!hides || cards.filtersOn(values, surface)) return saved;
-    return `${saved} ${message("channelSavedNotFiltered")}`;
+    if (!hides || cards.filtersOn(values, surface)) return brief(saved);
+    return long(`${saved} ${message("channelSavedNotFiltered")}`);
   }
 
   // Saving moves the name out of the other list, and every YouTube tab's filter follows the change.
   async function save(list, channel, surface) {
     const values = await settings.load();
     const changes = channels.add(values, list, channel);
-    if (!changes) return message("channelListFull");
+    if (!changes) return long(message("channelListFull"));
     try {
       await settings.save(changes);
     } catch (error) {
-      return message(error?.code === settings.QUOTA_ERROR ? "channelListFull" : "saveFailed");
+      return long(message(error?.code === settings.QUOTA_ERROR ? "channelListFull" : "saveFailed"));
     }
     return confirmation(list, channel, values, surface);
   }
@@ -54,7 +57,8 @@
   async function listChannel(list, linkUrl) {
     const surface = cards.surfaceFor(location.pathname);
     const channel = channelFor(linkUrl);
-    toast.show(channel ? await save(list, channel, surface) : message("noChannelPicked"));
+    const notice = channel ? await save(list, channel, surface) : long(message("noChannelPicked"));
+    toast.show(notice.text, notice.durationMs);
   }
 
   globalThis.addEventListener("contextmenu", remember, { capture: true });

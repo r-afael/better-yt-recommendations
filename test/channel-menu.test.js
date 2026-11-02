@@ -6,6 +6,7 @@ const watchFixture = read("test/fixtures/watch-sidebar.html");
 const homeFixture = read("test/fixtures/home-grid.html");
 const WATCH_PATH = "/watch?v=W6NZfCO5SIk";
 const TOAST_MS = 3000;
+const LONG_TOAST_MS = 8000;
 const NO_CHANNEL = "Right-click a video's thumbnail or title to pick its channel.";
 const LIST_FULL = "That list is full. Remove a channel in All settings first.";
 const NOT_FILTERED = "It applies where Filter recommendations is on and the page is checked under Where to filter.";
@@ -237,5 +238,16 @@ test("the message disappears after a few seconds", async (t) => {
   await clock.tickAsync(TOAST_MS - 1);
   assert.notEqual(toastText(), null);
   await clock.tickAsync(1);
+  assert.equal(toastText(), null);
+});
+
+test("a message that says where the list applies stays up long enough to read", async (t) => {
+  const { clock, titleLink, rightClick, list, toastText } = await setup(t, { stored: { topicFilter: false } });
+  rightClick(titleLink(1));
+  await list("blockedChannels", titleLink(1).href);
+
+  await clock.tickAsync(TOAST_MS);
+  assert.equal(toastText(), `freeCodeCamp.org will always be hidden. ${NOT_FILTERED}`);
+  await clock.tickAsync(LONG_TOAST_MS - TOAST_MS);
   assert.equal(toastText(), null);
 });

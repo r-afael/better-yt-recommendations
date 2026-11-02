@@ -7,6 +7,8 @@
   const { NOTICE } = globalThis.BetterYT.protocol;
 
   const DURATION_MS = 3000;
+  // For a message that explains or asks for something, which takes longer to read in any language.
+  const LONG_MS = 8000;
   // The messages for each setting a shortcut changes, when it is off and when it is on.
   const NOTICES = Object.freeze({
     topicFilter: ["topicFilterOff", "topicFilterOn"],
@@ -31,13 +33,13 @@
 
   const toast = create();
 
-  // Shows text for a few seconds, counted again from now when another message is showing.
-  function show(text) {
+  // Shows text for durationMs, counted again from now when another message is showing.
+  function show(text, durationMs = DURATION_MS) {
     toast.textContent = text;
     clearTimeout(timer);
     timer = setTimeout(() => {
       toast.textContent = "";
-    }, DURATION_MS);
+    }, durationMs);
   }
 
   const isNotice = (message) =>
@@ -48,5 +50,5 @@
     if (isNotice(message)) show(chrome.i18n.getMessage(NOTICES[message.key][Number(message.value)]));
   });
 
-  globalThis.BetterYT.toast = Object.freeze({ show });
+  globalThis.BetterYT.toast = Object.freeze({ show, LONG_MS });
 })();
