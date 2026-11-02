@@ -215,8 +215,10 @@
     }
 
     // A failure brings no new status, so any answer but { ok: true }, or none at all from a send
-    // that failed, enables Load now at once.
+    // that failed, enables Load now at once. Focus moves to the status line first, since the
+    // button turns off and then hides, and the line says how the loading goes.
     loadButton.addEventListener("click", () => {
+      status.focus();
       loadButton.disabled = true;
       preload().catch(noop).then((answer) => {
         if (!answer?.ok) loadButton.disabled = false;

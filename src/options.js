@@ -222,10 +222,14 @@
     else ui.reportSaveError(error);
   }
 
+  // The button just pressed can turn off with the name cleared, and focus then goes to the
+  // profile list, which shows the result.
   function profilesSaved() {
+    const focused = document.activeElement;
     profileName.value = "";
     showLine(profilesError, null);
     renderProfiles();
+    if (focused?.disabled) profileSelect.focus();
   }
 
   // Saves the profiles a button changed, and the profile now selected, or says why it can't.

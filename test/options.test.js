@@ -727,6 +727,16 @@ test("saves the topics as a new profile and selects it", async (t) => {
   assert.equal(button("delete").disabled, false);
 });
 
+test("after a profile button saves, focus moves from the button, now off, to the profile list", async (t) => {
+  const { document, select, button, name } = await setupProfiles(t, { topics: "chess" });
+  name("Chess club");
+  button("save").focus();
+  button("save").click();
+  await flush();
+  assert.equal(button("save").disabled, true);
+  assert.equal(document.activeElement, select);
+});
+
 test("shows the stored profile as selected when the page opens", async (t) => {
   const { select, listed } = await setupProfiles(t, { profiles: [WORK, EVENING], activeProfile: "evening", topics: EVENING.topics });
   assert.deepEqual(listed(), [NO_PROFILE, "Work", "Evening"]);

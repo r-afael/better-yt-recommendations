@@ -118,6 +118,15 @@ test("Load now in the popup asks the background to load the model", async (t) =>
   assert.deepEqual(sent, [PRELOAD]);
 });
 
+test("Load now moves focus to the model status, since the button turns off", async (t) => {
+  const { document, status } = await setup(t, { stored: { topics: "chess" } });
+  const loadButton = document.querySelector("#load-now");
+  loadButton.focus();
+  loadButton.click();
+  assert.equal(loadButton.disabled, true);
+  assert.equal(document.activeElement, status);
+});
+
 test("the summary lists the topics, and clicking it opens the options page", async (t) => {
   const { chrome, summary } = await setup(t, { stored: { topics: "programming, software engineering, chess" } });
   assert.equal(summary.textContent, "Topics: programming, software engineering, chess");
