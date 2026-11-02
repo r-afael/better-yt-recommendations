@@ -27,10 +27,10 @@
     "message": "Filtrar recomendações"
   },
   "topicFilterHint": {
-    "message": "Oculta os vídeos que não correspondem aos seus assuntos ou às suas listas de canais nas páginas marcadas em Onde filtrar, em Todas as configurações. Usa um modelo de IA no seu computador."
+    "message": "Oculta os vídeos que não correspondem aos seus assuntos, que correspondem a assuntos que você quer evitar ou que são de canais que você sempre oculta, nas páginas marcadas em Onde filtrar, em Todas as configurações. Usa um modelo de IA no seu computador."
   },
   "topicFilterHintHere": {
-    "message": "Oculta os vídeos que não correspondem aos seus assuntos ou às suas listas de canais nas páginas marcadas em Onde filtrar, mais abaixo. Usa um modelo de IA no seu computador."
+    "message": "Oculta os vídeos que não correspondem aos seus assuntos, que correspondem a assuntos que você quer evitar ou que são de canais que você sempre oculta, nas páginas marcadas em Onde filtrar, mais abaixo. Usa um modelo de IA no seu computador."
   },
   "topics": {
     "message": "Assuntos que você quer ver"
