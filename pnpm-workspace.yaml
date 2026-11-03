@@ -1,3 +1,6 @@
 allowBuilds:
   onnxruntime-node: false
   protobufjs: false
+overrides:
+  # eslint still asks for minimatch 10, which has the globParts ReDoS fixed in 11.0.1.
+  minimatch: 11.0.3
