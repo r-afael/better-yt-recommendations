@@ -1,6 +1,6 @@
 {
   "name": "better-yt-recommendations",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "private": true,
   "description": "Make Your custom feed the default YouTube homepage tab and hide off-topic recommendations.",
   "license": "MIT",
