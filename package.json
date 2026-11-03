@@ -14,7 +14,7 @@
     "coverage": "node --test --experimental-test-coverage --test-coverage-include=\"src/**/*.js\" --test-coverage-exclude=\"src/vendor/**\" --test-coverage-lines=80 --test-coverage-branches=80 --test-coverage-functions=80 \"test/*.test.js\"",
     "lint": "eslint .",
     "vendor": "node scripts/vendor.js",
-    "check": "for file in src/*.js; do node --check \"$file\" || exit 1; done && eslint . && pnpm coverage"
+    "check": "node scripts/check-syntax.js && eslint . && pnpm coverage"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
