@@ -392,5 +392,17 @@
   },
   "profileChangeTooLarge": {
     "message": "यह बदलाव अभी लागू है, लेकिन प्रोफ़ाइल में नहीं समाता, इसलिए प्रोफ़ाइल में पहले वाला ही रहता है। विषय छोटे करें, या कोई दूसरी प्रोफ़ाइल मिटाएँ।"
+  },
+  "hiddenAvoided": {
+    "message": "छिपाया गया: बचने का विषय",
+    "description": "Label for a revealed video hidden because it matched a topic to avoid."
+  },
+  "hiddenOffTopic": {
+    "message": "छिपाया गया: विषय से बाहर",
+    "description": "Label for a revealed video hidden because it did not match the wanted topics."
+  },
+  "hiddenBlocked": {
+    "message": "छिपाया गया: हमेशा छिपा चैनल",
+    "description": "Label for a revealed video hidden because its channel is blocked."
   }
 }

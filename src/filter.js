@@ -15,6 +15,11 @@
   const MAX_BATCH = 30; // Videos per request, so the first verdicts arrive quickly.
   const REQUEST_TIMEOUT_MS = 60_000; // A request that never settles counts as a failure, so filtering resumes.
   const REVEAL_ATTRIBUTE = "data-better-yt-reveal"; // On the root while the hidden videos are shown.
+  const REASON_MESSAGES = Object.freeze({
+    avoided: "hiddenAvoided",
+    "off-topic": "hiddenOffTopic",
+    blocked: "hiddenBlocked",
+  });
   const PAUSE_ATTRIBUTE = "data-better-yt-paused"; // On the root while YouTube's loading of more videos is held.
   const PAUSE_AFTER = 60; // Videos hidden without the user scrolling, about two of YouTube's pages.
   // What a user does to see more of the page; any of them lets YouTube load more videos again.
@@ -105,6 +110,7 @@
   function setRevealed(value) {
     revealed = value;
     document.documentElement.toggleAttribute(REVEAL_ATTRIBUTE, value);
+    if (!value) cards.clearReasons();
   }
 
   function toggleReveal() {
@@ -125,6 +131,13 @@
     const list = cards.container(surface);
     if (list) row.mount(list);
     const count = cards.hiddenCount(surface);
+    if (revealed) {
+      for (const item of cards.findItems(surface)) {
+        const id = cards.hiddenId(item);
+        const reason = cards.hiddenReason(item);
+        cards.setReasonLabel(item, id === null ? null : chrome.i18n.getMessage(REASON_MESSAGES[reason]));
+      }
+    }
     row.update(count, revealed);
     report(count);
   }

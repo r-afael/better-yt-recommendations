@@ -16,6 +16,17 @@
   outline-offset: -2px;
 }
 
+.better-yt-hidden-reason {
+  display: block;
+  width: max-content;
+  margin: 4px 0;
+  padding: 2px 8px;
+  border-radius: 12px;
+  background: var(--yt-spec-badge-chip-background, #0f0f0f);
+  color: var(--yt-spec-text-primary, #fff);
+  font: 1.2rem/1.8rem "Roboto", "Arial", sans-serif;
+}
+
 .better-yt-hidden-row {
   display: flex;
   gap: 12px;

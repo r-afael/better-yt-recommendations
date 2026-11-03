@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { HIDDEN_COUNT, MATCH, SCAN_MS, fakeChrome, flush, holdMessages, openYouTube, read, readJson, score } from "./helpers.js";
+import { HIDDEN_COUNT, MATCH, SCAN_MS, fakeChrome, flush, holdMessages, locales, openYouTube, read, readJson, score } from "./helpers.js";
 
 const watchFixture = read("test/fixtures/watch-sidebar.html");
 const homeFixture = read("test/fixtures/home-grid.html");
@@ -445,17 +445,50 @@ test("the row speaks the extension's language and direction, not YouTube's", asy
 });
 
 test("Show them shows the hidden videos until Hide them again", async (t) => {
-  const { visibleIds, toggle, toggleState, answer } = await setup(t);
+  const { document, visibleIds, toggle, toggleState, answer, items } = await setup(t);
   await answer(["RphIVv0uWrM"]);
   assert.deepEqual(toggleState(), COLLAPSED);
 
   toggle().click();
   assert.deepEqual(visibleIds(), FIXTURE_IDS);
   assert.deepEqual(toggleState(), REVEALED);
+  const reasonLabels = document.querySelectorAll(".better-yt-hidden-reason");
+  assert.equal(reasonLabels.length, 1);
+  assert.equal(reasonLabels[0].parentElement, items()[2]);
+  assert.equal(reasonLabels[0].textContent, "Hidden: off topic");
 
   toggle().click();
   assert.deepEqual(visibleIds(), ON_TOPIC_IDS);
   assert.deepEqual(toggleState(), COLLAPSED);
+  assert.equal(document.querySelectorAll(".better-yt-hidden-reason").length, 0, "collapsed labels leave the DOM");
+});
+
+test("revealed videos explain avoided topics and blocked channels", async (t) => {
+  const { document, items, toggle, answer } = await setup(t, {
+    stored: { topics: "programming", avoidTopics: "gaming", blockedChannels: ["freeCodeCamp.org"] },
+  });
+  await answer();
+  toggle().click();
+  const labels = [...document.querySelectorAll(".better-yt-hidden-reason")];
+  assert.deepEqual(labels.map(({ parentElement, textContent }) => [items().indexOf(parentElement), textContent]), [
+    [1, "Hidden: always-hidden channel"],
+  ]);
+  // Re-score a video as matching an avoided topic, then confirm its card gets that reason too.
+  const request = await setup(t, { stored: { topics: "programming", avoidTopics: "gaming" } });
+  request.requests[0].resolve({ scores: Object.fromEntries(request.requestedIds().map((id) => [id, score(0.1, id === "RphIVv0uWrM" ? 0.8 : null)])) });
+  await request.clock.tickAsync(SCAN_MS);
+  request.toggle().click();
+  const avoided = request.document.querySelector('[data-better-yt-reason="avoided"] .better-yt-hidden-reason');
+  assert.equal(avoided.textContent, "Hidden: avoided");
+});
+
+test("hidden reason messages contain translated text in every locale", () => {
+  for (const locale of locales) {
+    const messages = readJson(`_locales/${locale}/messages.json`);
+    for (const key of ["hiddenAvoided", "hiddenOffTopic", "hiddenBlocked"]) {
+      assert.ok(messages[key]?.message && !messages[key].message.includes("?"), `${locale}.${key} has missing translation characters`);
+    }
+  }
 });
 
 test("every new page starts with the hidden videos collapsed", async (t) => {

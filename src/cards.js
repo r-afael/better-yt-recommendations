@@ -71,6 +71,7 @@
   const WATCHED_ATTRIBUTES = Object.freeze(["class", ...CARD_ATTRIBUTES]);
   const HIDDEN_ATTRIBUTE = "data-better-yt-hidden";
   const REASON_ATTRIBUTE = "data-better-yt-reason";
+  const REASON_LABEL_CLASS = "better-yt-hidden-reason";
 
   // Returns the surface a page shows, such as SURFACES.home for "/", or null for other pages.
   function surfaceFor(pathname) {
@@ -194,6 +195,25 @@
     for (const item of root.querySelectorAll(`[${HIDDEN_ATTRIBUTE}]`)) unhide(item);
   }
 
+  // Adds localized text to a card without changing YouTube's markup or card identity.
+  function setReasonLabel(item, text) {
+    let label = item.querySelector(`.${REASON_LABEL_CLASS}`);
+    if (!text) {
+      label?.remove();
+      return;
+    }
+    if (!label) {
+      label = document.createElement("span");
+      label.className = REASON_LABEL_CLASS;
+      item.append(label);
+    }
+    if (label.textContent !== text) label.textContent = text;
+  }
+
+  function clearReasons(root = document) {
+    for (const label of root.querySelectorAll(`.${REASON_LABEL_CLASS}`)) label.remove();
+  }
+
   // Counts the hidden cards in a surface's list, or 0 when the page has no list yet.
   function hiddenCount(surface, root = document) {
     return container(surface, root)?.querySelectorAll(`[${HIDDEN_ATTRIBUTE}]`).length ?? 0;
@@ -215,6 +235,8 @@
     unhide,
     hiddenId,
     hiddenReason,
+    setReasonLabel,
+    clearReasons,
     unhideAll,
     hiddenCount,
   });
