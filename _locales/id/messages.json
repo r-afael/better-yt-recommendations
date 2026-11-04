@@ -381,6 +381,9 @@
   "deleteProfile": {
     "message": "Hapus"
   },
+  "undoProfile": {
+    "message": "Urungkan"
+  },
   "profilesHint": {
     "message": "Profil menyimpan topik di atas dan kedua penggeser, Kecocokan untuk ditampilkan dan Kecocokan untuk disembunyikan, dengan sebuah nama. Ganti profil di sini atau dari pop-up ekstensi di toolbar. Beralih dari Tanpa profil ke sebuah profil akan mengganti topik dan penggeser, jadi simpan dulu sebagai profil agar tidak hilang."
   },

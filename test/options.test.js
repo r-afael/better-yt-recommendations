@@ -22,6 +22,7 @@ import {
 } from "./helpers.js";
 
 const SAVE_DELAY_MS = 400;
+const UNDO_DELAY_MS = 5000;
 const messages = readJson("_locales/en/messages.json");
 const IDLE_TEXT = "The model loads when a page needs it, or when you click Load now.";
 
@@ -985,6 +986,71 @@ test("deleting the selected profile keeps the topics", async (t) => {
   assert.deepEqual(listed(), [NO_PROFILE, "Evening"]);
   assert.equal(select.value, "");
   assert.equal(button("delete").disabled, true);
+  assert.equal(button("undo").hidden, false);
+});
+
+test("deleting a profile shows Undo for a few seconds, which hides once the time passes", async (t) => {
+  const { button, clock } = await setupProfiles(t, { profiles: [WORK, EVENING], activeProfile: "Work", ...WORK });
+  button("delete").click();
+  await flush();
+  assert.equal(button("undo").hidden, false);
+  clock.tick(UNDO_DELAY_MS - 1);
+  assert.equal(button("undo").hidden, false, "still visible before the time passes");
+  clock.tick(1);
+  assert.equal(button("undo").hidden, true, "hides once the time passes");
+});
+
+test("Undo puts the deleted profile back where it was in the list and selects it again", async (t) => {
+  const { chrome, select, button, listed, storedProfiles } = await setupProfiles(t, { profiles: [WORK, EVENING], activeProfile: "Work", ...WORK });
+  button("delete").click();
+  await flush();
+  assert.deepEqual(storedProfiles(), [EVENING]);
+  assert.equal(button("undo").hidden, false);
+
+  button("undo").click();
+  await flush();
+  assert.deepEqual(storedProfiles(), [WORK, EVENING]);
+  assert.equal(chrome.data.activeProfile, "Work");
+  assert.equal(select.value, "Work");
+  assert.deepEqual(listed(), [NO_PROFILE, "Work", "Evening"]);
+  assert.equal(button("undo").hidden, true);
+  assert.equal(button("delete").disabled, false);
+});
+
+test("Undo puts a profile back at its position in the list when it was not first", async (t) => {
+  const { chrome, select, button, listed, storedProfiles } = await setupProfiles(t, { profiles: [WORK, EVENING], activeProfile: "Evening", ...EVENING });
+  button("delete").click();
+  await flush();
+  assert.deepEqual(storedProfiles(), [WORK]);
+
+  button("undo").click();
+  await flush();
+  assert.deepEqual(storedProfiles(), [WORK, EVENING]);
+  assert.equal(chrome.data.activeProfile, "Evening");
+  assert.equal(select.value, "Evening");
+  assert.deepEqual(listed(), [NO_PROFILE, "Work", "Evening"]);
+});
+
+test("deleting another profile resets the Undo timer and restores the latest deletion", async (t) => {
+  const { chrome, select, button, pick, storedProfiles, clock } = await setupProfiles(t, { profiles: [WORK, EVENING], activeProfile: "Work", ...WORK });
+  button("delete").click();
+  await flush();
+  assert.deepEqual(storedProfiles(), [EVENING]);
+  clock.tick(2000);
+
+  pick("Evening");
+  await flush();
+  button("delete").click();
+  await flush();
+  assert.deepEqual(storedProfiles(), []);
+
+  clock.tick(4000);
+  assert.equal(button("undo").hidden, false, "timer reset on second delete");
+  button("undo").click();
+  await flush();
+  assert.deepEqual(storedProfiles(), [EVENING]);
+  assert.equal(chrome.data.activeProfile, "Evening");
+  assert.equal(select.value, "Evening");
 });
 
 test("refuses a name already in use", async (t) => {

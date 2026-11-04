@@ -12,6 +12,7 @@
 
   const TRY_ID = "try"; // The id of the one video a try asks the model to score.
   const TRY_DELAY_MS = 400; // A try waits for typing to pause, like saving does.
+  const UNDO_DELAY_MS = 5000; // An Undo button shows for a few seconds after a profile is deleted.
   const COMMANDS = Object.freeze([COMMAND_TOGGLE_FILTER, COMMAND_TOGGLE_SHORTS]); // In the manifest's order.
   // Extension pages can't link to chrome:// pages, so the button opens it in a new tab.
   const SHORTCUTS_PAGE = "chrome://extensions/shortcuts";
@@ -55,6 +56,7 @@
   const saveProfile = document.getElementById("save-profile");
   const renameProfile = document.getElementById("rename-profile");
   const deleteProfile = document.getElementById("delete-profile");
+  const undoProfile = document.getElementById("undo-profile");
   const profilesError = document.getElementById("profiles-error");
   const topicsError = document.getElementById("topics-error");
   const channelsError = document.getElementById("channels-error");
@@ -76,6 +78,25 @@
   let tryFailed = false;
   // The profile selected when each profile field's pending edit started, which is the one it updates.
   const editedProfiles = new Map();
+  let undoTimer = null;
+  let deletedProfile = null;
+  let deletedIndex = -1;
+
+  function dismissUndo() {
+    clearTimeout(undoTimer);
+    undoTimer = null;
+    undoProfile.hidden = true;
+    deletedProfile = null;
+    deletedIndex = -1;
+  }
+
+  function showUndo(profile, index) {
+    clearTimeout(undoTimer);
+    deletedProfile = profile;
+    deletedIndex = index;
+    undoProfile.hidden = false;
+    undoTimer = setTimeout(dismissUndo, UNDO_DELAY_MS);
+  }
 
   // The fields as typed, so the page follows the first topic and not only once it is saved.
   const typed = () => ({ topicFilter: topicFilter.checked, topics: topicsField.value, avoidTopics: avoidField.value });
@@ -192,6 +213,7 @@
       (answer) => settleTry(sequence, answer?.scores?.[TRY_ID]),
       () => settleTry(sequence, null),
     );
+
   }
 
   // Turning the filter off drops the try: the one waiting for typing to pause is never sent, a
@@ -227,6 +249,7 @@
     saveProfile.disabled = off || unnamed;
     renameProfile.disabled = off || unnamed || unselected;
     deleteProfile.disabled = off || unselected;
+    undoProfile.disabled = off;
   }
 
   // The topics, the sliders, the try box, the profiles, the pages and the channel lists only
@@ -290,6 +313,7 @@
       () => showLine(topicsError, "profileChangeTooLarge"),
       () => showLine(topicsError, "saveFailed"),
     );
+
   }
 
   // A section without an error line still reports the refused save, in the console.
@@ -310,7 +334,7 @@
     profileName.value = "";
     showLine(profilesError, null);
     renderProfiles();
-    if (focused?.disabled) profileSelect.focus();
+    if (focused?.disabled || focused === undoProfile) profileSelect.focus();
   }
 
   // Saves the profiles a button changed, and the profile now selected, or says why it can't.
@@ -319,9 +343,11 @@
       showLine(profilesError, PROFILE_ERRORS[error]);
       return;
     }
-    page.save({ profiles: list, activeProfile: name }).then(profilesSaved, (refusal) =>
-      showLine(profilesError, isQuotaError(refusal) ? PROFILE_ERRORS.full : "saveFailed"),
-    );
+    page.save({ profiles: list, activeProfile: name }).then(profilesSaved, (refusal) => {
+      dismissUndo();
+      showLine(profilesError, isQuotaError(refusal) ? PROFILE_ERRORS.full : "saveFailed");
+    });
+
   }
 
   // A new profile saves the topics and sliders as shown, even before their own save.
@@ -360,14 +386,29 @@
   }
   profileName.maxLength = settings.LIMITS.MAX_PROFILE_NAME_LENGTH;
   profileName.addEventListener("input", renderProfiles);
-  saveProfile.addEventListener("click", () => saveProfiles(profiles.create(page.values.profiles, shownProfile())));
-  renameProfile.addEventListener("click", () =>
-    saveProfiles(profiles.rename(page.values.profiles, page.values.activeProfile, profileName.value)),
-  );
+  saveProfile.addEventListener("click", () => {
+    dismissUndo();
+    saveProfiles(profiles.create(page.values.profiles, shownProfile()));
+  });
+  renameProfile.addEventListener("click", () => {
+    dismissUndo();
+    saveProfiles(profiles.rename(page.values.profiles, page.values.activeProfile, profileName.value));
+  });
   // Deleting a profile keeps its topics and sliders, so the filter goes on as before.
-  deleteProfile.addEventListener("click", () =>
-    saveProfiles({ list: profiles.remove(page.values.profiles, page.values.activeProfile), name: "" }),
-  );
+  deleteProfile.addEventListener("click", () => {
+    const profile = profiles.active(page.values);
+    if (!profile) return;
+    const index = page.values.profiles.indexOf(profile);
+    showUndo(profile, index);
+    saveProfiles({ list: profiles.remove(page.values.profiles, page.values.activeProfile), name: "" });
+  });
+  undoProfile.addEventListener("click", () => {
+    if (!deletedProfile) return;
+    const profile = deletedProfile;
+    const index = deletedIndex;
+    dismissUndo();
+    saveProfiles(profiles.restore(page.values.profiles, profile, index));
+  });
   for (const field of channelFields) {
     field.maxLength = settings.LIMITS.MAX_CHANNEL_TEXT_LENGTH;
     field.addEventListener("input", () => showLine(channelsError, channelNote()));

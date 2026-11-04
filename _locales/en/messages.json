@@ -475,6 +475,10 @@
     "message": "Delete",
     "description": "Button that deletes the selected profile. The topics and sliders stay as they are."
   },
+  "undoProfile": {
+    "message": "Undo",
+    "description": "Button that puts the deleted profile back in the list."
+  },
   "profilesHint": {
     "message": "A profile saves the topics above and both sliders, Match needed to show and Match that hides, under a name. Switch profiles here or from the toolbar popup. Switching from No profile replaces the topics and sliders, so save them as a profile first to keep them.",
     "description": "Hint under the Profiles section on the options page. \"Match needed to show\" and \"Match that hides\" are the two sliders' labels (threshold, avoidThreshold), and \"No profile\" is the first choice of the profile switch (noProfile); use the same words. \"Toolbar popup\" is the extension's popup."
