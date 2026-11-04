@@ -65,6 +65,10 @@
   "sourceCode": {
     "message": "GitHub-এ সোর্স কোড"
   },
+  "reportProblem": {
+    "message": "সমস্যার প্রতিবেদন করুন",
+    "description": "Link at the bottom of the popup and the options page for reporting a problem."
+  },
   "allSettings": {
     "message": "সব সেটিংস"
   },

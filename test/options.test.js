@@ -53,6 +53,16 @@ async function setup(t, options) {
     ...page, toggle, field, avoidField, status, progressBar, loadButton, type, commit, slider, avoidSlider, valueOf, hintOf, slide,
   };
 }
+test("links to problem reporting in a new tab", async (t) => {
+  const { document } = await setup(t);
+  const link = document.querySelector('footer a[data-i18n="reportProblem"]');
+
+  assert.ok(link);
+  assert.equal(link.href, "https://github.com/r-afael/better-yt-recommendations/issues/new/choose");
+  assert.equal(link.target, "_blank");
+  assert.equal(link.rel, "noopener noreferrer");
+  assert.equal(link.textContent, "Report a problem");
+});
 
 // What the background stores while the model loads, as chrome.storage.session reports it.
 async function reportStatus(chrome, status) {

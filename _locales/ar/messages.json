@@ -65,6 +65,10 @@
   "sourceCode": {
     "message": "الشيفرة المصدرية على GitHub"
   },
+  "reportProblem": {
+    "message": "الإبلاغ عن مشكلة",
+    "description": "Link at the bottom of the popup and the options page for reporting a problem."
+  },
   "allSettings": {
     "message": "كل الإعدادات"
   },

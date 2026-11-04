@@ -65,6 +65,10 @@
   "sourceCode": {
     "message": "GitHub 上的原始碼"
   },
+  "reportProblem": {
+    "message": "回報問題",
+    "description": "Link at the bottom of the popup and the options page for reporting a problem."
+  },
   "allSettings": {
     "message": "所有設定"
   },

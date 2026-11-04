@@ -87,6 +87,10 @@
     "message": "Source code on GitHub",
     "description": "Link at the bottom of the popup and the options page that opens the extension's source code on GitHub."
   },
+  "reportProblem": {
+    "message": "Report a problem",
+    "description": "Link at the bottom of the popup and the options page for reporting a problem."
+  },
   "allSettings": {
     "message": "All settings",
     "description": "Popup link and gear button that open the options page with every setting."

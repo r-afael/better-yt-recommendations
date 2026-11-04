@@ -65,6 +65,10 @@
   "sourceCode": {
     "message": "Código fuente en GitHub"
   },
+  "reportProblem": {
+    "message": "Informar de un problema",
+    "description": "Link at the bottom of the popup and the options page for reporting a problem."
+  },
   "allSettings": {
     "message": "Todos los ajustes"
   },
