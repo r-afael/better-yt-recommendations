@@ -395,5 +395,11 @@
   },
   "profileChangeTooLarge": {
     "message": "Perubahan ini sudah berlaku, tetapi tidak muat di profil, yang tetap menyimpan isi lamanya. Persingkat topiknya, atau hapus profil lain."
+  },
+  "resetDefaults": {
+    "message": "Pulihkan setelan bawaan"
+  },
+  "undoReset": {
+    "message": "Urungkan"
   }
 }

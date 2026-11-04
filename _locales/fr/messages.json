@@ -395,5 +395,11 @@
   },
   "profileChangeTooLarge": {
     "message": "Cette modification s'applique déjà, mais elle ne tient pas dans le profil, qui garde ce qu'il avait. Raccourcissez les sujets ou supprimez un autre profil."
+  },
+  "resetDefaults": {
+    "message": "Rétablir les paramètres par défaut"
+  },
+  "undoReset": {
+    "message": "Annuler"
   }
 }

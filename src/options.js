@@ -12,7 +12,7 @@
 
   const TRY_ID = "try"; // The id of the one video a try asks the model to score.
   const TRY_DELAY_MS = 400; // A try waits for typing to pause, like saving does.
-  const UNDO_DELAY_MS = 5000; // An Undo button shows for a few seconds after a profile is deleted.
+  const UNDO_DELAY_MS = 5000; // An Undo button shows for a few seconds after a profile is deleted or settings are reset.
   const COMMANDS = Object.freeze([COMMAND_TOGGLE_FILTER, COMMAND_TOGGLE_SHORTS]); // In the manifest's order.
   // Extension pages can't link to chrome:// pages, so the button opens it in a new tab.
   const SHORTCUTS_PAGE = "chrome://extensions/shortcuts";
@@ -61,6 +61,8 @@
   const topicsError = document.getElementById("topics-error");
   const channelsError = document.getElementById("channels-error");
   const shortcutList = document.getElementById("shortcut-list");
+  const resetDefaults = document.getElementById("reset-defaults");
+  const undoReset = document.getElementById("undo-reset");
   const filterControls = [
     ...topicFields,
     ...sliders.map(({ input }) => input),
@@ -96,6 +98,37 @@
     deletedIndex = index;
     undoProfile.hidden = false;
     undoTimer = setTimeout(dismissUndo, UNDO_DELAY_MS);
+  }
+
+  // Settings reset back to DEFAULTS: every switch and slider. Topics, channel lists and profiles
+  // are preserved, which people typed themselves.
+  const PRESERVED_SETTINGS = new Set([
+    "topics",
+    "avoidTopics",
+    "allowedChannels",
+    "blockedChannels",
+    "profiles",
+    "activeProfile",
+  ]);
+  const RESETTABLE_SETTINGS = Object.freeze(
+    Object.keys(settings.DEFAULTS).filter((key) => !PRESERVED_SETTINGS.has(key)),
+  );
+  let undoResetTimer = null;
+  let resetSnapshot = null;
+
+  function dismissResetUndo() {
+    clearTimeout(undoResetTimer);
+    undoResetTimer = null;
+    if (document.activeElement === undoReset) resetDefaults.focus();
+    undoReset.hidden = true;
+    resetSnapshot = null;
+  }
+
+  function showResetUndo(snapshot) {
+    clearTimeout(undoResetTimer);
+    resetSnapshot = snapshot;
+    undoReset.hidden = false;
+    undoResetTimer = setTimeout(dismissResetUndo, UNDO_DELAY_MS);
   }
 
   // The fields as typed, so the page follows the first topic and not only once it is saved.
@@ -421,6 +454,21 @@
   for (const field of [tryTitle, ...topicFields]) field.addEventListener("input", scheduleTry);
   // Enter in the title box would submit the form and reload the page.
   form.addEventListener("submit", (event) => event.preventDefault());
+  resetDefaults.addEventListener("click", () => {
+    page.saver.flush();
+    const snapshot = Object.fromEntries(RESETTABLE_SETTINGS.map((key) => [key, page.values[key]]));
+    const defaults = Object.fromEntries(RESETTABLE_SETTINGS.map((key) => [key, settings.DEFAULTS[key]]));
+    page.save(defaults).then(
+      () => showResetUndo(snapshot),
+      (error) => ui.reportSaveError(error),
+    );
+  });
+  undoReset.addEventListener("click", () => {
+    if (!resetSnapshot) return;
+    const snapshot = resetSnapshot;
+    dismissResetUndo();
+    page.save(snapshot).catch(ui.reportSaveError);
+  });
   document.getElementById("change-shortcuts").addEventListener("click", () => chrome.tabs.create({ url: SHORTCUTS_PAGE }));
   // The shortcuts may have changed on Chrome's page by the time the user comes back to this tab.
   document.addEventListener("visibilitychange", () => {

@@ -395,5 +395,11 @@
   },
   "profileChangeTooLarge": {
     "message": "此更改已生效，但方案中放不下，方案仍保留原来的设置。请缩短主题，或删除另一个方案。"
+  },
+  "resetDefaults": {
+    "message": "恢复默认设置"
+  },
+  "undoReset": {
+    "message": "撤销"
   }
 }

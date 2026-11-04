@@ -395,5 +395,11 @@
   },
   "profileChangeTooLarge": {
     "message": "Esta alteração já vale, mas não cabe no perfil, que mantém o que tinha. Encurte os assuntos ou exclua outro perfil."
+  },
+  "resetDefaults": {
+    "message": "Restaurar padrões"
+  },
+  "undoReset": {
+    "message": "Desfazer"
   }
 }
