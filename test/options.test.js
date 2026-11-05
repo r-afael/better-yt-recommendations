@@ -1053,6 +1053,58 @@ test("deleting another profile resets the Undo timer and restores the latest del
   assert.equal(select.value, "Evening");
 });
 
+test("Undo applies the restored profile's topics and sliders in the same save that selects it", async (t) => {
+  const work = { ...WORK, threshold: 0.25, avoidThreshold: 0.24 };
+  const { chrome, select, button, pick, field, avoidField, slider, avoidSlider } = await setupProfiles(t, {
+    profiles: [work, EVENING],
+    activeProfile: "Work",
+    ...work,
+  });
+  button("delete").click();
+  await flush();
+
+  pick("Evening");
+  await flush();
+  assert.equal(chrome.data.activeProfile, "Evening");
+  assert.equal(field.value, EVENING.topics);
+  assert.equal(slider.value, String(EVENING.threshold));
+
+  button("undo").click();
+  await flush();
+  assert.equal(chrome.data.activeProfile, "Work");
+  assert.equal(select.value, "Work");
+  assert.equal(chrome.data.topics, work.topics);
+  assert.equal(chrome.data.avoidTopics, work.avoidTopics);
+  assert.equal(chrome.data.threshold, work.threshold);
+  assert.equal(chrome.data.avoidThreshold, work.avoidThreshold);
+  assert.equal(field.value, work.topics);
+  assert.equal(avoidField.value, work.avoidTopics);
+  assert.equal(slider.value, String(work.threshold));
+  assert.equal(avoidSlider.value, String(work.avoidThreshold));
+});
+
+test("Undo flushes pending edits before restoring the profile", async (t) => {
+  const { chrome, button, pick, type, field } = await setupProfiles(t, {
+    profiles: [WORK, EVENING],
+    activeProfile: "Work",
+    ...WORK,
+  });
+  button("delete").click();
+  await flush();
+
+  pick("Evening");
+  await flush();
+
+  type("baking");
+  button("undo").click();
+  await flush();
+
+  assert.equal(chrome.data.activeProfile, "Work");
+  assert.equal(field.value, WORK.topics);
+  const eveningInStorage = chrome.data.profiles.find((p) => p.name === "Evening");
+  assert.equal(eveningInStorage.topics, "baking");
+});
+
 test("refuses a name already in use", async (t) => {
   const { button, name, profilesError, storedProfiles } = await setupProfiles(t, { profiles: [WORK, EVENING], activeProfile: "Evening" });
   for (const action of ["save", "rename"]) {

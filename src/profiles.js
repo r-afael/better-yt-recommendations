@@ -35,13 +35,13 @@
 
   const remove = (list, name) => list.filter((profile) => !sameName(profile.name, name));
 
-  // The list with one profile put back where it was, and the name it was saved under.
+  // The list with one profile put back where it was, the name it was saved under, and the settings it switches to.
   function restore(list, profile, index) {
     if (find(list, profile.name)) return { error: "taken" };
     if (list.length >= LIMITS.MAX_PROFILES) return { error: "full" };
     const next = [...list];
     next.splice(Math.max(0, Math.min(index ?? next.length, next.length)), 0, profile);
-    return { list: next, name: profile.name };
+    return { list: next, name: profile.name, ...profileCopy(profile) };
   }
 
   // Switching to a profile brings the settings it holds along, in the same write: a profile saved

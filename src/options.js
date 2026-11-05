@@ -371,12 +371,12 @@
   }
 
   // Saves the profiles a button changed, and the profile now selected, or says why it can't.
-  function saveProfiles({ error, list, name }) {
+  function saveProfiles({ error, list, name, ...rest }) {
     if (error) {
       showLine(profilesError, PROFILE_ERRORS[error]);
       return;
     }
-    page.save({ profiles: list, activeProfile: name }).then(profilesSaved, (refusal) => {
+    page.save({ profiles: list, activeProfile: name, ...rest }).then(profilesSaved, (refusal) => {
       dismissUndo();
       showLine(profilesError, isQuotaError(refusal) ? PROFILE_ERRORS.full : "saveFailed");
     });
@@ -437,6 +437,7 @@
   });
   undoProfile.addEventListener("click", () => {
     if (!deletedProfile) return;
+    page.saver.flush();
     const profile = deletedProfile;
     const index = deletedIndex;
     dismissUndo();
