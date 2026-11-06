@@ -396,5 +396,17 @@
   },
   "profileChangeTooLarge": {
     "message": "Cette modification s'applique déjà, mais elle ne tient pas dans le profil, qui garde ce qu'il avait. Raccourcissez les sujets ou supprimez un autre profil."
+  },
+  "hiddenAvoided": {
+    "message": "Masquée : sujet à éviter",
+    "description": "Label for a revealed video hidden because it matched a topic to avoid."
+  },
+  "hiddenOffTopic": {
+    "message": "Masquée : hors sujet",
+    "description": "Label for a revealed video hidden because it did not match the wanted topics."
+  },
+  "hiddenBlocked": {
+    "message": "Masquée : chaîne toujours masquée",
+    "description": "Label for a revealed video hidden because its channel is blocked."
   }
 }

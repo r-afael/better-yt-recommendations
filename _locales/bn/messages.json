@@ -396,5 +396,17 @@
   },
   "profileChangeTooLarge": {
     "message": "এই পরিবর্তন এখন প্রযোজ্য, কিন্তু প্রোফাইলে আঁটছে না, তাই প্রোফাইলটি আগে যা ছিল তা-ই রাখছে। বিষয়গুলো ছোট করুন, বা অন্য একটি প্রোফাইল মুছুন।"
+  },
+  "hiddenAvoided": {
+    "message": "লুকানো: এড়ানোর বিষয়",
+    "description": "Label for a revealed video hidden because it matched a topic to avoid."
+  },
+  "hiddenOffTopic": {
+    "message": "লুকানো: বিষয়ের বাইরে",
+    "description": "Label for a revealed video hidden because it did not match the wanted topics."
+  },
+  "hiddenBlocked": {
+    "message": "লুকানো: সবসময় লুকানো চ্যানেল",
+    "description": "Label for a revealed video hidden because its channel is blocked."
   }
 }

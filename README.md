@@ -82,8 +82,10 @@ else.
 - **Keyboard shortcuts**: Alt+Shift+F turns the filter on or off, and Alt+Shift+S turns
   Hide Shorts on or off (Control instead of Alt on a Mac, Alt+Shift+H on ChromeOS).
 
-On YouTube, a row like "12 videos hidden" lets you see what was hidden. The filter only
-looks at titles and channels, so it will sometimes get a video wrong.
+On YouTube, a row like "12 videos hidden" lets you see what was hidden, with a label on
+each revealed video saying whether it was off topic, matched a topic to avoid, or came
+from a channel you always hide. The filter only looks at titles and channels, so it will
+sometimes get a video wrong.
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/options-page-dark.png">

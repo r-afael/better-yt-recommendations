@@ -396,5 +396,17 @@
   },
   "profileChangeTooLarge": {
     "message": "Este cambio ya se aplica, pero no cabe en el perfil, que conserva lo que tenía. Acorta los temas o elimina otro perfil."
+  },
+  "hiddenAvoided": {
+    "message": "Oculto: tema que quieres evitar",
+    "description": "Label for a revealed video hidden because it matched a topic to avoid."
+  },
+  "hiddenOffTopic": {
+    "message": "Oculto: fuera de tema",
+    "description": "Label for a revealed video hidden because it did not match the wanted topics."
+  },
+  "hiddenBlocked": {
+    "message": "Oculto: canal siempre oculto",
+    "description": "Label for a revealed video hidden because its channel is blocked."
   }
 }

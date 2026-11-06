@@ -396,5 +396,17 @@
   },
   "profileChangeTooLarge": {
     "message": "Perubahan ini sudah berlaku, tetapi tidak muat di profil, yang tetap menyimpan isi lamanya. Persingkat topiknya, atau hapus profil lain."
+  },
+  "hiddenAvoided": {
+    "message": "Disembunyikan: topik yang dihindari",
+    "description": "Label for a revealed video hidden because it matched a topic to avoid."
+  },
+  "hiddenOffTopic": {
+    "message": "Disembunyikan: di luar topik",
+    "description": "Label for a revealed video hidden because it did not match the wanted topics."
+  },
+  "hiddenBlocked": {
+    "message": "Disembunyikan: channel yang selalu disembunyikan",
+    "description": "Label for a revealed video hidden because its channel is blocked."
   }
 }
