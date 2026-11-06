@@ -385,6 +385,9 @@
   "deleteProfile": {
     "message": "Excluir"
   },
+  "undoProfile": {
+    "message": "Desfazer"
+  },
   "profilesHint": {
     "message": "Um perfil salva com um nome os assuntos acima e os dois controles deslizantes, Correspondência necessária para exibir e Correspondência que oculta. Troque de perfil aqui ou pela janela da extensão na barra de ferramentas. Trocar de Nenhum perfil para um perfil substitui os assuntos e os controles deslizantes, então salve-os antes como perfil para mantê-los."
   },
@@ -396,5 +399,11 @@
   },
   "profileChangeTooLarge": {
     "message": "Esta alteração já vale, mas não cabe no perfil, que mantém o que tinha. Encurte os assuntos ou exclua outro perfil."
+  },
+  "resetDefaults": {
+    "message": "Restaurar padrões"
+  },
+  "undoReset": {
+    "message": "Desfazer"
   }
 }

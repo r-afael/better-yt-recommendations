@@ -385,6 +385,9 @@
   "deleteProfile": {
     "message": "Supprimer"
   },
+  "undoProfile": {
+    "message": "Annuler"
+  },
   "profilesHint": {
     "message": "Un profil enregistre sous un nom les sujets ci-dessus et les deux curseurs, Correspondance requise pour afficher et Correspondance qui masque. Changez de profil ici ou depuis la fenêtre de l'extension dans la barre d'outils. Passer d'Aucun profil à un profil remplace les sujets et les curseurs : enregistrez-les d'abord comme profil pour les garder."
   },
@@ -396,5 +399,11 @@
   },
   "profileChangeTooLarge": {
     "message": "Cette modification s'applique déjà, mais elle ne tient pas dans le profil, qui garde ce qu'il avait. Raccourcissez les sujets ou supprimez un autre profil."
+  },
+  "resetDefaults": {
+    "message": "Rétablir les paramètres par défaut"
+  },
+  "undoReset": {
+    "message": "Annuler"
   }
 }

@@ -22,6 +22,7 @@ import {
 } from "./helpers.js";
 
 const SAVE_DELAY_MS = 400;
+const UNDO_DELAY_MS = 5000;
 const messages = readJson("_locales/en/messages.json");
 const IDLE_TEXT = "The model loads when a page needs it, or when you click Load now.";
 
@@ -995,6 +996,123 @@ test("deleting the selected profile keeps the topics", async (t) => {
   assert.deepEqual(listed(), [NO_PROFILE, "Evening"]);
   assert.equal(select.value, "");
   assert.equal(button("delete").disabled, true);
+  assert.equal(button("undo").hidden, false);
+});
+
+test("deleting a profile shows Undo for a few seconds, which hides once the time passes", async (t) => {
+  const { button, clock } = await setupProfiles(t, { profiles: [WORK, EVENING], activeProfile: "Work", ...WORK });
+  button("delete").click();
+  await flush();
+  assert.equal(button("undo").hidden, false);
+  clock.tick(UNDO_DELAY_MS - 1);
+  assert.equal(button("undo").hidden, false, "still visible before the time passes");
+  clock.tick(1);
+  assert.equal(button("undo").hidden, true, "hides once the time passes");
+});
+
+test("Undo puts the deleted profile back where it was in the list and selects it again", async (t) => {
+  const { chrome, select, button, listed, storedProfiles } = await setupProfiles(t, { profiles: [WORK, EVENING], activeProfile: "Work", ...WORK });
+  button("delete").click();
+  await flush();
+  assert.deepEqual(storedProfiles(), [EVENING]);
+  assert.equal(button("undo").hidden, false);
+
+  button("undo").click();
+  await flush();
+  assert.deepEqual(storedProfiles(), [WORK, EVENING]);
+  assert.equal(chrome.data.activeProfile, "Work");
+  assert.equal(select.value, "Work");
+  assert.deepEqual(listed(), [NO_PROFILE, "Work", "Evening"]);
+  assert.equal(button("undo").hidden, true);
+  assert.equal(button("delete").disabled, false);
+});
+
+test("Undo puts a profile back at its position in the list when it was not first", async (t) => {
+  const { chrome, select, button, listed, storedProfiles } = await setupProfiles(t, { profiles: [WORK, EVENING], activeProfile: "Evening", ...EVENING });
+  button("delete").click();
+  await flush();
+  assert.deepEqual(storedProfiles(), [WORK]);
+
+  button("undo").click();
+  await flush();
+  assert.deepEqual(storedProfiles(), [WORK, EVENING]);
+  assert.equal(chrome.data.activeProfile, "Evening");
+  assert.equal(select.value, "Evening");
+  assert.deepEqual(listed(), [NO_PROFILE, "Work", "Evening"]);
+});
+
+test("deleting another profile resets the Undo timer and restores the latest deletion", async (t) => {
+  const { chrome, select, button, pick, storedProfiles, clock } = await setupProfiles(t, { profiles: [WORK, EVENING], activeProfile: "Work", ...WORK });
+  button("delete").click();
+  await flush();
+  assert.deepEqual(storedProfiles(), [EVENING]);
+  clock.tick(2000);
+
+  pick("Evening");
+  await flush();
+  button("delete").click();
+  await flush();
+  assert.deepEqual(storedProfiles(), []);
+
+  clock.tick(4000);
+  assert.equal(button("undo").hidden, false, "timer reset on second delete");
+  button("undo").click();
+  await flush();
+  assert.deepEqual(storedProfiles(), [EVENING]);
+  assert.equal(chrome.data.activeProfile, "Evening");
+  assert.equal(select.value, "Evening");
+});
+
+test("Undo applies the restored profile's topics and sliders in the same save that selects it", async (t) => {
+  const work = { ...WORK, threshold: 0.25, avoidThreshold: 0.24 };
+  const { chrome, select, button, pick, field, avoidField, slider, avoidSlider } = await setupProfiles(t, {
+    profiles: [work, EVENING],
+    activeProfile: "Work",
+    ...work,
+  });
+  button("delete").click();
+  await flush();
+
+  pick("Evening");
+  await flush();
+  assert.equal(chrome.data.activeProfile, "Evening");
+  assert.equal(field.value, EVENING.topics);
+  assert.equal(slider.value, String(EVENING.threshold));
+
+  button("undo").click();
+  await flush();
+  assert.equal(chrome.data.activeProfile, "Work");
+  assert.equal(select.value, "Work");
+  assert.equal(chrome.data.topics, work.topics);
+  assert.equal(chrome.data.avoidTopics, work.avoidTopics);
+  assert.equal(chrome.data.threshold, work.threshold);
+  assert.equal(chrome.data.avoidThreshold, work.avoidThreshold);
+  assert.equal(field.value, work.topics);
+  assert.equal(avoidField.value, work.avoidTopics);
+  assert.equal(slider.value, String(work.threshold));
+  assert.equal(avoidSlider.value, String(work.avoidThreshold));
+});
+
+test("Undo flushes pending edits before restoring the profile", async (t) => {
+  const { chrome, button, pick, type, field } = await setupProfiles(t, {
+    profiles: [WORK, EVENING],
+    activeProfile: "Work",
+    ...WORK,
+  });
+  button("delete").click();
+  await flush();
+
+  pick("Evening");
+  await flush();
+
+  type("baking");
+  button("undo").click();
+  await flush();
+
+  assert.equal(chrome.data.activeProfile, "Work");
+  assert.equal(field.value, WORK.topics);
+  const eveningInStorage = chrome.data.profiles.find((p) => p.name === "Evening");
+  assert.equal(eveningInStorage.topics, "baking");
 });
 
 test("refuses a name already in use", async (t) => {
@@ -1026,4 +1144,167 @@ test("says when there's no room for another profile", async (t) => {
     assert.equal(profilesError.textContent, messages.profilesFull.message, `${profiles.length} profiles`);
     assert.deepEqual(storedProfiles(), profiles, `${profiles.length} profiles`);
   }
+});
+test("Restore defaults sets every switch and slider back to DEFAULTS, preserving topics, channel lists and profiles", async (t) => {
+  const stored = {
+    enabled: false,
+    enforce: true,
+    hideShorts: true,
+    topicFilter: false,
+    threshold: 0.35,
+    avoidThreshold: 0.15,
+    filterWatch: false,
+    filterHome: false,
+    filterSubscriptions: true,
+    filterSearch: true,
+    topics: "programming, cooking",
+    avoidTopics: "celebrity gossip",
+    allowedChannels: ["My Favorite Channel"],
+    blockedChannels: ["Clickbait Channel"],
+    profiles: [WORK],
+    activeProfile: WORK.name,
+  };
+  const { document, chrome, toggle, field, avoidField, slider, avoidSlider } = await setup(t, { stored });
+  const resetBtn = document.querySelector("#reset-defaults");
+  const undoBtn = document.querySelector("#undo-reset");
+  const allowed = document.querySelector('textarea[name="allowedChannels"]');
+  const blocked = document.querySelector('textarea[name="blockedChannels"]');
+  const profileSelect = document.querySelector("#profile");
+
+  assert.equal(resetBtn.textContent, messages.resetDefaults.message);
+  assert.equal(undoBtn.textContent, messages.undoReset.message);
+  assert.equal(undoBtn.hidden, true);
+
+  resetBtn.click();
+  await flush();
+
+  assert.equal(chrome.data.enabled, true);
+  assert.equal(chrome.data.enforce, false);
+  assert.equal(chrome.data.hideShorts, false);
+  assert.equal(chrome.data.topicFilter, true);
+  assert.equal(chrome.data.threshold, 0.25);
+  assert.equal(chrome.data.avoidThreshold, 0.24);
+  assert.equal(chrome.data.filterWatch, true);
+  assert.equal(chrome.data.filterHome, true);
+  assert.equal(chrome.data.filterSubscriptions, false);
+  assert.equal(chrome.data.filterSearch, false);
+
+  assert.equal(toggle("enabled").checked, true);
+  assert.equal(toggle("enforce").checked, false);
+  assert.equal(toggle("hideShorts").checked, false);
+  assert.equal(toggle("topicFilter").checked, true);
+  assert.equal(slider.value, "0.25");
+  assert.equal(avoidSlider.value, "0.24");
+  assert.equal(toggle("filterWatch").checked, true);
+  assert.equal(toggle("filterHome").checked, true);
+  assert.equal(toggle("filterSubscriptions").checked, false);
+  assert.equal(toggle("filterSearch").checked, false);
+
+  assert.equal(chrome.data.topics, "programming, cooking");
+  assert.equal(chrome.data.avoidTopics, "celebrity gossip");
+  assert.deepEqual(chrome.data.allowedChannels, ["My Favorite Channel"]);
+  assert.deepEqual(chrome.data.blockedChannels, ["Clickbait Channel"]);
+  assert.deepEqual(chrome.data.profiles, [WORK]);
+  assert.equal(chrome.data.activeProfile, WORK.name);
+
+  assert.equal(field.value, "programming, cooking");
+  assert.equal(avoidField.value, "celebrity gossip");
+  assert.equal(allowed.value, "My Favorite Channel");
+  assert.equal(blocked.value, "Clickbait Channel");
+  assert.equal(profileSelect.value, WORK.name);
+
+  assert.equal(undoBtn.hidden, false);
+});
+
+test("Restore defaults shows Undo for a few seconds, which hides once the time passes", async (t) => {
+  const { document, clock } = await setup(t);
+  const resetBtn = document.querySelector("#reset-defaults");
+  const undoBtn = document.querySelector("#undo-reset");
+
+  resetBtn.click();
+  await flush();
+  assert.equal(undoBtn.hidden, false);
+
+  clock.tick(UNDO_DELAY_MS - 1);
+  assert.equal(undoBtn.hidden, false, "still visible before the time passes");
+
+  clock.tick(1);
+  assert.equal(undoBtn.hidden, true, "hides once the time passes");
+});
+
+test("Undo after Restore defaults puts every switch and slider back to what it was", async (t) => {
+  const stored = {
+    enabled: false,
+    enforce: true,
+    hideShorts: true,
+    topicFilter: false,
+    threshold: 0.35,
+    avoidThreshold: 0.15,
+    filterWatch: false,
+    filterHome: false,
+    filterSubscriptions: true,
+    filterSearch: true,
+  };
+  const { document, chrome, toggle, slider, avoidSlider } = await setup(t, { stored });
+  const resetBtn = document.querySelector("#reset-defaults");
+  const undoBtn = document.querySelector("#undo-reset");
+
+  resetBtn.click();
+  await flush();
+  assert.equal(chrome.data.enabled, true);
+  assert.equal(chrome.data.threshold, 0.25);
+  assert.equal(undoBtn.hidden, false);
+
+  undoBtn.click();
+  await flush();
+
+  assert.equal(undoBtn.hidden, true);
+  assert.equal(chrome.data.enabled, false);
+  assert.equal(chrome.data.enforce, true);
+  assert.equal(chrome.data.hideShorts, true);
+  assert.equal(chrome.data.topicFilter, false);
+  assert.equal(chrome.data.threshold, 0.35);
+  assert.equal(chrome.data.avoidThreshold, 0.15);
+  assert.equal(chrome.data.filterWatch, false);
+  assert.equal(chrome.data.filterHome, false);
+  assert.equal(chrome.data.filterSubscriptions, true);
+  assert.equal(chrome.data.filterSearch, true);
+
+  assert.equal(toggle("enabled").checked, false);
+  assert.equal(toggle("enforce").checked, true);
+  assert.equal(toggle("hideShorts").checked, true);
+  assert.equal(toggle("topicFilter").checked, false);
+  assert.equal(slider.value, "0.35");
+  assert.equal(avoidSlider.value, "0.15");
+  assert.equal(toggle("filterWatch").checked, false);
+  assert.equal(toggle("filterHome").checked, false);
+  assert.equal(toggle("filterSubscriptions").checked, true);
+  assert.equal(toggle("filterSearch").checked, true);
+});
+
+test("resetting defaults again resets the Undo timer and restores the latest state", async (t) => {
+  const stored = { enabled: false, threshold: 0.35 };
+  const { document, chrome, toggle, clock } = await setup(t, { stored });
+  const resetBtn = document.querySelector("#reset-defaults");
+  const undoBtn = document.querySelector("#undo-reset");
+
+  resetBtn.click();
+  await flush();
+  assert.equal(chrome.data.enabled, true);
+  clock.tick(2000);
+
+  toggle("enabled").click();
+  await flush();
+  assert.equal(chrome.data.enabled, false);
+
+  resetBtn.click();
+  await flush();
+  assert.equal(chrome.data.enabled, true);
+
+  clock.tick(4000);
+  assert.equal(undoBtn.hidden, false, "timer reset on second reset");
+
+  undoBtn.click();
+  await flush();
+  assert.equal(chrome.data.enabled, false);
 });

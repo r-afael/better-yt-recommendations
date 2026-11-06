@@ -479,6 +479,10 @@
     "message": "Delete",
     "description": "Button that deletes the selected profile. The topics and sliders stay as they are."
   },
+  "undoProfile": {
+    "message": "Undo",
+    "description": "Button that puts the deleted profile back in the list."
+  },
   "profilesHint": {
     "message": "A profile saves the topics above and both sliders, Match needed to show and Match that hides, under a name. Switch profiles here or from the toolbar popup. Switching from No profile replaces the topics and sliders, so save them as a profile first to keep them.",
     "description": "Hint under the Profiles section on the options page. \"Match needed to show\" and \"Match that hides\" are the two sliders' labels (threshold, avoidThreshold), and \"No profile\" is the first choice of the profile switch (noProfile); use the same words. \"Toolbar popup\" is the extension's popup."
@@ -494,5 +498,13 @@
   "profileChangeTooLarge": {
     "message": "This change applies now, but it doesn't fit in the profile, which keeps what it had. Shorten the topics, or delete another profile.",
     "description": "Shown under the topics and sliders when Chrome sync can't hold the selected profile with new topics or a new slider value. The filter uses the new value, and the profile keeps its older one."
+  },
+  "resetDefaults": {
+    "message": "Restore defaults",
+    "description": "Button at the end of the options page that sets switches and sliders back to their default values."
+  },
+  "undoReset": {
+    "message": "Undo",
+    "description": "Button that restores settings to what they were before resetting to defaults."
   }
 }

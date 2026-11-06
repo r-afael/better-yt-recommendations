@@ -385,6 +385,9 @@
   "deleteProfile": {
     "message": "Eliminar"
   },
+  "undoProfile": {
+    "message": "Deshacer"
+  },
   "profilesHint": {
     "message": "Un perfil guarda con un nombre los temas de arriba y los dos controles deslizantes, Coincidencia necesaria para mostrar y Coincidencia que oculta. Cambia de perfil aquí o desde la ventana de la extensión en la barra de herramientas. Pasar de Sin perfil a un perfil reemplaza los temas y los controles deslizantes, así que guárdalos antes como perfil para conservarlos."
   },
@@ -396,5 +399,11 @@
   },
   "profileChangeTooLarge": {
     "message": "Este cambio ya se aplica, pero no cabe en el perfil, que conserva lo que tenía. Acorta los temas o elimina otro perfil."
+  },
+  "resetDefaults": {
+    "message": "Restablecer valores predeterminados"
+  },
+  "undoReset": {
+    "message": "Deshacer"
   }
 }
