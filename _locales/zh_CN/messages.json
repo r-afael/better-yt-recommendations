@@ -385,6 +385,9 @@
   "deleteProfile": {
     "message": "删除"
   },
+  "undoProfile": {
+    "message": "撤销"
+  },
   "profilesHint": {
     "message": "方案会以一个名称保存上方的主题和两个滑块（“显示所需匹配度”和“触发隐藏的匹配度”）。你可以在这里或通过工具栏中的扩展程序弹出式窗口切换方案。从“不使用方案”切换到某个方案会替换主题和滑块，因此请先将它们另存为方案以便保留。"
   },
@@ -396,5 +399,11 @@
   },
   "profileChangeTooLarge": {
     "message": "此更改已生效，但方案中放不下，方案仍保留原来的设置。请缩短主题，或删除另一个方案。"
+  },
+  "resetDefaults": {
+    "message": "恢复默认设置"
+  },
+  "undoReset": {
+    "message": "撤销"
   }
 }

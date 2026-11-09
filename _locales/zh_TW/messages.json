@@ -385,6 +385,9 @@
   "deleteProfile": {
     "message": "刪除"
   },
+  "undoProfile": {
+    "message": "復原"
+  },
   "profilesHint": {
     "message": "方案會以一個名稱儲存上方的主題和兩個滑桿（「顯示所需符合度」和「觸發隱藏的符合度」）。你可以在這裡或透過工具列中的擴充功能彈出式視窗切換方案。從「不使用方案」切換到某個方案會取代主題和滑桿，因此請先將它們另存為方案以便保留。"
   },
@@ -396,5 +399,11 @@
   },
   "profileChangeTooLarge": {
     "message": "此變更已生效，但方案中放不下，方案仍保留原來的設定。請縮短主題，或刪除另一個方案。"
+  },
+  "resetDefaults": {
+    "message": "恢復預設值"
+  },
+  "undoReset": {
+    "message": "復原"
   }
 }
