@@ -494,5 +494,17 @@
   "profileChangeTooLarge": {
     "message": "This change applies now, but it doesn't fit in the profile, which keeps what it had. Shorten the topics, or delete another profile.",
     "description": "Shown under the topics and sliders when Chrome sync can't hold the selected profile with new topics or a new slider value. The filter uses the new value, and the profile keeps its older one."
+  },
+  "hiddenAvoided": {
+    "message": "Hidden: avoided",
+    "description": "Label for a revealed video hidden because it matched a topic to avoid."
+  },
+  "hiddenOffTopic": {
+    "message": "Hidden: off topic",
+    "description": "Label for a revealed video hidden because it did not match the wanted topics."
+  },
+  "hiddenBlocked": {
+    "message": "Hidden: always-hidden channel",
+    "description": "Label for a revealed video hidden because its channel is blocked."
   }
 }

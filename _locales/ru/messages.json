@@ -396,5 +396,17 @@
   },
   "profileChangeTooLarge": {
     "message": "Это изменение уже действует, но не помещается в профиль, и он сохраняет прежние значения. Сократите темы или удалите другой профиль."
+  },
+  "hiddenAvoided": {
+    "message": "Скрыто: нежелательная тема",
+    "description": "Label for a revealed video hidden because it matched a topic to avoid."
+  },
+  "hiddenOffTopic": {
+    "message": "Скрыто: не по теме",
+    "description": "Label for a revealed video hidden because it did not match the wanted topics."
+  },
+  "hiddenBlocked": {
+    "message": "Скрыто: всегда скрытый канал",
+    "description": "Label for a revealed video hidden because its channel is blocked."
   }
 }

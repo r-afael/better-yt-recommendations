@@ -396,5 +396,17 @@
   },
   "profileChangeTooLarge": {
     "message": "此變更已生效，但方案中放不下，方案仍保留原來的設定。請縮短主題，或刪除另一個方案。"
+  },
+  "hiddenAvoided": {
+    "message": "已隱藏：應避開的主題",
+    "description": "Label for a revealed video hidden because it matched a topic to avoid."
+  },
+  "hiddenOffTopic": {
+    "message": "已隱藏：偏離主題",
+    "description": "Label for a revealed video hidden because it did not match the wanted topics."
+  },
+  "hiddenBlocked": {
+    "message": "已隱藏：一律隱藏的頻道",
+    "description": "Label for a revealed video hidden because its channel is blocked."
   }
 }
