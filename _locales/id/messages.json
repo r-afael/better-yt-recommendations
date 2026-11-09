@@ -271,6 +271,12 @@
   "filterSearch": {
     "message": "Hasil penelusuran"
   },
+  "showBadge": {
+    "message": "Tampilkan jumlah video tersembunyi pada ikon toolbar"
+  },
+  "showBadgeHint": {
+    "message": "Menampilkan berapa banyak video yang disamarkan filter di halaman saat ini, pada ikon ekstensi di toolbar Anda."
+  },
   "channels": {
     "message": "Saluran"
   },

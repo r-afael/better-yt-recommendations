@@ -583,6 +583,15 @@ test("the page checkboxes show their defaults and save as they change", async (t
   assert.equal(chrome.data.filterHome, false);
 });
 
+test("the badge count switch shows its default and saves as it changes", async (t) => {
+  const { chrome, toggle } = await setup(t);
+  assert.equal(toggle("showBadge").checked, true);
+
+  toggle("showBadge").click();
+  await flush();
+  assert.equal(chrome.data.showBadge, false);
+});
+
 test("the switches for Home and Shorts show their defaults and save as they change", async (t) => {
   const { chrome, toggle } = await setup(t);
   assert.deepEqual(FEED_SETTINGS.map((name) => toggle(name).checked), [true, false, false]);

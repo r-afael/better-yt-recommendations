@@ -331,6 +331,14 @@
     "message": "Search results",
     "description": "Checkbox: filter search results."
   },
+  "showBadge": {
+    "message": "Show the hidden count on the toolbar icon",
+    "description": "Switch on the options page that shows or hides the number of hidden videos on the extension's toolbar icon."
+  },
+  "showBadgeHint": {
+    "message": "Shows how many videos the filter hid on the current page, on the extension's icon in your toolbar.",
+    "description": "Explains the showBadge switch: the number of hidden videos that the toolbar icon's badge shows."
+  },
   "channels": {
     "message": "Channels",
     "description": "Heading of the options section with the channel lists."

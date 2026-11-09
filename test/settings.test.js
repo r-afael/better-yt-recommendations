@@ -43,6 +43,22 @@ test("reads values of the wrong type as their defaults", async () => {
   assert.deepEqual({ threshold, avoidThreshold, topics, hideShorts }, { threshold: 0.25, avoidThreshold: 0.24, topics: "", hideShorts: false });
 });
 
+test("shows the badge count by default and reads it as off when it is turned off", async () => {
+  const { settings } = loadSettings();
+  assert.equal(settings.DEFAULTS.showBadge, true);
+  assert.equal((await settings.load()).showBadge, true);
+});
+
+test("reads a badge count that was turned off", async () => {
+  const { settings } = loadSettings({ showBadge: false });
+  assert.equal((await settings.load()).showBadge, false);
+});
+
+test("reads a badge count of the wrong type as the default", async () => {
+  const { settings } = loadSettings({ showBadge: "no" });
+  assert.equal((await settings.load()).showBadge, true);
+});
+
 test("reports a change from another device within bounds", async () => {
   const { settings, chrome } = loadSettings({ topics: "chess" });
   const received = subscribed(settings);

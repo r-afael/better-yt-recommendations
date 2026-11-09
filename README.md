@@ -77,6 +77,9 @@ else.
   what the filter would do with any title.
 - **Profiles**: save sets of topics, like "Work" or "Evening", and switch between them.
 - **Where to filter**: pick the pages the filter works on.
+- **Badge on the toolbar icon**: the icon counts the videos hidden on the current
+  page. Turn the count off in **All settings**, under **Where to filter**, to keep
+  the icon plain.
 - **Channels**: always show or always hide a channel. You can also right-click a video
   on YouTube to do this.
 - **Keyboard shortcuts**: Alt+Shift+F turns the filter on or off, and Alt+Shift+S turns
