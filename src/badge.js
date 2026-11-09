@@ -18,6 +18,15 @@
     chrome.action.setBadgeBackgroundColor({ tabId, color: COLOR }).catch(ignore);
   }
 
+  // Clears the badge of every open tab, so the count disappears when the count is turned off.
+  // A count arriving later is ignored by the background, and the content script re-sends it when
+  // the count is turned back on, so the text comes back then.
+  function clear() {
+    chrome.tabs.query({}).then((tabs) => {
+      for (const { id } of tabs) chrome.action.setBadgeText({ tabId: id, text: "" }).catch(ignore);
+    }).catch(ignore);
+  }
+
   globalThis.BetterYT ??= {};
-  globalThis.BetterYT.badge = Object.freeze({ show });
+  globalThis.BetterYT.badge = Object.freeze({ show, clear });
 })();

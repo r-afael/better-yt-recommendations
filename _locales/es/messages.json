@@ -271,6 +271,12 @@
   "filterSearch": {
     "message": "Resultados de búsqueda"
   },
+  "showBadge": {
+    "message": "Mostrar el número de vídeos ocultos en el icono de la barra de herramientas"
+  },
+  "showBadgeHint": {
+    "message": "Muestra cuántos vídeos ha ocultado el filtro en la página actual, en el icono de la extensión de tu barra de herramientas."
+  },
   "channels": {
     "message": "Canales"
   },

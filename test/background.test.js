@@ -399,6 +399,34 @@ test("ignores hidden counts from pages without a tab", async () => {
   assert.deepEqual(chrome.badges, {});
 });
 
+test("does not show the badge when showBadge is off", async () => {
+  const { chrome, protocol, send } = setup({ stored: { showBadge: false } });
+
+  await flush(); // Let the background read the stored setting.
+  await send({ type: protocol.HIDDEN_COUNT, count: 7 }, { tab: { id: 1 } });
+  await flush();
+
+  assert.deepEqual(chrome.badges, {});
+});
+
+test("clears existing badges when showBadge is turned off", async () => {
+  const { chrome, protocol, send } = setup();
+  await send({ type: protocol.HIDDEN_COUNT, count: 5 }, { tab: { id: 1 } });
+  await send({ type: protocol.HIDDEN_COUNT, count: 3 }, { tab: { id: 2 } });
+  await flush();
+  assert.deepEqual(plain(chrome.badges), {
+    1: { text: "5", color: "#606060" },
+    2: { text: "3", color: "#606060" },
+  });
+
+  await chrome.storage.sync.set({ showBadge: false });
+  await flush();
+  assert.deepEqual(plain(chrome.badges), {
+    1: { text: "", color: "#606060" },
+    2: { text: "", color: "#606060" },
+  });
+});
+
 // The menu shows where the content script that answers it runs.
 const YOUTUBE_PAGES = readJson("manifest.json").content_scripts.find((entry) => entry.js.includes("src/channel-menu.js")).matches;
 const CARD_LINKS = ["https://*.youtube.com/watch*", "https://*.youtube.com/@*", "https://*.youtube.com/channel/*"];

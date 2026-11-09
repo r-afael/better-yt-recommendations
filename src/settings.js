@@ -101,6 +101,7 @@
     filterHome: flag(true), // Filter Home, which is all recommendations.
     filterSubscriptions: flag(false), // Filter the Subscriptions grid. Off: it shows what the user subscribed to.
     filterSearch: flag(false), // Filter search results. Off: they show what the user asked for.
+    showBadge: flag(true), // Count of hidden videos on the toolbar icon's badge. Off: the icon stays plain.
     allowedChannels: channelList(), // Channels whose videos are never hidden.
     blockedChannels: channelList(), // Channels whose videos are always hidden where the filter works.
     profiles: profileList(), // Named copies of the topics and sliders, which the popup switches between.
@@ -166,6 +167,7 @@
     load,
     save,
     subscribe,
+    sanitize,
     nameKey,
     sameName,
     clip,
