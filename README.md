@@ -99,7 +99,7 @@ it works. It is freed after 5 minutes without new videos. On a slow computer, tu
 ## Languages
 
 The extension works in English, Chinese, Hindi, Spanish, Arabic, French, Bengali,
-Portuguese, Russian and Indonesian. The model understands more than 100 languages, so
+Portuguese, Russian, Indonesian and Korean. The model understands more than 100 languages, so
 your topics and the videos don't need to be in the same one.
 
 ## Privacy

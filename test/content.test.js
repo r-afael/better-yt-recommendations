@@ -364,9 +364,9 @@ test("supports homepage query parameters and the recommended-feed route", async 
   assert.equal(state.clicks, 2);
 });
 
-test("recognizes the tab in the ten most spoken languages", async (t) => {
+test("recognizes the tab in supported languages", async (t) => {
   const labels = loadLabels();
-  assert.deepEqual(Object.keys(labels), ["en", "zh", "hi", "es", "ar", "fr", "bn", "pt", "ru", "id"]);
+  assert.deepEqual(Object.keys(labels), ["en", "zh", "hi", "es", "ar", "fr", "bn", "pt", "ru", "id", "ko"]);
   for (const [language, names] of Object.entries(labels)) {
     for (const label of names) {
       await t.test(`${language}: ${label}`, async (t) => {

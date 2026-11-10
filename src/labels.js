@@ -1,7 +1,7 @@
-// Names YouTube gives the custom feed tab, in the ten most spoken languages
-// (Ethnologue, 2025). "Custom feed" wordings come from YouTube's Help Center;
-// "Your custom feed" wordings follow the English tab name. Matching ignores
-// case, spacing and accents, so each wording only needs to be listed once.
+// Names YouTube gives the custom feed tab in supported languages.
+// "Custom feed" wordings come from YouTube's Help Center; "Your custom feed"
+// wordings follow the English tab name. Matching ignores case, spacing and
+// accents, so each wording only needs to be listed once.
 globalThis.BetterYT ??= {};
 globalThis.BetterYT.CUSTOM_FEED_LABELS = Object.freeze({
   en: ["Your custom feed", "Custom feed"],
@@ -14,4 +14,5 @@ globalThis.BetterYT.CUSTOM_FEED_LABELS = Object.freeze({
   pt: ["Feed personalizado", "Seu feed personalizado", "O seu feed personalizado"],
   ru: ["Ваша лента", "Собственная лента"],
   id: ["Feed kustom", "Feed kustom Anda"],
+  ko: ["맞춤 피드", "내 맞춤 피드", "사용자 맞춤 피드"],
 });

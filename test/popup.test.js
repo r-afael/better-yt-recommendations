@@ -271,8 +271,8 @@ test("links to the source code and problem reporting in new tabs", async (t) => 
   assert.equal(reportLink.textContent, "Report a problem");
 });
 
-test("translations cover the ten most spoken languages with the same messages as English", () => {
-  assert.deepEqual(locales.toSorted(alphabetically), ["ar", "bn", "en", "es", "fr", "hi", "id", "pt", "ru", "zh_CN", "zh_TW"]);
+test("translations cover supported languages with the same messages as English", () => {
+  assert.deepEqual(locales.toSorted(alphabetically), ["ar", "bn", "en", "es", "fr", "hi", "id", "ko", "pt", "ru", "zh_CN", "zh_TW"]);
   const english = readJson("_locales/en/messages.json");
   const keys = Object.keys(english).toSorted(alphabetically);
   for (const locale of locales) {
