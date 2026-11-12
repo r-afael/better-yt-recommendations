@@ -289,6 +289,19 @@
   "channelsHint": {
     "message": "Un canal por línea, con el nombre que aparece en YouTube."
   },
+  "channelCount": {
+    "message": "$COUNT$ de $LIMIT$",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "12"
+      },
+      "limit": {
+        "content": "$2",
+        "example": "50"
+      }
+    }
+  },
   "listFull": {
     "message": "Una lista admite hasta 50 canales. Solo se guardan los primeros 50."
   },

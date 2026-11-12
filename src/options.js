@@ -237,6 +237,7 @@
     ui.renderFeedSwitches(form.elements);
     for (const control of filterControls) control.disabled = !topicFilter.checked;
     renderProfiles();
+    for (const field of channelFields) renderChannelCount(field);
     const typedLists = verdict.lists(typed());
     for (const slider of sliders) renderSlider(slider, typedLists);
     status.render();
@@ -271,6 +272,14 @@
   // Only the first names of a list that is too long are saved, so the page says so.
   const channelNote = () =>
     channelFields.some((field) => channels.countNames(field.value) > settings.LIMITS.MAX_CHANNELS) ? "listFull" : null;
+
+  function renderChannelCount(field) {
+    const lang = ui.message("lang");
+    const count = channels.countNames(field.value).toLocaleString(lang);
+    const limit = settings.LIMITS.MAX_CHANNELS.toLocaleString(lang);
+    const line = document.getElementById(`${field.id}-count`);
+    setText(line, ui.message("channelCount", [count, limit]));
+  }
 
   // The error line of the section a control is in, if that section has one.
   const errorLineOf = (control) => control.closest("section").querySelector(".error");

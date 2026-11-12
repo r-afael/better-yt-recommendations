@@ -644,6 +644,41 @@ async function setupChannels(t, options) {
   return { ...page, allowed, blocked, channelsError, stored };
 }
 
+test("shows each channel list's count when the page opens", async (t) => {
+  const { document } = await setupChannels(t, {stored: {allowedChannels: ["Fireship", "Traversy Media"], blockedChannels: [],},});
+  assert.equal(document.querySelector("#allowedChannels-count").textContent, "2 of 50",);
+  assert.equal(document.querySelector("#blockedChannels-count").textContent, "0 of 50",);
+});
+
+test("updates each channel count while typing and clearing names", async (t) => {
+  const { document, type, allowed, blocked } = await setupChannels(t);
+  for (const field of [allowed, blocked]) {
+    const count = document.querySelector(`#${field.id}-count`);
+    type("Fireship\n\n  fireship \nVeritasium\n", field);
+    assert.equal(count.textContent, "2 of 50", field.name);
+    type("Fireship", field);
+    assert.equal(count.textContent, "1 of 50", field.name);
+    type("", field);
+    assert.equal(count.textContent, "0 of 50", field.name);
+  }
+});
+
+test("updates channel counts when the lists change elsewhere", async (t) => {
+  const { document, chrome } = await setupChannels(t, {stored: {allowedChannels: ["Fireship"], blockedChannels: [],},});
+  await chrome.storage.sync.set({allowedChannels: ["Fireship", "Traversy Media"], blockedChannels: ["MrBeast"],});
+  await flush();
+  assert.equal(document.querySelector("#allowedChannels-count").textContent, "2 of 50",);
+  assert.equal(document.querySelector("#blockedChannels-count").textContent, "1 of 50",);
+});
+
+test("shows channel counts using the translation's digits", async (t) => {
+  const { document } = await setupChannels(t, {locale: "ar", stored: {allowedChannels: ["Fireship", "Traversy Media"], blockedChannels: [],},});
+  const lang = readJson("_locales/ar/messages.json").lang.message;
+  const limit = (50).toLocaleString(lang);
+  assert.equal(document.querySelector("#allowedChannels-count").textContent, `${(2).toLocaleString(lang)} من ${limit}`,);
+  assert.equal(document.querySelector("#blockedChannels-count").textContent, `${(0).toLocaleString(lang)} من ${limit}`,);
+});
+
 test("saves each channel list one name per line", async (t) => {
   const { clock, type, allowed, blocked, stored } = await setupChannels(t, { stored: { allowedChannels: ["Fireship", "Traversy Media"] } });
   assert.equal(allowed.value, "Fireship\nTraversy Media");

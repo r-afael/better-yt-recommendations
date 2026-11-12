@@ -98,10 +98,12 @@
         <h2 id="channels-section" data-i18n="channels">Channels</h2>
         <div class="field">
           <label class="title" for="allowedChannels" data-i18n="allowedChannels">Never hide these channels</label>
-          <textarea id="allowedChannels" name="allowedChannels" rows="4" disabled aria-describedby="allowedChannels-hint channels-hint channels-menu-hint"></textarea>
+          <textarea id="allowedChannels" name="allowedChannels" rows="4" disabled aria-describedby="allowedChannels-hint allowedChannels-count channels-hint channels-menu-hint"></textarea>
+          <span class="hint" id="allowedChannels-count"></span>
           <span class="hint" id="allowedChannels-hint" data-i18n="allowedChannelsHint"></span>
           <label class="title" for="blockedChannels" data-i18n="blockedChannels">Always hide these channels</label>
-          <textarea id="blockedChannels" name="blockedChannels" rows="4" disabled aria-describedby="blockedChannels-hint channels-hint channels-menu-hint"></textarea>
+          <textarea id="blockedChannels" name="blockedChannels" rows="4" disabled aria-describedby="blockedChannels-hint blockedChannels-count channels-hint channels-menu-hint"></textarea>
+          <span class="hint" id="blockedChannels-count"></span>
           <span class="hint" id="blockedChannels-hint" data-i18n="blockedChannelsHint"></span>
           <p class="hint" id="channels-hint" data-i18n="channelsHint"></p>
           <p class="hint" id="channels-menu-hint" data-i18n="channelsMenuHint"></p>

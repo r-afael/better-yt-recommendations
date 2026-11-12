@@ -289,6 +289,19 @@
   "channelsHint": {
     "message": "قناة واحدة في كل سطر، باسمها كما يظهر على YouTube."
   },
+  "channelCount": {
+    "message": "$COUNT$ من $LIMIT$",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "١٢"
+      },
+      "limit": {
+        "content": "$2",
+        "example": "٥٠"
+      }
+    }
+  },
   "listFull": {
     "message": "تتسع القائمة لـ ٥٠ قناة كحد أقصى. لا يُحفظ إلا أول ٥٠ قناة."
   },

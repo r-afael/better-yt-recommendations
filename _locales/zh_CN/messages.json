@@ -289,6 +289,19 @@
   "channelsHint": {
     "message": "每行一个频道，按 YouTube 上显示的名称填写。"
   },
+  "channelCount": {
+    "message": "$COUNT$ / $LIMIT$ 个频道",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "12"
+      },
+      "limit": {
+        "content": "$2",
+        "example": "50"
+      }
+    }
+  },
   "listFull": {
     "message": "每个列表最多 50 个频道，只会保存前 50 个。"
   },

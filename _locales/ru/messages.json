@@ -289,6 +289,19 @@
   "channelsHint": {
     "message": "По одному каналу в строке, с названием, как на YouTube."
   },
+  "channelCount": {
+    "message": "$COUNT$ из $LIMIT$",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "12"
+      },
+      "limit": {
+        "content": "$2",
+        "example": "50"
+      }
+    }
+  },
   "listFull": {
     "message": "В списке может быть не больше 50 каналов. Сохраняются только первые 50."
   },

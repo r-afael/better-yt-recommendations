@@ -289,6 +289,19 @@
   "channelsHint": {
     "message": "हर पंक्ति में एक चैनल, उसी नाम से जो YouTube पर दिखता है।"
   },
+  "channelCount": {
+    "message": "$LIMIT$ में से $COUNT$",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "12"
+      },
+      "limit": {
+        "content": "$2",
+        "example": "50"
+      }
+    }
+  },
   "listFull": {
     "message": "एक सूची में ज़्यादा से ज़्यादा 50 चैनल रह सकते हैं। सिर्फ़ पहले 50 सेव होते हैं।"
   },

@@ -289,6 +289,19 @@
   "channelsHint": {
     "message": "每行一個頻道，依 YouTube 上顯示的名稱填寫。"
   },
+  "channelCount": {
+    "message": "$COUNT$ / $LIMIT$ 個頻道",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "12"
+      },
+      "limit": {
+        "content": "$2",
+        "example": "50"
+      }
+    }
+  },
   "listFull": {
     "message": "每個清單最多 50 個頻道，只會儲存前 50 個。"
   },
