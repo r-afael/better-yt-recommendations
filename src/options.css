@@ -28,6 +28,18 @@ section {
 footer {
   padding-inline: 0;
   border-top: 0;
+  flex-wrap: wrap;
+}
+
+.footer-source {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+#extension-version {
+  color: var(--muted);
 }
 
 /* The topics to avoid and their slider are set apart from the wanted topics' slider above. */

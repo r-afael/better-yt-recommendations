@@ -65,6 +65,15 @@
   "sourceCode": {
     "message": "Исходный код на GitHub"
   },
+    "version": {
+    "message": "Версия $VERSION$",
+    "placeholders": {
+      "version": {
+        "content": "$1",
+        "example": "1.5.1"
+      }
+    }
+  },
   "reportProblem": {
     "message": "Сообщить о проблеме",
     "description": "Link at the bottom of the popup and the options page for reporting a problem."

@@ -45,7 +45,7 @@ body:
     id: extension-version
     attributes:
       label: Extension version
-      description: Shown at chrome://extensions.
+      description: Shown at the bottom of the options page (All settings), or at chrome://extensions.
       placeholder: "1.2.0"
     validations:
       required: true

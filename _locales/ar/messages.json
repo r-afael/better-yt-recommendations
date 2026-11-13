@@ -65,6 +65,15 @@
   "sourceCode": {
     "message": "الشيفرة المصدرية على GitHub"
   },
+  "version": {
+    "message": "الإصدار $VERSION$",
+    "placeholders": {
+      "version": {
+        "content": "$1",
+        "example": "1.5.1"
+      }
+    }
+  },
   "reportProblem": {
     "message": "الإبلاغ عن مشكلة",
     "description": "Link at the bottom of the popup and the options page for reporting a problem."

@@ -388,5 +388,12 @@
 
   // page is used by the functions above, which only run once the page has started.
   const page = ui.startPage({ form, render, display, changesFor, onSaved, onError });
+
+  const version = chrome.runtime.getManifest().version;
+  setText(
+    document.getElementById("extension-version"),
+    ui.message("version", version),
+  );
+
   void renderShortcuts();
 })();
