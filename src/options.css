@@ -35,7 +35,7 @@ footer {
   display: flex;
   align-items: baseline;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 30px;
 }
 
 #extension-version {
