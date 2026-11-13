@@ -63,6 +63,24 @@ test("links to problem reporting in a new tab", async (t) => {
   assert.equal(link.rel, "noopener noreferrer");
   assert.equal(link.textContent, "Report a problem");
 });
+test("shows the manifest version in the options footer", async (t) => {
+  const { document } = await setup(t);
+  const manifest = readJson("manifest.json");
+  const version = document.querySelector("#extension-version");
+
+  assert.ok(version);
+  assert.equal(version.textContent, `Version ${manifest.version}`);
+});
+
+test("updates the displayed version from the Chrome manifest", async (t) => {
+  const chrome = fakeChrome();
+  chrome.runtime.getManifest = () => ({ version: "9.8.7" });
+
+  const { document } = await setup(t, { chrome });
+  const version = document.querySelector("#extension-version");
+
+  assert.equal(version.textContent, "Version 9.8.7");
+});
 
 // What the background stores while the model loads, as chrome.storage.session reports it.
 async function reportStatus(chrome, status) {
