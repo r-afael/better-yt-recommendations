@@ -1017,6 +1017,25 @@ test("Undo puts the deleted profile back where it was in the list and selects it
   assert.equal(button("delete").disabled, false);
 });
 
+test("deleting a profile saves its pending slider edit before taking the Undo snapshot", async (t) => {
+  const { chrome, button, slide, slider, storedProfiles } = await setupProfiles(t, {
+    profiles: [EVENING],
+    activeProfile: EVENING.name,
+    ...EVENING,
+  });
+
+  slide(0.35);
+  button("delete").click();
+  await flush();
+  assert.deepEqual(storedProfiles(), []);
+
+  button("undo").click();
+  await flush();
+  assert.deepEqual(storedProfiles(), [{ ...EVENING, threshold: 0.35 }]);
+  assert.equal(chrome.data.threshold, 0.35);
+  assert.equal(slider.valueAsNumber, 0.35);
+});
+
 test("Undo puts a profile back at its position in the list when it was not first", async (t) => {
   const { chrome, select, button, listed, storedProfiles } = await setupProfiles(t, { profiles: [WORK, EVENING], activeProfile: "Evening", ...EVENING });
   button("delete").click();
@@ -1270,6 +1289,64 @@ test("Undo after Restore defaults puts every switch and slider back to what it w
   assert.equal(toggle("filterHome").checked, false);
   assert.equal(toggle("filterSubscriptions").checked, true);
   assert.equal(toggle("filterSearch").checked, true);
+});
+
+test("undoing a reset preserves a profile selected after the reset, even when its sliders match the defaults", async (t) => {
+  const later = { ...EVENING, threshold: 0.25, avoidThreshold: 0.24 };
+  const { document, chrome, pick } = await setupProfiles(t, {
+    profiles: [WORK, later],
+    activeProfile: WORK.name,
+    ...WORK,
+    threshold: 0.35,
+    avoidThreshold: 0.15,
+    hideShorts: true,
+  });
+
+  document.querySelector("#reset-defaults").click();
+  await flush();
+  pick(later.name);
+  await flush();
+  document.querySelector("#undo-reset").click();
+  await flush();
+
+  assert.equal(chrome.data.activeProfile, later.name);
+  assert.equal(chrome.data.threshold, later.threshold);
+  assert.equal(chrome.data.avoidThreshold, later.avoidThreshold);
+  assert.equal(chrome.data.hideShorts, true);
+});
+
+test("undoing a reset preserves a pending slider edit and a switch changed after the reset", async (t) => {
+  const { document, chrome, slide, toggle, clock } = await setup(t, {
+    stored: { threshold: 0.18, avoidThreshold: 0.15, hideShorts: true },
+  });
+
+  document.querySelector("#reset-defaults").click();
+  await flush();
+  toggle("enabled").click();
+  slide(0.35);
+  document.querySelector("#undo-reset").click();
+  await clock.tickAsync(SAVE_DELAY_MS);
+
+  assert.equal(chrome.data.enabled, false);
+  assert.equal(chrome.data.threshold, 0.35);
+  assert.equal(chrome.data.avoidThreshold, 0.15);
+  assert.equal(chrome.data.hideShorts, true);
+});
+
+test("undoing a reset preserves a switch changed back to its default after the reset", async (t) => {
+  const { document, chrome, toggle } = await setup(t, { stored: { enabled: false, hideShorts: true } });
+
+  document.querySelector("#reset-defaults").click();
+  await flush();
+  toggle("enabled").click();
+  await flush();
+  toggle("enabled").click();
+  await flush();
+  document.querySelector("#undo-reset").click();
+  await flush();
+
+  assert.equal(chrome.data.enabled, true);
+  assert.equal(chrome.data.hideShorts, true);
 });
 
 test("resetting defaults again resets the Undo timer and restores the latest state", async (t) => {

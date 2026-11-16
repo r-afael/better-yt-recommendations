@@ -110,9 +110,9 @@
     "profiles",
     "activeProfile",
   ]);
-  const RESETTABLE_SETTINGS = Object.freeze(
-    Object.keys(settings.DEFAULTS).filter((key) => !PRESERVED_SETTINGS.has(key)),
-  );
+  const RESET_DEFAULTS = Object.freeze(Object.fromEntries(
+    Object.entries(settings.DEFAULTS).filter(([key]) => !PRESERVED_SETTINGS.has(key)),
+  ));
   let undoResetTimer = null;
   let resetSnapshot = null;
 
@@ -129,6 +129,18 @@
     resetSnapshot = snapshot;
     undoReset.hidden = false;
     undoResetTimer = setTimeout(dismissResetUndo, UNDO_DELAY_MS);
+  }
+
+  // Settings edited after the reset belong to the newer change, even if they later return to a default.
+  function discardChangedResetValues(changes) {
+    if (!resetSnapshot) return;
+    const { values, activeProfile } = resetSnapshot;
+    for (const key of values.keys()) {
+      if (Object.hasOwn(changes, key) && changes[key] !== RESET_DEFAULTS[key]) values.delete(key);
+    }
+    if (Object.hasOwn(changes, "activeProfile") && !settings.sameName(changes.activeProfile, activeProfile)) {
+      for (const key of settings.PROFILE_SETTINGS) values.delete(key);
+    }
   }
 
   // The fields as typed, so the page follows the first topic and not only once it is saved.
@@ -429,6 +441,7 @@
   });
   // Deleting a profile keeps its topics and sliders, so the filter goes on as before.
   deleteProfile.addEventListener("click", () => {
+    page.saver.flush();
     const profile = profiles.active(page.values);
     if (!profile) return;
     const index = page.values.profiles.indexOf(profile);
@@ -457,19 +470,24 @@
   form.addEventListener("submit", (event) => event.preventDefault());
   resetDefaults.addEventListener("click", () => {
     page.saver.flush();
-    const snapshot = Object.fromEntries(RESETTABLE_SETTINGS.map((key) => [key, page.values[key]]));
-    const defaults = Object.fromEntries(RESETTABLE_SETTINGS.map((key) => [key, settings.DEFAULTS[key]]));
-    page.save(defaults).then(
+    const previous = Object.entries(page.values).filter(([key, value]) =>
+      Object.hasOwn(RESET_DEFAULTS, key) && value !== RESET_DEFAULTS[key],
+    );
+    const snapshot = { values: new Map(previous), activeProfile: page.values.activeProfile };
+    page.save(RESET_DEFAULTS).then(
       () => showResetUndo(snapshot),
       (error) => ui.reportSaveError(error),
     );
   });
   undoReset.addEventListener("click", () => {
     if (!resetSnapshot) return;
-    const snapshot = resetSnapshot;
+    page.saver.flush();
+    discardChangedResetValues(page.values);
+    const changes = resetSnapshot.values;
     dismissResetUndo();
-    page.save(snapshot).catch(ui.reportSaveError);
+    if (changes.size > 0) page.save(Object.fromEntries(changes)).catch(ui.reportSaveError);
   });
+  settings.subscribe(discardChangedResetValues);
   document.getElementById("change-shortcuts").addEventListener("click", () => chrome.tabs.create({ url: SHORTCUTS_PAGE }));
   // The shortcuts may have changed on Chrome's page by the time the user comes back to this tab.
   document.addEventListener("visibilitychange", () => {
