@@ -256,13 +256,19 @@ test("every translation fills every popup text", async (t) => {
   }
 });
 
-// Links in the popup only open when they target a new tab.
-test("links to the source code in a new tab", async (t) => {
+test("links to the source code and problem reporting in new tabs", async (t) => {
   const { document } = await setup(t);
-  const link = document.querySelector("footer a");
-  assert.equal(link.href, "https://github.com/r-afael/better-yt-recommendations");
-  assert.equal(link.target, "_blank");
-  assert.equal(link.textContent, "Source code on GitHub");
+
+  const sourceLink = document.querySelector('footer a[data-i18n="sourceCode"]');
+  assert.equal(sourceLink.href, "https://github.com/r-afael/better-yt-recommendations");
+  assert.equal(sourceLink.target, "_blank");
+  assert.equal(sourceLink.textContent, "Source code on GitHub");
+
+  const reportLink = document.querySelector('footer a[data-i18n="reportProblem"]');
+  assert.equal(reportLink.href, "https://github.com/r-afael/better-yt-recommendations/issues/new/choose");
+  assert.equal(reportLink.target, "_blank");
+  assert.equal(reportLink.rel, "noopener noreferrer");
+  assert.equal(reportLink.textContent, "Report a problem");
 });
 
 test("translations cover the ten most spoken languages with the same messages as English", () => {

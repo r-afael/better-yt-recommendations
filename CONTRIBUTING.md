@@ -8,7 +8,8 @@ Report security problems privately, as described in [SECURITY.md](SECURITY.md).
 
 ## Set up
 
-Install Node.js 24 or later and pnpm 11, then run:
+Install Node.js 24 or later and pnpm 11. If you use nvm, run `nvm use` after
+installing or configuring Node.js with nvm. Then run:
 
 ```sh
 pnpm install
@@ -65,6 +66,7 @@ If Shorts move to another address, update the redirect rule's `regexFilter` in
 **A new language.** Add `_locales/<code>/messages.json` with every key from
 `_locales/en/messages.json`. If YouTube names the custom feed tab differently in that
 language, add the name to `src/labels.js`.
+Found a wrong or awkward translation instead? Open a **Translation problem** issue.
 
 **A new Transformers.js version.** Change the version in `package.json`, run
 `pnpm install`, then `pnpm vendor` to copy the new files into `src/vendor/transformers/`.

@@ -75,3 +75,11 @@ test("removing a profile keeps the others in order", () => {
   const late = profile(LATE_NIGHT);
   assert.deepEqual(plain(profiles.remove([WORK, EVENING, late], " EVENING")), [WORK, late]);
 });
+
+test("restoring a profile puts it back where it was, selects it and restores its settings, unless its name is taken or there are already 8", () => {
+  assert.deepEqual(plain(profiles.restore([WORK], EVENING, 0)), { list: [EVENING, WORK], ...EVENING });
+  assert.deepEqual(plain(profiles.restore([WORK], EVENING, 1)), { list: [WORK, EVENING], ...EVENING });
+  assert.deepEqual(plain(profiles.restore([EVENING], WORK, 0)), { list: [WORK, EVENING], ...WORK });
+  assert.deepEqual(plain(profiles.restore([WORK], { ...EVENING, name: " work " }, 0)), { error: "taken" });
+  assert.deepEqual(plain(profiles.restore(manyProfiles(8), EVENING, 0)), { error: "full" });
+});

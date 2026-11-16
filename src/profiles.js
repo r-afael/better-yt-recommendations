@@ -35,6 +35,15 @@
 
   const remove = (list, name) => list.filter((profile) => !sameName(profile.name, name));
 
+  // The list with one profile put back where it was, the name it was saved under, and the settings it switches to.
+  function restore(list, profile, index) {
+    if (find(list, profile.name)) return { error: "taken" };
+    if (list.length >= LIMITS.MAX_PROFILES) return { error: "full" };
+    const next = [...list];
+    next.splice(Math.max(0, Math.min(index ?? next.length, next.length)), 0, profile);
+    return { list: next, name: profile.name, ...profileCopy(profile) };
+  }
+
   // Switching to a profile brings the settings it holds along, in the same write: a profile saved
   // before profiles kept the sliders brings only its topics. No profile keeps them as they are.
   function switchTo(list, name) {
@@ -55,5 +64,5 @@
     return { [name]: value, profiles };
   }
 
-  globalThis.BetterYT.profiles = Object.freeze({ active, create, rename, remove, changesFor });
+  globalThis.BetterYT.profiles = Object.freeze({ active, create, rename, remove, restore, changesFor });
 })();

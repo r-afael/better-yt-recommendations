@@ -80,7 +80,7 @@ else.
 - **Channels**: always show or always hide a channel. You can also right-click a video
   on YouTube to do this.
 - **Keyboard shortcuts**: Alt+Shift+F turns the filter on or off, and Alt+Shift+S turns
-  Hide Shorts on or off (Control instead of Alt on a Mac).
+  Hide Shorts on or off (Control instead of Alt on a Mac, Alt+Shift+H on ChromeOS).
 
 On YouTube, a row like "12 videos hidden" lets you see what was hidden, with a label on
 each revealed video saying whether it was off topic, matched a topic to avoid, or came

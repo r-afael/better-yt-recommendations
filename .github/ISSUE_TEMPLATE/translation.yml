@@ -1,0 +1,46 @@
+name: Translation problem
+description: A wrong or awkward translation in the extension.
+labels: ["documentation"]
+body:
+  - type: dropdown
+    id: language
+    attributes:
+      label: Which language?
+      options:
+        - Arabic (ar)
+        - Bengali (bn)
+        - English (en)
+        - Spanish (es)
+        - French (fr)
+        - Hindi (hi)
+        - Indonesian (id)
+        - Portuguese (pt)
+        - Russian (ru)
+        - Chinese, Simplified (zh_CN)
+        - Chinese, Traditional (zh_TW)
+    validations:
+      required: true
+  - type: dropdown
+    id: where
+    attributes:
+      label: Where does the text appear?
+      options:
+        - The settings popup
+        - The options page (All settings)
+        - On YouTube
+        - The right-click menu
+    validations:
+      required: true
+  - type: textarea
+    id: current
+    attributes:
+      label: Current text
+      description: Copy it exactly as shown.
+    validations:
+      required: true
+  - type: textarea
+    id: suggested
+    attributes:
+      label: Suggested text
+    validations:
+      required: true
