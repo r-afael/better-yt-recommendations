@@ -463,6 +463,24 @@ test("Show them shows the hidden videos until Hide them again", async (t) => {
   assert.equal(document.querySelectorAll(".better-yt-hidden-reason").length, 0, "collapsed labels leave the DOM");
 });
 
+test("a card recycled after collapse loses the label from the previous video", async (t) => {
+  const { answer, clock, items, toggle, isShown } = await setup(t);
+  await answer(["RphIVv0uWrM"]);
+  toggle().click();
+
+  const item = items()[2];
+  const parent = item.parentElement;
+  assert.equal(item.querySelector(".better-yt-hidden-reason").textContent, "Hidden: off topic");
+  item.remove();
+  toggle().click();
+  showVideo(item, FIXTURE_IDS[0]);
+  parent.append(item);
+  await clock.tickAsync(SCAN_MS);
+
+  assert.equal(isShown(item), true);
+  assert.equal(item.querySelector(".better-yt-hidden-reason"), null);
+});
+
 test("revealed videos explain avoided topics and blocked channels", async (t) => {
   const { document, items, toggle, answer } = await setup(t, {
     stored: { topics: "programming", avoidTopics: "gaming", blockedChannels: ["freeCodeCamp.org"] },

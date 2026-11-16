@@ -17,7 +17,7 @@
 }
 
 .better-yt-hidden-reason {
-  display: block;
+  display: none;
   width: max-content;
   margin: 4px 0;
   padding: 2px 8px;
@@ -25,6 +25,10 @@
   background: var(--yt-spec-badge-chip-background, #0f0f0f);
   color: var(--yt-spec-text-primary, #fff);
   font: 1.2rem/1.8rem "Roboto", "Arial", sans-serif;
+}
+
+:root[data-better-yt-reveal] [data-better-yt-hidden] > .better-yt-hidden-reason {
+  display: block;
 }
 
 .better-yt-hidden-row {

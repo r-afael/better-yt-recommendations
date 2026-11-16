@@ -179,6 +179,7 @@
   function unhide(item) {
     item.removeAttribute(HIDDEN_ATTRIBUTE);
     item.removeAttribute(REASON_ATTRIBUTE);
+    setReasonLabel(item, null);
   }
 
   // Returns the id of the video a card was hidden for, or null when it isn't hidden.
@@ -197,7 +198,7 @@
 
   // Adds localized text to a card without changing YouTube's markup or card identity.
   function setReasonLabel(item, text) {
-    let label = item.querySelector(`.${REASON_LABEL_CLASS}`);
+    let label = item.querySelector(`:scope > .${REASON_LABEL_CLASS}`);
     if (!text) {
       label?.remove();
       return;
