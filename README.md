@@ -78,7 +78,7 @@ else.
 - **Profiles**: save sets of topics, like "Work" or "Evening", and switch between them.
 - **Where to filter**: pick the pages the filter works on.
 - **Channels**: always show or always hide a channel. You can also right-click a video
-  on YouTube to do this.
+  on YouTube to do this. Each list shows its current count out of the 50-channel limit.
 - **Keyboard shortcuts**: Alt+Shift+F turns the filter on or off, and Alt+Shift+S turns
   Hide Shorts on or off (Control instead of Alt on a Mac, Alt+Shift+H on ChromeOS).
 

@@ -289,6 +289,19 @@
   "channelsHint": {
     "message": "Une chaîne par ligne, avec son nom tel qu'il apparaît sur YouTube."
   },
+  "channelCount": {
+    "message": "$COUNT$ sur $LIMIT$",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "12"
+      },
+      "limit": {
+        "content": "$2",
+        "example": "50"
+      }
+    }
+  },
   "listFull": {
     "message": "Une liste contient jusqu'à 50 chaînes. Seules les 50 premières sont enregistrées."
   },
