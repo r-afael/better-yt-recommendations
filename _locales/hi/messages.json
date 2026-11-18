@@ -65,6 +65,15 @@
   "sourceCode": {
     "message": "GitHub पर सोर्स कोड"
   },
+  "version": {
+    "message": "संस्करण $VERSION$",
+    "placeholders": {
+      "version": {
+        "content": "$1",
+        "example": "1.5.1"
+      }
+    }
+  },
   "reportProblem": {
     "message": "समस्या की रिपोर्ट करें",
     "description": "Link at the bottom of the popup and options page for reporting a problem."

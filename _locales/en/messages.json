@@ -87,6 +87,16 @@
     "message": "Source code on GitHub",
     "description": "Link at the bottom of the popup and the options page that opens the extension's source code on GitHub."
   },
+  "version": {
+    "message": "Version $VERSION$",
+    "description": "Shows the installed extension version in the options page footer.",
+    "placeholders": {
+      "version": {
+        "content": "$1",
+        "example": "1.5.1"
+      }
+    }
+  },
   "reportProblem": {
     "message": "Report a problem",
     "description": "Link at the bottom of the popup and the options page for reporting a problem."

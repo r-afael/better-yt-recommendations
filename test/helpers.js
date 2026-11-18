@@ -206,6 +206,7 @@ export function fakeChrome({ stored = {}, session = {}, locale = "en", commandLi
     },
     runtime: {
       lastError: undefined,
+      getManifest: () => manifest,
       onMessage: fakeEvent(),
       onInstalled: fakeEvent(),
       onStartup: fakeEvent(),
