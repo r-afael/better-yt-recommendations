@@ -1,0 +1,417 @@
+{
+  "extDescription": {
+    "message": "Öğrenmek için açtığınız YouTube'da kedi videolarına mı daldınız? Cihazdaki yapay zekâ konu dışı önerileri gizler, odakta kalırsınız."
+  },
+  "lang": {
+    "message": "tr"
+  },
+  "autoOpen": {
+    "message": "Ana Sayfa'da özel akışı aç"
+  },
+  "autoOpenHint": {
+    "message": "YouTube Ana Sayfa'yı her açtığınızda özel akışınıza geçer."
+  },
+  "enforce": {
+    "message": "Zorunlu mod"
+  },
+  "enforceHint": {
+    "message": "Ana Sayfa'da başka bir sekme seçseniz bile özel akışınızda kalın."
+  },
+  "hideShorts": {
+    "message": "Shorts'u gizle"
+  },
+  "hideShortsHint": {
+    "message": "Shorts videolarını akışlardan, aramadan ve kenar çubuğundan kaldırır, Shorts bağlantılarını normal video olarak açar."
+  },
+  "topicFilter": {
+    "message": "Önerileri filtrele"
+  },
+  "topicFilterHint": {
+    "message": "Konularınızla eşleşmeyen, kaçınılacak konularla eşleşen veya her zaman gizlediğiniz kanallardan gelen videoları, Tüm ayarlar'daki Nerede filtrelensin bölümünde işaretli sayfalarda gizler. Bilgisayarınızda çalışan bir yapay zekâ modeli kullanır."
+  },
+  "topicFilterHintHere": {
+    "message": "Konularınızla eşleşmeyen, kaçınılacak konularla eşleşen veya her zaman gizlediğiniz kanallardan gelen videoları, aşağıdaki Nerede filtrelensin bölümünde işaretli sayfalarda gizler. Bilgisayarınızda çalışan bir yapay zekâ modeli kullanır."
+  },
+  "topics": {
+    "message": "Görmek istediğiniz konular"
+  },
+  "topicsPlaceholder": {
+    "message": "programlama, yemek, satranç"
+  },
+  "topicsHint": {
+    "message": "Konuları virgülle ayırın."
+  },
+  "threshold": {
+    "message": "Gösterim için gereken eşleşme"
+  },
+  "thresholdHint": {
+    "message": "Bir videonun görünür kalması için konularınızdan biriyle en az bu kadar eşleşmesi gerekir. Değer yükseldikçe daha çok video gizlenir."
+  },
+  "thresholdHintEmpty": {
+    "message": "Görmek istediğiniz bir konu ekleyene kadar etkisi yoktur."
+  },
+  "modelIdle": {
+    "message": "Model, bir sayfa ihtiyaç duyduğunda veya Şimdi yükle'yi tıkladığınızda yüklenir."
+  },
+  "modelLoading": {
+    "message": "Model yükleniyor…"
+  },
+  "modelReady": {
+    "message": "Model hazır."
+  },
+  "modelError": {
+    "message": "Model yüklenemedi. Birazdan yeniden denenecek."
+  },
+  "sourceCode": {
+    "message": "GitHub'daki kaynak kodu"
+  },
+  "reportProblem": {
+    "message": "Sorun bildir"
+  },
+  "allSettings": {
+    "message": "Tüm ayarlar"
+  },
+  "homeSection": {
+    "message": "Ana Sayfa ve Shorts"
+  },
+  "topicsSection": {
+    "message": "Konular"
+  },
+  "summaryTopics": {
+    "message": "Konular: $TOPICS$",
+    "placeholders": {
+      "topics": {
+        "content": "$1",
+        "example": "chess, cooking"
+      }
+    }
+  },
+  "noTopicsYet": {
+    "message": "Henüz konu yok. Tüm ayarlar'dan ekleyebilirsiniz."
+  },
+  "avoidTopics": {
+    "message": "Kaçınılacak konular"
+  },
+  "avoidTopicsPlaceholder": {
+    "message": "oyun, magazin"
+  },
+  "avoidTopicsHint": {
+    "message": "Bunlardan biriyle konularınızdan daha çok eşleşen videolar gizlenir. Konuları virgülle ayırın."
+  },
+  "avoidThreshold": {
+    "message": "Gizleyen eşleşme"
+  },
+  "avoidThresholdHint": {
+    "message": "Bir video, kaçınılacak bir konuyla ancak en az bu kadar ve konularınızdan daha çok eşleşirse gizlenir. Değer düştükçe daha çok video gizlenir."
+  },
+  "avoidThresholdHintEmpty": {
+    "message": "Kaçınılacak bir konu ekleyene kadar etkisi yoktur."
+  },
+  "summaryAvoiding": {
+    "message": "Kaçınılanlar: $TOPICS$",
+    "placeholders": {
+      "topics": {
+        "content": "$1",
+        "example": "gaming, gossip"
+      }
+    }
+  },
+  "loadNow": {
+    "message": "Şimdi yükle"
+  },
+  "tryTitle": {
+    "message": "Bir başlık deneyin"
+  },
+  "tryTitlePlaceholder": {
+    "message": "Sicilya Savunması nasıl yenilir"
+  },
+  "tryTitleHint": {
+    "message": "Filtrenin yukarıdaki ayarlarla bir videoyu gösterip göstermeyeceğini görmek için video başlığını yazın."
+  },
+  "tryScores": {
+    "message": "Konularınızla eşleşme: $WANT$ · Kaçınılacak konularla eşleşme: $AVOID$",
+    "placeholders": {
+      "want": {
+        "content": "$1",
+        "example": "0.31"
+      },
+      "avoid": {
+        "content": "$2",
+        "example": "none"
+      }
+    }
+  },
+  "tryScoreNone": {
+    "message": "yok"
+  },
+  "tryShown": {
+    "message": "Gösterilir"
+  },
+  "tryHidden": {
+    "message": "Gizlenir"
+  },
+  "tryAvoided": {
+    "message": "Gizlenir: kaçınılacak bir konuyla $SCORE$ eşleşiyor ve $LINE$ olan gizleyen eşleşmeye ulaşıyor.",
+    "placeholders": {
+      "score": {
+        "content": "$1",
+        "example": "0.31"
+      },
+      "line": {
+        "content": "$2",
+        "example": "0.25"
+      }
+    }
+  },
+  "tryAvoidedMore": {
+    "message": "Gizlenir: kaçınılacak bir konuyla $AVOID$ eşleşiyor, bu da konularınızla olan $WANT$ eşleşmeden fazla.",
+    "placeholders": {
+      "avoid": {
+        "content": "$1",
+        "example": "0.39"
+      },
+      "want": {
+        "content": "$2",
+        "example": "0.31"
+      }
+    }
+  },
+  "tryAvoidedNotMore": {
+    "message": "Gösterilir: kaçınılacak bir konuyla $AVOID$ eşleşiyor, ancak bu konularınızla olan $WANT$ eşleşmeden fazla değil.",
+    "placeholders": {
+      "avoid": {
+        "content": "$1",
+        "example": "0.39"
+      },
+      "want": {
+        "content": "$2",
+        "example": "0.31"
+      }
+    }
+  },
+  "tryOffTopic": {
+    "message": "Gizlenir: konularınızla yalnızca $SCORE$ eşleşiyor, gereken $LINE$ eşleşmenin altında.",
+    "placeholders": {
+      "score": {
+        "content": "$1",
+        "example": "0.18"
+      },
+      "line": {
+        "content": "$2",
+        "example": "0.25"
+      }
+    }
+  },
+  "tryOnTopic": {
+    "message": "Gösterilir: konularınızla $SCORE$ eşleşiyor ve gereken $LINE$ eşleşmeyi karşılıyor.",
+    "placeholders": {
+      "score": {
+        "content": "$1",
+        "example": "0.31"
+      },
+      "line": {
+        "content": "$2",
+        "example": "0.25"
+      }
+    }
+  },
+  "tryNotAvoided": {
+    "message": "Gösterilir: kaçınılacak bir konuyla yalnızca $SCORE$ eşleşiyor, $LINE$ olan gizleyen eşleşmenin altında.",
+    "placeholders": {
+      "score": {
+        "content": "$1",
+        "example": "0.18"
+      },
+      "line": {
+        "content": "$2",
+        "example": "0.25"
+      }
+    }
+  },
+  "tryNeedsTopics": {
+    "message": "Bir başlık denemek için yukarıya bir konu ekleyin."
+  },
+  "tryError": {
+    "message": "Başlık kontrol edilemedi. Birazdan tekrar deneyin."
+  },
+  "hiddenRowOne": {
+    "message": "1 video gizlendi"
+  },
+  "hiddenRowMany": {
+    "message": "$COUNT$ video gizlendi",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "12"
+      }
+    }
+  },
+  "showHidden": {
+    "message": "Göster"
+  },
+  "hideHidden": {
+    "message": "Yeniden gizle"
+  },
+  "filterPages": {
+    "message": "Nerede filtrelensin"
+  },
+  "filterPagesHint": {
+    "message": "Filtrelenen her liste, kaç videonun gizlendiğini belirten ve onları gösterebilen bir satırla başlar."
+  },
+  "filterWatch": {
+    "message": "İzlediğiniz videonun yanında"
+  },
+  "filterHome": {
+    "message": "Ana Sayfa"
+  },
+  "filterSubscriptions": {
+    "message": "Abonelikler"
+  },
+  "filterSearch": {
+    "message": "Arama sonuçları"
+  },
+  "channels": {
+    "message": "Kanallar"
+  },
+  "allowedChannels": {
+    "message": "Bu kanalları asla gizleme"
+  },
+  "allowedChannelsHint": {
+    "message": "Bu kanalların videoları, konusu ne olursa olsun görünür kalır."
+  },
+  "blockedChannels": {
+    "message": "Bu kanalları her zaman gizle"
+  },
+  "blockedChannelsHint": {
+    "message": "Bu kanalların videoları, Nerede filtrelensin bölümünde işaretli her sayfada gizlenir."
+  },
+  "channelsHint": {
+    "message": "Her satıra bir kanal yazın, YouTube'da göründüğü adıyla."
+  },
+  "listFull": {
+    "message": "Bir listede en fazla 50 kanal olabilir. Yalnızca ilk 50 kanal kaydedilir."
+  },
+  "saveFailed": {
+    "message": "Değişikliğiniz kaydedilemedi. Bir dakika sonra tekrar deneyin."
+  },
+  "menuAllowChannel": {
+    "message": "Bu kanalı asla gizleme"
+  },
+  "menuBlockChannel": {
+    "message": "Bu kanalı her zaman gizle"
+  },
+  "channelAllowed": {
+    "message": "$CHANNEL$ hiçbir zaman gizlenmeyecek.",
+    "placeholders": {
+      "channel": {
+        "content": "$1",
+        "example": "freeCodeCamp.org"
+      }
+    }
+  },
+  "channelBlocked": {
+    "message": "$CHANNEL$ her zaman gizlenecek.",
+    "placeholders": {
+      "channel": {
+        "content": "$1",
+        "example": "freeCodeCamp.org"
+      }
+    }
+  },
+  "noChannelPicked": {
+    "message": "Kanalını seçmek için bir videonun küçük resmine veya başlığına sağ tıklayın."
+  },
+  "channelListFull": {
+    "message": "Bu liste dolu. Önce Tüm ayarlar'dan bir kanal kaldırın."
+  },
+  "channelSavedNotFiltered": {
+    "message": "Önerileri filtrele açık olduğunda ve sayfa Nerede filtrelensin bölümünde işaretli olduğunda geçerli olur."
+  },
+  "channelsMenuHint": {
+    "message": "Kanalını eklemek için YouTube'da bir videonun küçük resmine veya başlığına sağ da tıklayabilirsiniz."
+  },
+  "commandToggleFilter": {
+    "message": "Önerileri filtrele'yi aç veya kapat"
+  },
+  "commandToggleShorts": {
+    "message": "Shorts'u gizle'yi aç veya kapat"
+  },
+  "topicFilterOn": {
+    "message": "Önerileri filtrele açık"
+  },
+  "topicFilterOff": {
+    "message": "Önerileri filtrele kapalı"
+  },
+  "hideShortsOn": {
+    "message": "Shorts'u gizle açık"
+  },
+  "hideShortsOff": {
+    "message": "Shorts'u gizle kapalı"
+  },
+  "shortcuts": {
+    "message": "Klavye kısayolları"
+  },
+  "shortcutsHint": {
+    "message": "Başka bir uzantı zaten kullanıyorsa Chrome kısayolu atamadan bırakır."
+  },
+  "shortcutUnset": {
+    "message": "Atanmadı"
+  },
+  "changeShortcuts": {
+    "message": "Kısayolları değiştir"
+  },
+  "profilesSection": {
+    "message": "Profiller"
+  },
+  "profile": {
+    "message": "Profil"
+  },
+  "noProfile": {
+    "message": "Profil yok"
+  },
+  "profileName": {
+    "message": "Profil adı"
+  },
+  "profileNamePlaceholder": {
+    "message": "İş"
+  },
+  "saveProfile": {
+    "message": "Yeni profil olarak kaydet"
+  },
+  "renameProfile": {
+    "message": "Yeniden adlandır"
+  },
+  "deleteProfile": {
+    "message": "Sil"
+  },
+  "undoProfile": {
+    "message": "Geri al"
+  },
+  "profilesHint": {
+    "message": "Bir profil, yukarıdaki konuları ve iki kaydırıcıyı (Gösterim için gereken eşleşme ve Gizleyen eşleşme) bir ad altında kaydeder. Profilleri buradan veya araç çubuğu penceresinden değiştirebilirsiniz. Profil yok seçiliyken başka bir profile geçmek konuları ve kaydırıcıları değiştirir; bunları korumak için önce bir profil olarak kaydedin."
+  },
+  "profileNameTaken": {
+    "message": "Bu adla bir profil zaten var."
+  },
+  "profilesFull": {
+    "message": "Başka bir profil için yer yok. Birini silin veya diğerlerinin konularını kısaltın."
+  },
+  "profileChangeTooLarge": {
+    "message": "Bu değişiklik hemen uygulanır, ancak profile sığmaz; profil eski hâlini korur. Konuları kısaltın veya başka bir profili silin."
+  },
+  "resetDefaults": {
+    "message": "Varsayılanlara dön"
+  },
+  "undoReset": {
+    "message": "Geri al"
+  },
+  "hiddenAvoided": {
+    "message": "Gizlendi: kaçınılan konu"
+  },
+  "hiddenOffTopic": {
+    "message": "Gizlendi: konu dışı"
+  },
+  "hiddenBlocked": {
+    "message": "Gizlendi: her zaman gizlenen kanal"
+  }
+}
