@@ -271,6 +271,12 @@
   "filterSearch": {
     "message": "搜索结果"
   },
+  "showBadge": {
+    "message": "在工具栏图标上显示隐藏视频数量"
+  },
+  "showBadgeHint": {
+    "message": "在浏览器工具栏的扩展图标上显示当前页面被隐藏的视频数量。"
+  },
   "channels": {
     "message": "频道"
   },

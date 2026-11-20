@@ -224,6 +224,10 @@ export function fakeChrome({ stored = {}, session = {}, locale = "en", commandLi
       async create(properties) {
         chrome.createdTabs.push(properties);
       },
+      // The tabs the background's badge clear looks up. Tests add their own ids.
+      async query() {
+        return Object.keys(chrome.badges).map((id) => ({ id: Number(id) }));
+      },
     },
     commands: {
       onCommand: fakeEvent(),

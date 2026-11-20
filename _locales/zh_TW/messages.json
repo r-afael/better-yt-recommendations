@@ -271,6 +271,12 @@
   "filterSearch": {
     "message": "搜尋結果"
   },
+  "showBadge": {
+    "message": "在工具列圖示上顯示隱藏影片數量"
+  },
+  "showBadgeHint": {
+    "message": "在瀏覽器工具列的擴充功能圖示上，顯示目前頁面被隱藏的影片數量。"
+  },
   "channels": {
     "message": "頻道"
   },

@@ -271,6 +271,12 @@
   "filterSearch": {
     "message": "Résultats de recherche"
   },
+  "showBadge": {
+    "message": "Afficher le nombre de vidéos masquées sur l'icône de la barre d'outils"
+  },
+  "showBadgeHint": {
+    "message": "Indique combien de vidéos le filtre a masquées sur la page actuelle, sur l'icône de l'extension dans votre barre d'outils."
+  },
   "channels": {
     "message": "Chaînes"
   },
