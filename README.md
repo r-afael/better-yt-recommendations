@@ -21,6 +21,9 @@ This Chrome extension keeps YouTube on the topics you choose:
 - **Hides off-topic videos** next to the video you're watching and on Home. Tell it
   "programming, JavaScript, web development" and the gaming clips and talk-show
   segments disappear. It can filter Subscriptions and search results too.
+- **Blocks specific content**, set the topics that you don't want to see, 
+  and avoid distracting videos, spoilers, and off-topic recommendations. E.g.
+  TV shows, videogames spoilers, specific news, etc.
 - **Hides Shorts**, if you want, and opens Short links as regular videos.
 - **Runs on your computer.** A small AI model compares video titles with your topics.
   Nothing you watch is sent anywhere.
