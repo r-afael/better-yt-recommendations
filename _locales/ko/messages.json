@@ -1,0 +1,498 @@
+{
+  "extDescription": {
+    "message": "공부하려고 YouTube를 열었다가 고양이 동영상만 보고 계신가요? 온디바이스 AI가 주제와 맞지 않는 추천 동영상을 숨겨 집중을 유지하도록 도와줍니다.",
+    "description": "Extension description shown in the Chrome Web Store and on chrome://extensions."
+  },
+  "lang": {
+    "message": "ko",
+    "description": "BCP 47 code of this translation, used as the lang attribute of the popup, the options page, and the hidden-videos row and messages the extension shows on YouTube."
+  },
+  "autoOpen": {
+    "message": "홈에서 맞춤 피드 열기",
+    "description": "Toggle in the popup and on the options page that opens the custom feed tab when YouTube Home opens."
+  },
+  "autoOpenHint": {
+    "message": "YouTube 홈을 열 때마다 맞춤 피드로 전환합니다.",
+    "description": "Explains the autoOpen toggle."
+  },
+  "enforce": {
+    "message": "강제 모드",
+    "description": "Toggle name for enforcement mode, in the popup and on the options page."
+  },
+  "enforceHint": {
+    "message": "다른 홈 탭을 선택해도 맞춤 피드를 계속 유지합니다.",
+    "description": "Explains enforcement mode: other Home tabs can't take over from the custom feed."
+  },
+  "hideShorts": {
+    "message": "Shorts 숨기기",
+    "description": "Toggle in the popup and on the options page that hides YouTube Shorts."
+  },
+  "hideShortsHint": {
+    "message": "피드, 검색결과 및 사이드바에서 Shorts를 제거하고, Shorts 링크를 일반 동영상으로 엽니다.",
+    "description": "Explains the hideShorts toggle: Shorts disappear and Shorts links open in the regular video player."
+  },
+  "topicFilter": {
+    "message": "추천 필터링",
+    "description": "Switch that hides videos by topic and by channel lists."
+  },
+  "topicFilterHint": {
+    "message": "전체 설정의 필터링할 위치에서 선택한 페이지에서, 내 주제와 일치하지 않거나 피할 주제와 일치하는 동영상, 또는 항상 숨기는 채널의 동영상을 숨깁니다. 컴퓨터 내 AI 모델을 사용합니다.",
+    "description": "Explains the Filter recommendations switch in the popup. \"Where to filter\" is the options section's heading (filterPages) and \"All settings\" the link to the options page (allSettings); use the same words. \"Topics to avoid\" and \"channels you always hide\" should match the avoidTopics and blockedChannels labels."
+  },
+  "topicFilterHintHere": {
+    "message": "아래의 필터링할 위치에서 선택한 페이지에서, 내 주제와 일치하지 않거나 피할 주제와 일치하는 동영상, 또는 항상 숨기는 채널의 동영상을 숨깁니다. 컴퓨터 내 AI 모델을 사용합니다.",
+    "description": "Explains the Filter recommendations switch on the options page, where the Where to filter section (filterPages) comes further down; use the same words as its heading. \"Topics to avoid\" and \"channels you always hide\" should match the avoidTopics and blockedChannels labels."
+  },
+  "topics": {
+    "message": "보고 싶은 주제",
+    "description": "Label of the text field where the user types the topics to keep."
+  },
+  "topicsPlaceholder": {
+    "message": "프로그래밍, 요리, 체스",
+    "description": "Example topics shown in the empty topics field. Use topics that make sense in this language, separated by commas."
+  },
+  "topicsHint": {
+    "message": "주제를 쉼표로 구분하세요.",
+    "description": "Explains how to type several topics."
+  },
+  "threshold": {
+    "message": "표시에 필요한 일치율",
+    "description": "Label of the slider that sets how well a video must match one of the topics the user wants to see to stay visible. Its value, from 0.10 to 0.40, shows next to it."
+  },
+  "thresholdHint": {
+    "message": "동영상이 계속 표시되려면 보고 싶은 주제 중 하나와 최소 이 정도 일치해야 합니다. 높을수록 더 많이 숨깁니다.",
+    "description": "Explains the threshold slider (\"Match needed to show\")."
+  },
+  "thresholdHintEmpty": {
+    "message": "보고 싶은 주제를 추가할 때까지 적용되지 않습니다.",
+    "description": "Replaces the threshold slider's hint while there are no topics to see, since the slider then changes nothing."
+  },
+  "modelIdle": {
+    "message": "페이지에 필요할 때 또는 지금 로드를 클릭하면 모델이 로드됩니다.",
+    "description": "Status of the topic model before it has loaded. \"Load now\" is the button next to it."
+  },
+  "modelLoading": {
+    "message": "모델 로드 중…",
+    "description": "Status of the topic model while it downloads or loads. A progress bar shows how far it got."
+  },
+  "modelReady": {
+    "message": "모델이 준비되었습니다.",
+    "description": "Status of the topic model once it can filter videos."
+  },
+  "modelError": {
+    "message": "모델을 로드할 수 없습니다. 잠시 후 다시 시도합니다.",
+    "description": "Status of the topic model after it failed to load."
+  },
+  "sourceCode": {
+    "message": "GitHub 소스 코드",
+    "description": "Link at the bottom of the popup and the options page that opens the extension's source code on GitHub."
+  },
+  "reportProblem": {
+    "message": "문제 신고",
+    "description": "Link at the bottom of the popup and the options page for reporting a problem."
+  },
+  "allSettings": {
+    "message": "전체 설정",
+    "description": "Popup link and gear button that open the options page with every setting."
+  },
+  "homeSection": {
+    "message": "홈 및 Shorts",
+    "description": "Heading of the options page section with the switches for YouTube Home (autoOpen, enforce) and Hide Shorts (hideShorts). \"Home\" is YouTube's Home page and \"Shorts\" YouTube's name for short videos; use the same words as those switches."
+  },
+  "topicsSection": {
+    "message": "주제",
+    "description": "Heading of the options page section with the Filter recommendations switch (topicFilter), the topics, their sliders and the try box."
+  },
+  "summaryTopics": {
+    "message": "주제: $TOPICS$",
+    "description": "Popup line listing the topics the filter keeps.",
+    "placeholders": {
+      "topics": {
+        "content": "$1",
+        "example": "chess, cooking"
+      }
+    }
+  },
+  "noTopicsYet": {
+    "message": "설정된 주제가 없습니다. 전체 설정에서 추가하세요.",
+    "description": "Popup line shown when no topics are set. \"All settings\" is the name of the link below it."
+  },
+  "avoidTopics": {
+    "message": "피할 주제",
+    "description": "Label of the field where the user types topics whose videos should be hidden."
+  },
+  "avoidTopicsPlaceholder": {
+    "message": "게임, 연예 가십",
+    "description": "Example topics to avoid in the empty field. Use topics that make sense in this language, separated by commas."
+  },
+  "avoidTopicsHint": {
+    "message": "보고 싶은 주제보다 이 주제에 더 많이 일치하는 동영상을 숨깁니다. 주제는 쉼표로 구분하세요.",
+    "description": "Explains the topics-to-avoid field: a video is hidden for these only when it matches one of them more than the wanted topics."
+  },
+  "avoidThreshold": {
+    "message": "숨김에 필요한 일치율",
+    "description": "Label of the slider that sets how well a video must match a topic to avoid to be hidden. Its value, from 0.10 to 0.40, shows next to it."
+  },
+  "avoidThresholdHint": {
+    "message": "피할 주제와의 일치율이 이 이상이고 보고 싶은 주제보다 더 높을 때만 동영상을 숨깁니다. 낮을수록 더 많이 숨깁니다.",
+    "description": "Explains the avoidThreshold slider (\"Match that hides\"): a video is hidden for a topic to avoid only when it matches it at least this much and more than the wanted topics."
+  },
+  "avoidThresholdHintEmpty": {
+    "message": "피할 주제를 추가할 때까지 적용되지 않습니다.",
+    "description": "Replaces the avoidThreshold slider's hint while there are no topics to avoid, since the slider then changes nothing."
+  },
+  "summaryAvoiding": {
+    "message": "피하는 주제: $TOPICS$",
+    "description": "Popup line listing the topics to avoid.",
+    "placeholders": {
+      "topics": {
+        "content": "$1",
+        "example": "gaming, gossip"
+      }
+    }
+  },
+  "loadNow": {
+    "message": "지금 로드",
+    "description": "Button next to the model status that starts loading the topic model right away."
+  },
+  "tryTitle": {
+    "message": "제목 테스트",
+    "description": "Label of the box where the user types a video title to test the filter."
+  },
+  "tryTitlePlaceholder": {
+    "message": "시실리안 디펜스 파훼법",
+    "description": "Example video title in the empty box. Use a title that makes sense in this language."
+  },
+  "tryTitleHint": {
+    "message": "동영상 제목을 입력하여 위 설정에서 필터가 표시할지 숨길지 확인해 보세요.",
+    "description": "Explains the try-a-title box."
+  },
+  "tryScores": {
+    "message": "보고 싶은 주제와 일치율: $WANT$ · 피할 주제와 일치율: $AVOID$",
+    "description": "Shows how well the typed title matches each list of topics, on the sliders' scale (the highest similarity, from -1 to 1). Use the words of the sliders' labels (threshold and avoidThreshold).",
+    "placeholders": {
+      "want": {
+        "content": "$1",
+        "example": "0.31"
+      },
+      "avoid": {
+        "content": "$2",
+        "example": "none"
+      }
+    }
+  },
+  "tryScoreNone": {
+    "message": "없음",
+    "description": "Shown instead of a number when that list of topics is empty."
+  },
+  "tryShown": {
+    "message": "표시됨",
+    "description": "Read out by screen readers when the try box's verdict says the filter would keep the typed title visible, such as when moving a slider makes it shown. The verdict on screen (tryOnTopic, tryNotAvoided or tryAvoidedNotMore) says why."
+  },
+  "tryHidden": {
+    "message": "숨겨짐",
+    "description": "Read out by screen readers when the try box's verdict says the filter would hide the typed title, such as when moving a slider makes it hidden. The verdict on screen (tryAvoided, tryAvoidedMore or tryOffTopic) says why."
+  },
+  "tryAvoided": {
+    "message": "숨겨짐: 피할 주제와 $SCORE$ 일치하여 숨김에 필요한 일치율 $LINE$에 도달했습니다.",
+    "description": "Verdict in the try box with only topics to avoid: the title would be hidden because it matches them at least as well as the avoidThreshold slider (\"Match that hides\") is set. Use the words of that slider's label.",
+    "placeholders": {
+      "score": {
+        "content": "$1",
+        "example": "0.31"
+      },
+      "line": {
+        "content": "$2",
+        "example": "0.25"
+      }
+    }
+  },
+  "tryAvoidedMore": {
+    "message": "숨겨짐: 피할 주제와 $AVOID$ 일치하여 보고 싶은 주제와의 일치율 $WANT$보다 높습니다.",
+    "description": "Verdict in the try box with both lists: the title would be hidden because it reaches the avoidThreshold slider (\"Match that hides\") and matches a topic to avoid more than the wanted topics. The first number is the match with the topics to avoid, the second with the wanted topics.",
+    "placeholders": {
+      "avoid": {
+        "content": "$1",
+        "example": "0.39"
+      },
+      "want": {
+        "content": "$2",
+        "example": "0.31"
+      }
+    }
+  },
+  "tryAvoidedNotMore": {
+    "message": "표시됨: 피할 주제와 $AVOID$ 일치하지만, 보고 싶은 주제와의 일치율 $WANT$보다 높지 않습니다.",
+    "description": "Verdict in the try box with both lists: the title would be shown because, though it reaches the avoidThreshold slider (\"Match that hides\"), it matches a topic to avoid no more than the wanted topics, which it matches as the threshold slider asks. The first number is the match with the topics to avoid, the second with the wanted topics.",
+    "placeholders": {
+      "avoid": {
+        "content": "$1",
+        "example": "0.39"
+      },
+      "want": {
+        "content": "$2",
+        "example": "0.31"
+      }
+    }
+  },
+  "tryOffTopic": {
+    "message": "숨겨짐: 보고 싶은 주제와 $SCORE$만 일치하여 표시에 필요한 일치율 $LINE$에 미치지 못합니다.",
+    "description": "Verdict in the try box: the title would be hidden because it matches the wanted topics less than the threshold slider (\"Match needed to show\") asks. Use the words of that slider's label.",
+    "placeholders": {
+      "score": {
+        "content": "$1",
+        "example": "0.18"
+      },
+      "line": {
+        "content": "$2",
+        "example": "0.25"
+      }
+    }
+  },
+  "tryOnTopic": {
+    "message": "표시됨: 보고 싶은 주제와 $SCORE$ 일치하여 표시에 필요한 일치율 $LINE$을 충족합니다.",
+    "description": "Verdict in the try box: the title would be shown because it matches the wanted topics at least as well as the threshold slider (\"Match needed to show\") asks. Use the words of that slider's label.",
+    "placeholders": {
+      "score": {
+        "content": "$1",
+        "example": "0.31"
+      },
+      "line": {
+        "content": "$2",
+        "example": "0.25"
+      }
+    }
+  },
+  "tryNotAvoided": {
+    "message": "표시됨: 피할 주제와 $SCORE$만 일치하여 숨김에 필요한 일치율 $LINE$에 미치지 않습니다.",
+    "description": "Verdict in the try box with only topics to avoid: the title would be shown because it matches them less than the avoidThreshold slider (\"Match that hides\") is set. Use the words of that slider's label.",
+    "placeholders": {
+      "score": {
+        "content": "$1",
+        "example": "0.18"
+      },
+      "line": {
+        "content": "$2",
+        "example": "0.25"
+      }
+    }
+  },
+  "tryNeedsTopics": {
+    "message": "제목을 테스트하려면 위에 주제를 추가하세요.",
+    "description": "Shown in the try box when no topics are set."
+  },
+  "tryError": {
+    "message": "제목을 확인할 수 없습니다. 잠시 후 다시 시도하세요.",
+    "description": "Shown in the try box when the model failed to answer."
+  },
+  "hiddenRowOne": {
+    "message": "동영상 1개 숨김",
+    "description": "Shown above a YouTube list when the filter hid exactly one video."
+  },
+  "hiddenRowMany": {
+    "message": "동영상 $COUNT$개 숨김",
+    "description": "Shown above a YouTube list for any other number of hidden videos. If your language has several plural forms, use a wording that is correct for every number, such as \"Videos hidden: $COUNT$\".",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "12"
+      }
+    }
+  },
+  "showHidden": {
+    "message": "동영상 표시",
+    "description": "Button that reveals the hidden videos on the current page."
+  },
+  "hideHidden": {
+    "message": "다시 숨기기",
+    "description": "Button that hides the revealed videos again."
+  },
+  "filterPages": {
+    "message": "필터링할 위치",
+    "description": "Heading of the options section with the pages the filter works on."
+  },
+  "filterPagesHint": {
+    "message": "필터링된 각 목록 상단에는 숨겨진 동영상 수를 알려주고 표시할 수 있는 행이 나타납니다.",
+    "description": "Explains the Where to filter section."
+  },
+  "filterWatch": {
+    "message": "시청 중인 동영상 옆",
+    "description": "Checkbox: filter the recommendations beside or below the video being watched."
+  },
+  "filterHome": {
+    "message": "홈",
+    "description": "Checkbox: filter the YouTube Home page."
+  },
+  "filterSubscriptions": {
+    "message": "구독",
+    "description": "Checkbox: filter the Subscriptions feed."
+  },
+  "filterSearch": {
+    "message": "검색결과",
+    "description": "Checkbox: filter search results."
+  },
+  "channels": {
+    "message": "채널",
+    "description": "Heading of the options section with the channel lists."
+  },
+  "allowedChannels": {
+    "message": "항상 표시할 채널",
+    "description": "Label of the list of channels whose videos always stay visible."
+  },
+  "allowedChannelsHint": {
+    "message": "이 채널의 동영상은 주제에 관계없이 항상 표시됩니다.",
+    "description": "Explains the never-hide list."
+  },
+  "blockedChannels": {
+    "message": "항상 숨길 채널",
+    "description": "Label of the list of channels whose videos are always hidden."
+  },
+  "blockedChannelsHint": {
+    "message": "필터링할 위치에서 선택한 모든 페이지에서 이 채널의 동영상을 숨깁니다.",
+    "description": "Explains the always-hide list. \"Where to filter\" is the section above (filterPages); use the same words."
+  },
+  "channelsHint": {
+    "message": "YouTube에 표시되는 채널명을 한 줄에 하나씩 입력하세요.",
+    "description": "Explains how to type the channel lists."
+  },
+  "listFull": {
+    "message": "목록에는 최대 50개 채널까지 저장됩니다. 처음 50개만 저장됩니다.",
+    "description": "Shown when a channel list has more than 50 names."
+  },
+  "saveFailed": {
+    "message": "변경사항을 저장할 수 없습니다. 잠시 후 다시 시도하세요.",
+    "description": "Shown when Chrome refused to save a setting."
+  },
+  "menuAllowChannel": {
+    "message": "이 채널 항상 표시",
+    "description": "Right-click menu entry on a YouTube video that adds its channel to the never-hide list."
+  },
+  "menuBlockChannel": {
+    "message": "이 채널 항상 숨기기",
+    "description": "Right-click menu entry on a YouTube video that adds its channel to the always-hide list."
+  },
+  "channelAllowed": {
+    "message": "$CHANNEL$ 채널은 절대 숨겨지지 않습니다.",
+    "description": "Message shown on YouTube after the user picked Never hide this channel.",
+    "placeholders": {
+      "channel": {
+        "content": "$1",
+        "example": "freeCodeCamp.org"
+      }
+    }
+  },
+  "channelBlocked": {
+    "message": "$CHANNEL$ 채널은 항상 숨겨집니다.",
+    "description": "Message shown on YouTube after the user picked Always hide this channel.",
+    "placeholders": {
+      "channel": {
+        "content": "$1",
+        "example": "freeCodeCamp.org"
+      }
+    }
+  },
+  "noChannelPicked": {
+    "message": "동영상의 미리보기 이미지나 제목을 마우스 오른쪽 버튼으로 클릭하여 채널을 선택하세요.",
+    "description": "Message shown when the right-click wasn't on a video."
+  },
+  "channelListFull": {
+    "message": "목록이 가득 찼습니다. 먼저 전체 설정에서 채널을 삭제하세요.",
+    "description": "Message shown when a channel list can't take another name."
+  },
+  "channelSavedNotFiltered": {
+    "message": "추천 필터링이 켜져 있고 필터링할 위치에서 해당 페이지가 선택된 경우에 적용됩니다.",
+    "description": "Second sentence after \"… will always be hidden.\" when nothing is hidden right now, because the filter is off or this page isn't checked."
+  },
+  "channelsMenuHint": {
+    "message": "YouTube에서 동영상의 미리보기 이미지나 제목을 마우스 오른쪽 버튼으로 클릭하여 채널을 추가할 수도 있습니다.",
+    "description": "Hint under the channel lists on the options page."
+  },
+  "commandToggleFilter": {
+    "message": "추천 필터링 켜기/끄기",
+    "description": "Keyboard shortcut description shown on chrome://extensions/shortcuts and on the options page."
+  },
+  "commandToggleShorts": {
+    "message": "Shorts 숨기기 켜기/끄기",
+    "description": "Keyboard shortcut description shown on chrome://extensions/shortcuts and on the options page."
+  },
+  "topicFilterOn": {
+    "message": "추천 필터링이 켜졌습니다",
+    "description": "Message shown on YouTube after the shortcut turned the filter on."
+  },
+  "topicFilterOff": {
+    "message": "추천 필터링이 꺼졌습니다",
+    "description": "Message shown on YouTube after the shortcut turned the filter off."
+  },
+  "hideShortsOn": {
+    "message": "Shorts 숨기기가 켜졌습니다",
+    "description": "Message shown on YouTube after the shortcut turned Hide Shorts on."
+  },
+  "hideShortsOff": {
+    "message": "Shorts 숨기기가 꺼졌습니다",
+    "description": "Message shown on YouTube after the shortcut turned Hide Shorts off."
+  },
+  "shortcuts": {
+    "message": "단축키",
+    "description": "Heading of the options section that lists the shortcuts."
+  },
+  "shortcutsHint": {
+    "message": "다른 확장 프로그램에서 이미 단축키를 사용 중이면 Chrome에서 단축키를 설정되지 않은 상태로 둡니다.",
+    "description": "Explains why a shortcut can show Not set."
+  },
+  "shortcutUnset": {
+    "message": "설정 안 됨",
+    "description": "Shown instead of a key combination when a shortcut has none."
+  },
+  "changeShortcuts": {
+    "message": "단축키 변경",
+    "description": "Button that opens Chrome's keyboard shortcuts page."
+  },
+  "profilesSection": {
+    "message": "프로필",
+    "description": "Heading of the options section that manages topic profiles."
+  },
+  "profile": {
+    "message": "프로필",
+    "description": "Label of the profile switch, in the popup and in the options page's Profiles section."
+  },
+  "noProfile": {
+    "message": "프로필 없음",
+    "description": "First choice of the profile switch: the topics and sliders aren't tied to a profile."
+  },
+  "profileName": {
+    "message": "프로필 이름",
+    "description": "Label of the field where the user names a profile."
+  },
+  "profileNamePlaceholder": {
+    "message": "업무",
+    "description": "Example profile name. Use a short word that makes sense in this language."
+  },
+  "saveProfile": {
+    "message": "새 프로필로 저장",
+    "description": "Button that saves the current topics and both sliders under the typed name."
+  },
+  "renameProfile": {
+    "message": "이름 바꾸기",
+    "description": "Button that gives the selected profile the typed name."
+  },
+  "deleteProfile": {
+    "message": "삭제",
+    "description": "Button that deletes the selected profile. The topics and sliders stay as they are."
+  },
+  "profilesHint": {
+    "message": "프로필은 위의 주제와 표시에 필요한 일치율, 숨김에 필요한 일치율 두 슬라이더를 하나의 이름으로 저장합니다. 여기나 툴바 팝업에서 프로필을 전환하세요. 프로필 없음에서 전환하면 주제와 슬라이더가 바뀌므로, 유지하려면 먼저 프로필로 저장하세요.",
+    "description": "Hint under the Profiles section on the options page. \"Match needed to show\" and \"Match that hides\" are the two sliders' labels (threshold, avoidThreshold), and \"No profile\" is the first choice of the profile switch (noProfile); use the same words. \"Toolbar popup\" is the extension's popup."
+  },
+  "profileNameTaken": {
+    "message": "해당 이름의 프로필이 이미 있습니다.",
+    "description": "Shown when the typed profile name is already used."
+  },
+  "profilesFull": {
+    "message": "더 이상 프로필을 추가할 공간이 없습니다. 프로필을 삭제하거나 다른 프로필의 주제를 줄이세요.",
+    "description": "Shown when Chrome sync can't hold another profile, or a renamed one."
+  },
+  "profileChangeTooLarge": {
+    "message": "이 변경사항은 지금 적용되지만 선택된 프로필에는 저장 공간이 부족하여 기존 설정이 유지됩니다. 주제를 줄이거나 다른 프로필을 삭제하세요.",
+    "description": "Shown under the topics and sliders when Chrome sync can't hold the selected profile with new topics or a new slider value. The filter uses the new value, and the profile keeps its older one."
+  }
+}
