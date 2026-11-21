@@ -417,5 +417,17 @@
   "hiddenBlocked": {
     "message": "已隐藏：始终隐藏的频道",
     "description": "Label for a revealed video hidden because its channel is blocked."
+  },
+  "commandNextProfile": {
+    "message": "切换到下一个配置"
+  },
+  "profileChanged": {
+    "message": "已切换到配置：$NAME$",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "Work"
+      }
+    }
   }
 }

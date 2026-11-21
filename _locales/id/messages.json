@@ -417,5 +417,17 @@
   "hiddenBlocked": {
     "message": "Disembunyikan: channel yang selalu disembunyikan",
     "description": "Label for a revealed video hidden because its channel is blocked."
+  },
+  "commandNextProfile": {
+    "message": "Beralih ke profil berikutnya"
+  },
+  "profileChanged": {
+    "message": "Beralih ke profil: $NAME$",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "Work"
+      }
+    }
   }
 }

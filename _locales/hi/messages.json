@@ -417,5 +417,17 @@
   "hiddenBlocked": {
     "message": "छिपाया गया: हमेशा छिपा चैनल",
     "description": "Label for a revealed video hidden because its channel is blocked."
+  },
+  "commandNextProfile": {
+    "message": "अगली प्रोफ़ाइल पर जाएँ"
+  },
+  "profileChanged": {
+    "message": "प्रोफ़ाइल पर स्विच किया गया: $NAME$",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "Work"
+      }
+    }
   }
 }

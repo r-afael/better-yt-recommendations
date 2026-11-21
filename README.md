@@ -84,6 +84,7 @@ else.
   on YouTube to do this.
 - **Keyboard shortcuts**: Alt+Shift+F turns the filter on or off, and Alt+Shift+S turns
   Hide Shorts on or off (Control instead of Alt on a Mac, Alt+Shift+H on ChromeOS).
+  **Next profile** cycles through saved profiles; set its key at `chrome://extensions/shortcuts`.
 
 On YouTube, a row like "12 videos hidden" lets you see what was hidden, with a label on
 each revealed video saying whether it was off topic, matched a topic to avoid, or came

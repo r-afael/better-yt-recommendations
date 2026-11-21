@@ -417,5 +417,17 @@
   "hiddenBlocked": {
     "message": "Скрыто: всегда скрытый канал",
     "description": "Label for a revealed video hidden because its channel is blocked."
+  },
+  "commandNextProfile": {
+    "message": "Переключить на следующий профиль"
+  },
+  "profileChanged": {
+    "message": "Выбран профиль: $NAME$",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "Work"
+      }
+    }
   }
 }

@@ -417,5 +417,17 @@
   "hiddenBlocked": {
     "message": "已隱藏：一律隱藏的頻道",
     "description": "Label for a revealed video hidden because its channel is blocked."
+  },
+  "commandNextProfile": {
+    "message": "切換到下一個設定檔"
+  },
+  "profileChanged": {
+    "message": "已切換至設定檔：$NAME$",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "Work"
+      }
+    }
   }
 }

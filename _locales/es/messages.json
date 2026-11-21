@@ -417,5 +417,19 @@
   "hiddenBlocked": {
     "message": "Oculto: canal siempre oculto",
     "description": "Label for a revealed video hidden because its channel is blocked."
+  },
+  "commandNextProfile": {
+    "message": "Cambiar al siguiente perfil",
+    "description": "Keyboard shortcut description for switching to the next saved profile."
+  },
+  "profileChanged": {
+    "message": "Cambiado al perfil: $NAME$",
+    "description": "Toast shown on YouTube after switching to a saved profile.",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "Work"
+      }
+    }
   }
 }

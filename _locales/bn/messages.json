@@ -417,5 +417,19 @@
   "hiddenBlocked": {
     "message": "লুকানো: সবসময় লুকানো চ্যানেল",
     "description": "Label for a revealed video hidden because its channel is blocked."
+  },
+  "commandNextProfile": {
+    "message": "পরবর্তী প্রোফাইলে যান",
+    "description": "Keyboard shortcut description for switching to the next saved profile."
+  },
+  "profileChanged": {
+    "message": "প্রোফাইলে স্যুইচ করা হয়েছে: $NAME$",
+    "description": "Toast shown on YouTube after switching to a saved profile.",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "Work"
+      }
+    }
   }
 }

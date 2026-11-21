@@ -417,5 +417,19 @@
   "hiddenBlocked": {
     "message": "Masquée : chaîne toujours masquée",
     "description": "Label for a revealed video hidden because its channel is blocked."
+  },
+  "commandNextProfile": {
+    "message": "Passer au profil suivant",
+    "description": "Keyboard shortcut description for switching to the next saved profile."
+  },
+  "profileChanged": {
+    "message": "Profil sélectionné : $NAME$",
+    "description": "Toast shown on YouTube after switching to a saved profile.",
+    "placeholders": {
+      "name": {
+        "content": "$1",
+        "example": "Work"
+      }
+    }
   }
 }
