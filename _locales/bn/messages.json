@@ -289,6 +289,19 @@
   "channelsHint": {
     "message": "প্রতি লাইনে একটি চ্যানেল, YouTube-এ নামটি যেভাবে দেখায় সেভাবে।"
   },
+  "channelCount": {
+    "message": "$LIMIT$টির মধ্যে $COUNT$টি",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "১২"
+      },
+      "limit": {
+        "content": "$2",
+        "example": "৫০"
+      }
+    }
+  },
   "listFull": {
     "message": "একটি তালিকায় সর্বোচ্চ ৫০টি চ্যানেল রাখা যায়। শুধু প্রথম ৫০টি সংরক্ষণ করা হয়।"
   },

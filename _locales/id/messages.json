@@ -289,6 +289,19 @@
   "channelsHint": {
     "message": "Satu saluran per baris, sesuai namanya di YouTube."
   },
+  "channelCount": {
+    "message": "$COUNT$ dari $LIMIT$",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "12"
+      },
+      "limit": {
+        "content": "$2",
+        "example": "50"
+      }
+    }
+  },
   "listFull": {
     "message": "Satu daftar memuat hingga 50 saluran. Hanya 50 saluran pertama yang disimpan."
   },

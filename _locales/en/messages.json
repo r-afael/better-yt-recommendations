@@ -355,6 +355,20 @@
     "message": "One channel per line, as its name appears on YouTube.",
     "description": "Explains how to type the channel lists."
   },
+  "channelCount": {
+    "message": "$COUNT$ of $LIMIT$",
+    "description": "Shows how many channels are in a list out of the maximum allowed, below each channel list on the options page.",
+    "placeholders": {
+      "count": {
+        "content": "$1",
+        "example": "12"
+      },
+      "limit": {
+        "content": "$2",
+        "example": "50"
+      }
+    }
+  },
   "listFull": {
     "message": "A list holds up to 50 channels. Only the first 50 are saved.",
     "description": "Shown when a channel list has more than 50 names."
